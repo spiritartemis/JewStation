@@ -194,3 +194,15 @@ requirements:
       文案可维护、页内链接正确，上线前由业务方复核
     analysis: |
       （待讨论产出）
+  - id: R-jew-1b-6
+    title: SEO 基础
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      每页独立 title/description、商品图 alt、规范 URL、分享预览、可被抓取
+    analysis: |
+      （待讨论产出）
