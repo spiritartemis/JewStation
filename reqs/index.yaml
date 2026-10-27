@@ -296,7 +296,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       下单确认、付款/订单状态、发货通知；内容、发件域名与退信策略明确

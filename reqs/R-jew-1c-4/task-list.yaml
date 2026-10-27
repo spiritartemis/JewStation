@@ -6,4 +6,11 @@
 
 req: R-jew-1c-4
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1c-4-01
+    title: 配置交易邮件模板（0.3-05）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
