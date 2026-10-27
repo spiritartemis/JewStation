@@ -6,4 +6,25 @@
 
 req: R-jew-1a-1
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-1-01
+    title: 定义商品数据模型（0.1-02）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
+  - id: T-jew-1a-1-02
+    title: 建立标签字典和分类规则（0.1-03）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
+  - id: T-jew-1a-1-03
+    title: 编写商品内容模板与样例（0.1-06）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
