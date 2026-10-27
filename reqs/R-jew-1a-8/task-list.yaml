@@ -10,7 +10,12 @@ tasks:
   - id: T-jew-1a-8-01
     title: 确认交易与售后规则（0.1-12）
     executor: owner
-    status: ready
+    status: in_progress
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/12-交易与售后规则.md
+        kind: file
+        checksum: sha256:07b04e25c69fd852995e006236b684533b2a1362088bfb54e11bfa4ff2d2d1f2
+        at: 2026-10-27T16:05:59Z
