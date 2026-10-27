@@ -482,3 +482,15 @@ requirements:
       用点击/加购等汇总指标检查标签质量与推荐点击；规则保持简单透明
     analysis: |
       （待讨论产出）
+  - id: R-jew-1e-3
+    title: 转化与性能优化
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      基于真实表现调整图片/导航/筛选/文案；动画轻量、避免密集弹窗
+    analysis: |
+      （待讨论产出）
