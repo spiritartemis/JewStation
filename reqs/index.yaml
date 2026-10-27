@@ -206,3 +206,15 @@ requirements:
       每页独立 title/description、商品图 alt、规范 URL、分享预览、可被抓取
     analysis: |
       （待讨论产出）
+  - id: R-jew-1b-7
+    title: 图片与性能基线
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      响应式图片、非首屏延迟加载、避免重动画；首屏商品图清晰且不过度拖慢加载
+    analysis: |
+      （待讨论产出）
