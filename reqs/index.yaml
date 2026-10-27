@@ -314,3 +314,15 @@ requirements:
       结账前明确费用、目的地限制与适用税费的计算/展示来源
     analysis: |
       （待讨论产出）
+  - id: R-jew-1c-6
+    title: 交易服务账户配置
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      提供并配置支付/物流/邮件服务账户、域名发件验证与安全密钥录入
+    analysis: |
+      （待讨论产出）
