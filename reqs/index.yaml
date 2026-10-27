@@ -64,7 +64,7 @@ requirements:
       （待讨论产出）
   - id: R-jew-1a-5
     title: 技术与服务边界决策
-    status: ready
+    status: in_progress
     initiator: 用户
     created: 2026-10-27
     revision: 1
