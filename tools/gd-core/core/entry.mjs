@@ -8,10 +8,12 @@
  * 命令面（core 层自有）：
  *   gd-core core init|status|roadmap        板自举与派生视图
  *   gd-core work claim|release|list|start|submit|land   会话认领与并发隔离
- *   gd-core milestone add|update|reach|reopen|remove   里程碑写面（结版 / 退档须 --confirm 点名）
- *   gd-core req new|update|delete                      需求写面（--ver 走新口径 id）
+ *   gd-core milestone add|update|reach|reopen|remove   里程碑写面（开发轴：卡不带版号，id 铸 m-<序号><代际>）
+ *   gd-core req new|update|delete                      需求写面（开发轴：--line 落线 ==== 旧口径 --ver / 存量 --subver）
+ *   gd-core release new|list|show|add|freeze|tag      发布轴：发版账（版本 ↔ 需求成员，freeze/tag 须人拍）
+ *   gd-core line claim|release|list                   开发轴：开发线归属（并行隔离）
  *   gd-core task add                       拆任务（同上）
- *   gd-core ver list|reach|reopen|claim|release|lanes   结版与版本线（0.23.1 R-gm-048 · 铁律闸门 --confirm 随包）
+ *   gd-core ver list|reach|reopen|claim|release|lanes   **存量兼容面**：子版结版 / 版本线归属（0.23.1 R-gm-048 · 铁律闸门 --confirm 随包）
  *   gd-core handoff|check <任务id>          交件 / 验收（0.23.0 R-gm-047）
  *   gd-core milestone update|reach|reopen|remove   里程碑管理面（结版 / 退档须 --confirm 点名）
  *   gd-core req update|delete                     需求管理面（纠错 / 作废）
@@ -34,6 +36,8 @@ import { VER_CORE_SUBCOMMANDS, runVer } from "../scripts/core-vers.mjs";
 import { BOARD_CORE_SUBCOMMANDS, MILESTONE_READ_SUBCOMMANDS, REQ_READ_SUBCOMMANDS, TASK_READ_SUBCOMMANDS, runBoard, runMilestoneRead, runReqRead, runTaskRead } from "../scripts/core-read.mjs";
 import { runBrief, BRIEF_USAGE } from "../scripts/core-brief.mjs"; // 0.49.1 R-gm-49-1：进度简报（开工前第一条命令）
 import { CAP_CORE_SUBCOMMANDS, runCapCore } from "../scripts/core-cap.mjs"; // 0.61 R-gm-61-0：能力层（板账 capabilities/）
+import { runLine, LINE_SUBCOMMANDS } from "../scripts/reqs/line-cmd.mjs"; // 0.70.x 两轴：开发轴认领（B-gm-000064）
+import { runReleaseCmd, RELEASE_SUBCOMMANDS } from "../scripts/reqs/release-cmd.mjs"; // 0.70.x 两轴：发布轴发版账（B-gm-000064）
 
 /** 版本自证：读同级 package.json（仓内 = 壳模板占位 0.0.0；装配件 = core-pack 注入的真版本） */
 function versionLine() {
@@ -47,7 +51,7 @@ function versionLine() {
 }
 
 /** 自述帮助：`gd-core`、`gd-core help`、`gd-core --help` 同一出口 */
-const HELP = `gd-core — 会话级核心工作流（板 / 三层账 / 认领 / 并发隔离）
+const HELP = `gd-core — 会话级核心工作流（板 / 两轴账 / 认领 / 并发隔离）
 
 用法：
   gd-core --version                        # 版本自证（本包 package.json）
@@ -64,19 +68,26 @@ const HELP = `gd-core — 会话级核心工作流（板 / 三层账 / 认领 / 
   gd-core work start <任务id> [--base <ref>] [--worktree-dir <目录>] [--json]
   gd-core work submit <任务id> [--message "<提交信息>"] [--json]
   gd-core work land <任务id> [--keep] [--json]
-  gd-core milestone add "<名称>" --target <YYYY-MM-DD> [--status planned|in_progress] [--alias <意涵缩写>] [--ver-from <x.y> --ver-to <x.y>] [--req <需求id>]… [--note "…"]
-  gd-core milestone update <id> [--name|--target|--status|--on|--alias|--ver-from|--ver-to|--req-add|--req-remove|--note]
+  gd-core milestone add "<开发线名>" --target <YYYY-MM-DD> [--status planned|in_progress] [--alias <意涵缩写>] [--series <字母>] [--req <需求id>]… [--note "…"]   # 卡 id 自动铸 m-<序号><代际>，**不带版号**
+  gd-core milestone update <id> [--name|--target|--status|--on|--alias|--req-add|--req-remove|--note] [--ver <x.y|"">]   # --ver 只用于**存量卡**版号修正（设 / 清空）
   gd-core milestone reach <id> --confirm <id> [--on <YYYY-MM-DD>]      达成（铁律：须点名）
   gd-core milestone reopen <id> --confirm <id>                        退档（撤销达成）
   gd-core milestone remove <id>
-  gd-core req new "<标题>" [--ver <x.y>] [--summary "…"] [--subver x.y.z] [--kind feature|bug|chore] [--severity …] [--found-in <版本>] [--affects …] [--force]
+  gd-core req new "<标题>" --line <开发线段> [--summary "…"] [--kind feature|bug|chore] [--severity …] [--found-in <版本>] [--affects …] [--force]
+  gd-core req new "<标题>" [--ver <x.y>] [--subver x.y.z] …                # 旧模型 / 存量口径（三者互斥；缺陷一律不用坐标）
   gd-core req update <需求id> [--title|--summary|--kind|--severity|--found-in|--affects|--subver]
   gd-core req delete <需求id> [--force]
   gd-core task add <需求id> --task "[执行体id:]标题"… [--force]
   gd-core task update <任务id> [--title|--input|--executor] [--req <需求id>]
   gd-core task delete <任务id> [--req <需求id>]
+  gd-core release new "<名称>" [--version <x.y>] [--note "…"]        开对外版本（draft；版本号缺省取下一个可用号）
+  gd-core release list [--json] · show <x.y> [--json]
+  gd-core release add <x.y> --req <需求id>…                          收需求进版本（仅 draft；多对多，可 backport）
+  gd-core release freeze <x.y> --evidence "<回归证据>"                冻结成员（铁律：须人拍）
+  gd-core release tag <x.y> --tag <tag>                              打 tag（铁律：须人拍）
+  gd-core line claim|release|list <线段> [--as <名字>]                开发线归属：claim 认领 / release 释放 / list 清单（线段 = 里程碑 id 去 m- 前缀）
   gd-core ver list [--json]
-  gd-core ver reach <x.y.z> --confirm <x.y.z> [--on <YYYY-MM-DD>] [--note "…"] [--force]   结版（铁律：须点名）
+  gd-core ver reach <x.y.z> --confirm <x.y.z> [--on <YYYY-MM-DD>] [--note "…"] [--force]   结版（**存量兼容面**；铁律：须点名）
   gd-core ver reopen <x.y.z> --confirm <x.y.z> --reason "…"                               撤销结版（须点名 + 理由）
   gd-core board [--events <n>] [--json]                                看板（4 态泳道 + 时间线）
   gd-core task list [--req <需求id>] [--status <s>]… [--todo | --to-check] [--json]
@@ -125,6 +136,8 @@ const FAMILIES = {
       return runTask(sub, argv);
     },
   },
+  release: { subs: RELEASE_SUBCOMMANDS, hint: "release new|list|show|add|freeze|tag", run: (sub, argv) => runReleaseCmd(sub, argv) },
+  line: { subs: LINE_SUBCOMMANDS, hint: "line claim|release|list", run: (sub, argv) => runLine(sub, argv) },
   ver: { subs: VER_CORE_SUBCOMMANDS, hint: "ver list|reach|reopen", run: runVer },
   cap: { subs: CAP_CORE_SUBCOMMANDS, hint: "cap new|list|show|update|req|fulfill|history|bind|draft|merge|export|import", run: runCapCore },
 };
@@ -178,7 +191,7 @@ if (!fam) {
     process.exit(1);
   }
   console.error(`✗ gd-core 只提供 core 层的命令族：${Object.keys(FAMILIES).join(" / ")} + handoff / check`);
-  console.error(`  收到（${cmd ?? "（空）"}）——该命令属完整 CLI（app 面：注册项目 / 席位 / 工作站）`);
+  console.error(`  收到（${cmd ?? "（空）"}）——该命令不在 core 闭包内（app 面：席位 / 工作站 / 注册项目 / 编排，或尚未入闭包的板面命令）`);
   console.error("  · 用完整 CLI：gd <命令>（或设 GD_MAIN_LOCAL=<gdMain 仓根> 后由 core/bin/gd 转交）");
   process.exit(2);
 }

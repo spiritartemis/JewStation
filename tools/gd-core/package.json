@@ -1,6 +1,6 @@
 {
   "name": "@inkwill/gd-core",
-  "version": "0.70.5",
+  "version": "0.70.6",
   "description": "gd-core — 会话级核心工作流（板 / 三层账 / 认领 / 并发隔离）；零宿主依赖，可缺席席位与工作站",
   "private": true,
   "license": "UNLICENSED",

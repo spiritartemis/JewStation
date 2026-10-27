@@ -28,6 +28,7 @@
 import { spawnSync } from "node:child_process";
 import { readAllEvents, readAllLedgers, readReqEntries } from "./board.mjs";
 import { readLanes } from "./lanes.mjs";
+import { readReleases } from "./releases.mjs"; // 两轴模型：发布轴（对外版本 ↔ 需求成员）
 import { readLines } from "./lines.mjs"; // 两轴模型：开发线归属
 import { devLineSegOfId } from "./reqid.mjs"; // 两轴模型：需求 id 里的开发线段
 import { milestoneVersions, milestonesView, readMilestones, REQ_DONE_STATUSES } from "./milestones.mjs";
@@ -179,6 +180,9 @@ export function collectFacts({ root, board, now = Date.now(), git = true }) {
   // 两轴模型：开发线归属（开发轴的并行隔离坐标）
   const lineRaw = readLines(board.root);
   const lineBySeg = new Map((lineRaw.ok ? lineRaw.list : []).map((l) => [String(l.line), l]));
+  // 两轴模型：发布轴账（draft / frozen / tagged + 成员需求）
+  const relRaw = readReleases(board.root);
+  const releases = relRaw.ok ? relRaw.list : [];
 
   return {
     board,
@@ -195,6 +199,8 @@ export function collectFacts({ root, board, now = Date.now(), git = true }) {
     laneByVer,
     lineBySeg,
     lanesError: laneRaw.ok ? null : laneRaw.error,
+    releases,
+    releasesError: relRaw.ok ? null : relRaw.error,
     git: gitFacts(board?.repo ?? root, git),
   };
 }
@@ -454,6 +460,15 @@ function nextOf(f) {
     })
     .sort(cmpVer);
   const untasked = f.reqs.filter((r) => !REQ_DONE_STATUSES.has(r.status) && r.tasks.length === 0).sort((a, b) => cmpVer(a.subver, b.subver) || a.id.localeCompare(b.id));
+  // 两轴 · 发布轴：draft 版本且成员需求全验收 ⇒ 可以冻结（要人拍）
+  const relReady = (f.releases ?? [])
+    .filter((rel) => String(rel.status ?? "draft") === "draft" && (rel.reqs ?? []).length > 0)
+    .filter((rel) => (rel.reqs ?? []).every((id) => { const r = f.reqById.get(String(id)); return r && REQ_DONE_STATUSES.has(r.status); }))
+    .sort((a, b) => cmpVer(a.version, b.version));
+  // 两轴 · 开发轴：还有未完成需求的开发线却没登记归属 ⇒ 并行时会抢线
+  const unclaimedLine = [...new Set(f.reqs.filter((r) => !REQ_DONE_STATUSES.has(r.status)).map((r) => devLineSegOfId(r.id)).filter(Boolean))]
+    .filter((seg) => !(f.lineBySeg?.get(seg)?.owner))
+    .sort();
 
   const items = [];
   for (const t of mine.slice(0, 1))
@@ -467,10 +482,14 @@ function nextOf(f) {
       target: { kind: "task", id: t.id, title: t.title },
       cmd: `gd work claim ${t.id} && gd work start ${t.id}`,
     });
+  for (const rel of relReady.slice(0, 1))
+    items.push({ rank: 4, why: "对外版本成员已全验收（冻结要人拍）", target: { kind: "release", id: rel.version, title: null }, cmd: `gd release freeze ${rel.version} --evidence "…"` });
+  for (const seg of unclaimedLine.slice(0, 1))
+    items.push({ rank: 5, why: "开发线未认领（并行时会抢线）", target: { kind: "line", id: seg, title: null }, cmd: `gd line claim ${seg} --as <名字>` });
   for (const s of closedUnclosed.slice(0, 1))
-    items.push({ rank: 4, why: "子版待结版（要人拍）", target: { kind: "subver", id: s, title: null }, cmd: `gd ver reach ${s} --confirm ${s}` });
+    items.push({ rank: 6, why: "子版待结版（存量口径 · 要人拍）", target: { kind: "subver", id: s, title: null }, cmd: `gd ver reach ${s} --confirm ${s}` });
   for (const r of untasked.slice(0, 1))
-    items.push({ rank: 5, why: "需求未拆任务", target: { kind: "req", id: r.id, title: r.title }, cmd: `gd task add ${r.id} --task "local:…"` });
+    items.push({ rank: 7, why: "需求未拆任务", target: { kind: "req", id: r.id, title: r.title }, cmd: `gd task add ${r.id} --task "local:…"` });
   return items.sort((a, b) => a.rank - b.rank).slice(0, 3);
 }
 
@@ -491,6 +510,34 @@ const DRIFT_RULES = [
     cmd: (v) => `gd ver claim ${v}`,
     idOf: (v) => String(v),
     group: (hits, ids) => `${ids.join(" / ")} 未认领版本线，但都已有未结版需求`,
+  },
+  {
+    // 两轴 · 开发轴：线有未完成需求却没人认领 ⇒ 多会话并行时会两个人同时改同一条线
+    code: "LINE_UNCLAIMED",
+    level: "info",
+    hit: (f) =>
+      [...new Set(f.reqs.filter((r) => !REQ_DONE_STATUSES.has(r.status)).map((r) => devLineSegOfId(r.id)).filter(Boolean))]
+        .filter((seg) => !(f.lineBySeg?.get(seg)?.owner))
+        .sort(),
+    text: (seg) => `开发线 ${seg} 未登记归属，但线上还有未完成需求`,
+    cmd: (seg) => `gd line claim ${seg} --as <名字>`,
+    idOf: (seg) => String(seg),
+    group: (hits, ids) => `开发线 ${ids.join(" / ")} 未登记归属（并行时会抢线）`,
+  },
+  {
+    // 两轴 · 发布轴：draft 版本的成员需求全验收 ⇒ 该冻结了（冻结与打 tag 都要人拍）
+    code: "RELEASE_DRAFT_DONE",
+    level: "info",
+    hit: (f) =>
+      (f.releases ?? [])
+        .filter((rel) => String(rel.status ?? "draft") === "draft" && (rel.reqs ?? []).length > 0)
+        .filter((rel) => (rel.reqs ?? []).every((id) => { const r = f.reqById.get(String(id)); return r && REQ_DONE_STATUSES.has(r.status); }))
+        .map((rel) => rel.version)
+        .sort(),
+    text: (v) => `对外版本 ${v} 的成员需求已全部验收，仍是 draft`,
+    cmd: (v) => `gd release freeze ${v} --evidence "…"`,
+    idOf: (v) => String(v),
+    group: (hits, ids) => `对外版本 ${ids.join(" / ")} 成员需求已全验收但仍是 draft（冻结要人拍）`,
   },
   {
     code: "REQ_ON_CLOSED_SUBVER",

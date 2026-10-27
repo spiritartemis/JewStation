@@ -51,7 +51,10 @@ gd-core check <任务id> --pass | --reject "原因" [--by <验收人>] [--note <
 - **有 done 无 remain ⇒ 一次到位进 `review`**（合法流转表含 `ready → review`）；交件必带 `--done`/`--remain` 至少一项，空交件拒。
 - 未派（`executor` 空）不可交件；他人持有且租约未过期 ⇒ 拒（等过期 / `work release` / `--force` 接管留痕）。
 
-## 结版与版本线
+## 结版与版本线（存量兼容面）
+
+开发轴结版是 `gd-core milestone reach <id> --confirm <id>`；发布轴是 `gd-core release freeze|tag`（族名同 `gd`）。
+下面 `ver` 族保留**写能力**但不再扩展，也不再作为新需求的坐标：
 
 ```bash
 gd-core ver list                                     # 子版清单：完成度（派生） + 结版态（宣告）
@@ -68,7 +71,7 @@ gd-core ver lanes                                     # 版本线清单（归属
 gd-core board [--events <n>]                          # 看板：4 态泳道 + 最近事件
 gd-core task list [--req <需求id>] [--status <s>]… [--todo | --to-check]
 gd-core task show <任务id> [--req <需求id>]            # input / 交付件 / 事件 / 可流转 / 下一步
-gd-core req status <需求id>                           # 归属 / 子版结版态 / 版本线 / 任务 4 态
+gd-core req status <需求id>                           # 归属 / 开发线 /（存量）子版结版态 / 任务 4 态
 gd-core milestone progress [<id|alias>]                # 与 roadmap 派生视图同源
 ```
 
@@ -82,6 +85,19 @@ gd-core milestone progress [<id|alias>]                # 与 roadmap 派生视�
 `proj *` · `agents *` · `dispatch` · `sync` · `git *`。
 
 要这些能力：装完整 CLI（总控仓）或 `GD_MAIN_LOCAL=<总控仓根>` 后由 `gd-core` 转交。
+
+## 改完 skill 文档要重铺
+
+`skills/gd-core/**` 是**真源**，`.pi/skills/gd-core/**` 是 `gd skill install` 的产物（宿主实际加载它）。
+改完 `references/` 不重铺 ⇒ 宿主还在读旧口径，而 `contract check --scope docs` 的「skill 副本一致」会红（`E_SKILL_DRIFT`）：
+
+```bash
+gd-core skill install --force
+```
+
+- **别手改副本**：副本会被下一次 install 覆盖——真源改了才算改。
+- 宿主那份（`~/.workbuddy-ai/skills/<名>/`）不在本仓 install 路径上，要 `--dir <该目录> --skill <名> --force`；
+  它**整目录重建**，目录里非 skill 的文件（如宿主的 `_user_meta.json`）先备份、铺完还原。
 
 ## 三个高频参数
 

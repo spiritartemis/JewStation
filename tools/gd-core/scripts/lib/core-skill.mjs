@@ -69,9 +69,8 @@ export function skillSourceDir(name = SKILL_NAME) {
   return join(ROOT, e?.rel ?? SKILL_SOURCE_REL);
 }
 
-/** 某份 skill 的源目录下全部文件（相对 SKILL 目录，正斜杠，排序）：SKILL.md + references/*.md */
-export function skillFiles(name = SKILL_NAME) {
-  const base = skillSourceDir(name);
+/** 目录下全部文件（相对该目录，正斜杠，排序）：供「真源 ↔ 副本」两边共用同一个 walker */
+function listFilesUnder(base) {
   if (!existsSync(base)) return [];
   const out = [];
   const walk = (dir, prefix = "") => {
@@ -83,6 +82,55 @@ export function skillFiles(name = SKILL_NAME) {
   };
   walk(base);
   return out;
+}
+
+/** 某份 skill 的源目录下全部文件（相对 SKILL 目录，正斜杠，排序）：SKILL.md + references/*.md */
+export function skillFiles(name = SKILL_NAME) {
+  return listFilesUnder(skillSourceDir(name));
+}
+
+/**
+ * 真源与副本逐字节比对（B-gm-000062）——**单一实现**，两处调用：
+ *   · `installSkill` 的「幂等跳过 / 冲突拒绝」判据；
+ *   · 门禁 `contract check --scope docs` 的「副本是否落后于真源」。
+ *
+ * 为什么值得提出来（实测）：`skills/<name>/` 是真源、`.pi/skills/<name>/` 是安装产物，两者之间原本**没有任何门禁**。
+ *   于是副本会长期停在旧口径（`req new --ver` vs 真源 `--line`），而 `docs` 档只扫示例命令、扫不出「整份落后」这件事——
+ *   门禁一路绿，人照着旧副本敲命令才发现不对。**「绿着漂」比红更贵。**
+ *
+ * 三态（不许糊成两态）：
+ *   · `absent` —— 目标目录不存在 = **没装**（不是矛盾；`gd skill install` 之后此档才有意义）；
+ *   · `same`   —— 真源里每个文件都存在且逐字节一致（目标里**多出**的文件不判：那是人的地盘）；
+ *   · `drift`  —— 有文件不一致或读不到（缺文件按不一致算——「读不到」不等于「一致」）。
+ *
+ * @param {string} name skill 名（旧名先归一）
+ * @param {{root?: string}} [opts] root = 仓根（门禁要按被检查的那个仓算，不能用模块自身的 ROOT）
+ */
+export function skillCopyState(name, { root = ROOT } = {}) {
+  const e = skillEntry(name);
+  if (!e) return { name, rel: "", install: "", state: "absent", files: [], diffs: [] };
+  const src = join(root, e.rel);
+  const dst = join(root, e.install);
+  const files = listFilesUnder(src);
+  if (!existsSync(dst)) return { name, rel: e.rel, install: e.install, state: "absent", files, diffs: [] };
+  const diffs = compareSkillFiles(src, dst, files);
+  return { name, rel: e.rel, install: e.install, state: diffs.length > 0 ? "drift" : "same", files, diffs };
+}
+
+/**
+ * 逐文件比对两个目录（`files` 是相对路径清单）——返回**不一致的文件**（空数组 = 完全一致）。
+ * 缺文件 / 读失败都算不一致：判据是「副本能不能顶替真源」，读不到就顶替不了。
+ */
+export function compareSkillFiles(srcDir, dstDir, files) {
+  const diffs = [];
+  for (const rel of files) {
+    try {
+      if (readFileSync(join(dstDir, rel), "utf8") !== readFileSync(join(srcDir, rel), "utf8")) diffs.push(rel);
+    } catch {
+      diffs.push(rel);
+    }
+  }
+  return diffs;
 }
 
 /** 某份 skill 的 SKILL.md 正文（`gd-core skill print` 用；人看 / 手抄给不支持 skill 的宿主） */
@@ -107,16 +155,15 @@ export function installSkill(targetDir, { force = false, name = SKILL_NAME } = {
   const dir = String(targetDir);
   const src = skillSourceDir(name);
   if (existsSync(dir)) {
-    const same = files.every((rel) => {
-      try {
-        return readFileSync(join(dir, rel), "utf8") === readFileSync(join(src, rel), "utf8");
-      } catch {
-        return false;
-      }
-    });
+    // 判据与门禁同源（B-gm-000062）：`compareSkillFiles` 一份实现，install 与 `contract check --scope docs` 共用
+    const diffs = compareSkillFiles(src, dir, files);
     // 幂等：内容完全一致 ⇒ 不算冲突（目标里多出的其他文件也不管，那是人的地盘）
-    if (same) return { ok: true, name, path: dir.split("\\").join("/"), files, skipped: true };
-    if (!force) return { ok: false, name, error: `目标已存在且内容与源不同：${dir}（重装请加 --force；人改过的副本不会被静默覆盖）`, exists: true };
+    if (diffs.length === 0) return { ok: true, name, path: dir.split("\\").join("/"), files, skipped: true };
+    if (!force) {
+      const shown = diffs.slice(0, 5).join(" · ");
+      const more = diffs.length > 5 ? ` 等 ${diffs.length} 个` : "";
+      return { ok: false, name, error: `目标已存在且内容与源不同：${dir}（差异：${shown}${more}；重装请加 --force；人改过的副本不会被静默覆盖）`, exists: true, diffs };
+    }
     rmSync(dir, { recursive: true, force: true });
   }
   for (const rel of files) {

@@ -488,6 +488,12 @@ export function serializeTaskLedger(doc) {
         if (a.seat) lines.push(`        seat: ${scalar(a.seat)}`);
         if (a.desc) lines.push(...blockLines("desc", a.desc, 8));
         if (a.at) lines.push(`        at: ${scalar(a.at)}`);
+        // 0.70.6 B-gm-000060：指纹来源（commit = 取自落地提交里的内容 · worktree = 工作树视图）
+        //   必须落盘：验收侧靠它判「能不能按提交核」（工作树视图与提交内容可能不同）。
+        if (a.source) lines.push(`        source: ${scalar(a.source)}`);
+        // 逐件记「这个指纹是从哪个提交算的」——任务的 landed.head 会被同单元的后续 land 刷掉，
+        //   验收侧靠它定位「我交的是哪一版」（否则原任务会因后来者的改动而误判失配）。
+        if (a.source_commit) lines.push(`        source_commit: ${scalar(a.source_commit)}`);
         // B-gm-000004：失效标记必须落盘——漏写会让「已顶掉的旧条目」在读侧复活（旧指纹参与验收复算）
         if (a.superseded === true || a.superseded === "true") {
           lines.push("        superseded: true");

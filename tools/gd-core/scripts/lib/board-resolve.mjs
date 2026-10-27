@@ -1,7 +1,7 @@
 /**
  * 板解析（board resolve）—— **唯一实现**：把「当前这块板在哪、叫什么、哪些执行体」问清楚。
  *
- * 0.19.0 C2 / 依赖层 = **core**（只依赖 node 内置 + `yaml.mjs` 基元；**不得 import 任何 app 层件**：
+ * 0.19.0 C2 / 依赖层 = **core**（只依赖 node 内置 + `yaml.mjs` / `gitcore.mjs` 基元；**不得 import 任何 app 层件**：
  *   席位 / 工作站 / 注册表 / manifest 一律不碰——app 侧通过 `registryLookup` 注入，见 §3）。
  *
  * 三级解析顺序（权威源 `docs/gd-core-session-workflow-design.md` §3.2）：
@@ -19,6 +19,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { parseYaml } from "./yaml.mjs";
+import { isRepo } from "./gitcore.mjs"; // 0.70.6 B-gm-000059：repo 绑定诊断要判「是不是仓根」
 
 /** 板配置文件名（板根下）；core 独有，不与 app 的 `gd.config.yaml` 打架 */
 export const BOARD_FILE = "board.yaml";
@@ -31,6 +32,13 @@ export const DEFAULT_BOARD_DIR = "gdtwork";
 
 /** 缺省执行体名（设计 §4：不复用历史包袱名 `main`） */
 export const DEFAULT_EXECUTOR = "local";
+
+/**
+ * 「board.yaml 没列 executors」时读面补的那条 note —— **是补出来的，不是盘上有的**。
+ * 写面要区分这两者：`gd core init --force` 重写配置时不能把这条补出来的 note 落进文件
+ * （B-gm-000058），所以它必须是个可判等的常量，不能两边各写一份字面量。
+ */
+export const EXECUTOR_FALLBACK_NOTE = "缺省（board.yaml 未列 executors）";
 
 /** 板 id 形态（= 编号命名空间：`R-<id>-001` 要求小写 kebab，与任务 id 正则一致） */
 const BOARD_ID_RE = /^[a-z][a-z0-9-]*$/;
@@ -134,7 +142,7 @@ export function readBoardConfig(root) {
     id: id || null,
     name: String(b.name ?? "").trim() || null,
     repo: doc.repo ? String(doc.repo).trim().split("\\").join("/") : null,
-    executors: executors.length ? executors : [{ id: DEFAULT_EXECUTOR, note: "缺省（board.yaml 未列 executors）" }],
+    executors: executors.length ? executors : [{ id: DEFAULT_EXECUTOR, note: EXECUTOR_FALLBACK_NOTE }],
     // 模式不手写：由数据事实派生（seats/index.yaml 存在 = 席位语义）
     mode: existsSync(join(String(root), "seats", "index.yaml")) ? "seat" : "session",
     errors,
@@ -198,6 +206,25 @@ export function artifactBasis(root) {
   const cfg = readBoardConfig(root);
   if (cfg.present && !cfg.error && cfg.repo) return cfg.repo;
   return String(root);
+}
+
+/**
+ * 板 ↔ 代码仓绑定的诊断（**写面报错与 `gd core doctor` 共用这一份判据**）。
+ *
+ * 为什么要有它（B-gm-000059）：`isRepo()` 对「路径不存在」和「存在但不是仓根」都返回 false，
+ *   而所有碰代码的命令原先只说一句「repo 不是 git 仓库」——跨机搬板的人看到这句会去查 git，
+ *   真正的原因却是 board.yaml 里那一行还是**另一台机器**的绝对路径。三态必须分开：
+ *   缺这一行 / 路径在本机不存在 / 存在但不是仓根（「读不到」≠「没有能力」）。
+ *
+ * @param {object} board `readBoardConfig` 的返回值
+ * @returns {{state:"ok"|"missing"|"absent"|"not-repo", path:string}}
+ */
+export function repoBindOf(board) {
+  const path = String(board?.repo ?? "").trim();
+  if (!path) return { state: "missing", path: "" };
+  if (!existsSync(path)) return { state: "absent", path };
+  if (!isRepo(path)) return { state: "not-repo", path };
+  return { state: "ok", path };
 }
 
 /** 解析失败时的人读报错（各命令共用一份措辞，避免各写一套） */

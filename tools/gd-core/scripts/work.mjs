@@ -23,7 +23,7 @@
  *
  * 并发隔离（C4 · 0.19.0）：**账互斥**（claim 租约）与**代码隔离**（git worktree + 串行快进合入）两件都要——
  *   只做账互斥 = 「账不冲突，但两个人同时改同一个文件，合并时互相覆盖」。
- *   ① `start`：给任务开一块独立工作区（`task/<任务id>` 分支），多会话各在各的目录里改；
+ *   ① `start`：给任务开一块独立工作区（`req/<需求id>` 分支 · 工作单元 = 执行体 × 需求），多会话各在各的目录里改；
  *   ② `submit`：把该工作区的改动**精确路径**提交，再 rebase 到基线（冲突即停 + 回滚，不动其他人的工作区）；
  *   ③ `land`：**串行**快进合入基线（`--ff-only`）——基线被抢先推进时拒绝并要求重新 submit，绝不产生合并提交。
  *
@@ -35,10 +35,10 @@ import { spawnSync } from "node:child_process";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { errOut, out } from "./lib/style.mjs";
 import { parseArgs } from "./lib/args.mjs";
-import { DEFAULT_EXECUTOR, resolveBoard } from "./lib/board-resolve.mjs";
+import { DEFAULT_EXECUTOR, gitWorktreeInfo, repoBindOf, resolveBoard } from "./lib/board-resolve.mjs";
 import { appendEvents, findTaskAnywhere, ledgerBlock, mutateTaskLedger, readReqEntries, readTaskLedger, withBoardLock, withConflictRetry, writeTaskLedger } from "./lib/board.mjs";
 import { buildCommitMessage, commitFiles, isRepo, porcelainPaths, runGit } from "./lib/gitcore.mjs"; // 0.19.0 R-gm-005：只用 git 纯操作，core 闭包不拖宿主件
-import { DEFAULT_LEASE_MINUTES, claimOf, describeClaim, isClaimExpired, makeClaim, sessionIdFromEnv } from "./lib/workclaim.mjs";
+import { DEFAULT_LEASE_MINUTES, claimBlockHints, claimOf, describeClaim, isClaimExpired, isPidSession, makeClaim, sessionIdFromEnv } from "./lib/workclaim.mjs";
 import { findUnitFor, unitOfTask, unitUnsubmitted, workUnitId } from "./lib/workunit.mjs"; // 0.41：工作单元（执行体 × 需求）
 import { applyWorkUnitMigration, planWorkUnitMigration } from "./lib/work-migrate.mjs"; // 0.41：旧 work 块 → 工作单元
 import { findExternalLinks, unlinkLink } from "./lib/work-links.mjs";
@@ -62,7 +62,7 @@ const USAGE = [
   "  gd work release <任务id> [--force] [--json]",
   "  gd work list [--json] [--all]                            # 占用清单 + 工作单元清单（默认只列还没收尾的；--all 含已完成）",
   "  gd work next [--executor <名册id>] [--claim] [--json]    # 按身份+版本线领下一个任务（--claim 一步到位）",
-  "  gd work start <任务id> [--executor <名册id>] [--base <ref>] [--worktree-dir <目录>] [--ignore-deps] [--json]   # 开隔离工作区（task/<任务id> 分支；依赖未满足会拒）",
+  "  gd work start <任务id> [--executor <名册id>] [--base <ref>] [--worktree-dir <目录>] [--ignore-deps] [--json]   # 开隔离工作区（req/<需求id> 分支；依赖未满足会拒）",
   "  gd work submit <任务id> [--message \"<提交信息>\"] [--json]                                       # 提交并 rebase 到基线",
   "  gd work land <任务id…> [--keep] [--force] [--json]                                             # 快进合入基线（多个 id = 一次板锁合多分支；--force 越过单元交件闸门，留痕）",
   "  gd work migrate [--apply] [--prune-done] [--json]                                              # 旧 work 块 → 工作单元（缺省只看计划）",
@@ -208,7 +208,9 @@ function claimCore({ board, hit, taskId, executor = null, ttl = DEFAULT_LEASE_MI
         return {
           ok: false,
           error: `任务 ${taskId} 已被 ${describeClaim(existing, { minutes: ttl })} 持有（E_CLAIMED）`,
-          hint: [`等租约过期（${ttl} 分钟无心跳即自动可抢），或让持有者 gd work release ${taskId}`],
+          // B-gm-000061：没 export GD_SESSION 时「自己撞自己」是**最常见**的 E_CLAIMED，
+          //   出路必须第一条就是「设会话号」，而不是让人干等租约。
+          hint: claimBlockHints({ taskId, holder: existing.session, session, ttl }),
         };
       }
       // 负责人：显式 --executor > 既有 executor > 板缺省 local
@@ -273,6 +275,11 @@ ${USAGE}`));
   }
   console.log(out.ok(`✅ 已认领 ${taskId}（负责人 ${next.executor} · 会话 ${session} · 租约 ${ttl} 分钟）`));
   console.log(`  ${r.fromStatus === next.status ? "续期" : `${r.fromStatus} → ${next.status}`}   # 板 ${board.id}（${board.mode} 模式）`);
+  // B-gm-000061：认领成功这一刻就把「会话退化了」说清——否则下一句 start / handoff 会撞自己的 E_CLAIMED
+  if (isPidSession(session)) {
+    console.log(out.warn(`  · 会话退化成 ${session}（这台 shell 没设 GD_SESSION）：下一条 gd 命令是**另一个进程**，会认不出你`));
+    console.log(out.dim(`    先 export GD_SESSION=<固定短名>（≤8 字符）再认领一次；已认领的用 gd work release ${taskId} --force 收回`));
+  }
   console.log(out.dim(`  · 开隔离工作区：gd work start ${taskId}   · 交还：gd work release ${taskId}`));
   return 0;
 }
@@ -324,6 +331,35 @@ function codeRepoOf(board) {
   return isRepo(repo) ? repo : null;
 }
 
+/**
+ * repo 绑定失败时的人读回显（四个调用点共用一份 —— 同一判据两个渲染层，迟早给出两个答案）。
+ *
+ * B-gm-000059：原来四处都只说「板配置的 repo 不是 git 仓库」，而这句话对**跨机搬板**的人是误导：
+ *   board.yaml 里那一行还是另一台机器的绝对路径，git 一点问题都没有。按 `repoBindOf` 的三态分岔。
+ * 指引必须可执行：每条出路都是本机真能跑的命令（手改那一行的写法按平台给全）。
+ */
+function repoBindFail(board) {
+  const r = repoBindOf(board);
+  if (r.state === "missing") {
+    // 建议值取**当前 git 顶层**，不是板根：板根是 .git/gdtwork，把它填进 repo 只会再错一次
+    const top = gitWorktreeInfo(process.cwd())?.top ?? null;
+    console.error(errOut.err("✗ 板配置没记 repo —— 板是账根、repo 是代码根，碰代码的命令必须有它"));
+    console.error("  · 在 board.yaml 里补一行（**顶格**，不是 board: 的子键）：");
+    console.error(`      repo: ${top ? top.split("\\").join("/") : "<当前代码仓根>"}   # 改成当前代码仓根`);
+    return;
+  }
+  if (r.state === "absent") {
+    console.error(errOut.err(`✗ 板配置的 repo 路径在本机不存在：${r.path}`));
+    console.error("  · 多半是换了机器 / 换了盘符：board.yaml 记的是当初 init 那台机的绝对路径");
+    console.error("  · 二选一：① 手改 board.yaml 顶格的 repo: 为当前代码仓根（Windows 写 C:/work/repo 这种正斜杠，");
+    console.error("             Linux/macOS 写 /home/me/repo；别把 POSIX 路径写进 Windows 板，反之亦然）");
+    console.error("           ② gd core init --force（旧路径失效时会自动重绑到当前仓，并在回显里说明）");
+    return;
+  }
+  console.error(errOut.err(`✗ 板配置的 repo 不是 git 仓根：${r.path}`));
+  console.error("  · 要指向「含 .git 且 git rev-parse --show-toplevel 等于自身」的目录（软链 / junction 不算）");
+}
+
 /** 工作区布局：缺省与代码仓同级（<repo>.wt/<任务id>），绝不放进仓库内部 */
 function worktreePathOf(repo, args, leaf) {
   const custom = typeof args["worktree-dir"] === "string" && args["worktree-dir"].trim() ? args["worktree-dir"].trim() : null;
@@ -355,8 +391,7 @@ function doStart(args) {
   const board = loc.board;
   const repo = codeRepoOf(board);
   if (!repo) {
-    console.error(errOut.err("✗ 板配置的 repo 不是 git 仓库：" + (board.repo ?? "（空）")));
-    console.error("  · 板是账根、repo 是代码根；先修 board.yaml 的 repo 行");
+    repoBindFail(board);
     return 1;
   }
   const base = (typeof args.base === "string" && args.base.trim()) || currentBranch(repo) || "main";
@@ -750,7 +785,7 @@ function doLand(args) {
 
   const repo = codeRepoOf(board);
   if (!repo) {
-    console.error(errOut.err("✗ 板配置的 repo 不是 git 仓库：" + (board.repo ?? "（空）")));
+    repoBindFail(board);
     return 1;
   }
   const cur = currentBranch(repo);
@@ -1006,6 +1041,8 @@ function doRelease(args) {
     const mine = existing.session === session;
     if (!mine && args.force !== true) {
       console.error(errOut.err(`✗ 任务 ${taskId} 被 ${describeClaim(existing)} 持有——非持有者交还需 --force（审计留痕）`));
+      // B-gm-000061：裸进程会话持有 ⇒ 那条占用多半是「你自己上一条命令」留下的，别再让人以为是别人
+      for (const h of claimBlockHints({ taskId, holder: existing.session, session })) console.error(`  · ${h}`);
       return 1;
     }
     const next = { ...task };
@@ -1400,7 +1437,7 @@ function doSweep(args) {
 
   const repo = codeRepoOf(board);
   if (!repo) {
-    console.error(errOut.err(`✗ 板配置的 repo 不是 git 仓库：${board.repo ?? "（空）"}`));
+    repoBindFail(board);
     return 1;
   }
   const rawDays = Number(args.days);
@@ -1593,7 +1630,7 @@ function doDeps(args) {
   }
   const repo = codeRepoOf(rb.board);
   if (!repo) {
-    console.error(errOut.err(`✗ 板配置的 repo 不是 git 仓库：${rb.board.repo ?? "（空）"}`));
+    repoBindFail(rb.board);
     return 1;
   }
   // 公共父目录 = 工作区根（缺省 <repo>.wt，所有工作区的上一级）—— 直接按仓算，不必先有工作区。
