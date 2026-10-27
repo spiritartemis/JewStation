@@ -332,7 +332,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       首次访问清晰选择；同意/拒绝/撤回可用；未同意不启动非必要个性化追踪

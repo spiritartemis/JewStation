@@ -6,4 +6,11 @@
 
 req: R-jew-1d-0
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-0-01
+    title: 实现 Cookie 同意与偏好管理（1.0-01）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
