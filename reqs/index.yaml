@@ -200,7 +200,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       每页独立 title/description、商品图 alt、规范 URL、分享预览、可被抓取
