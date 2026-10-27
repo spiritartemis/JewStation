@@ -278,3 +278,15 @@ requirements:
       服务端校验库存；孤品只售一件；并发不超卖；取消/退款按既定规则恢复或不恢复库存
     analysis: |
       （待讨论产出）
+  - id: R-jew-1c-3
+    title: 订单确认页
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      订单号、商品、金额、配送信息与后续联系说明；未确认付款不显示为已支付
+    analysis: |
+      （待讨论产出）
