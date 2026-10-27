@@ -6,4 +6,11 @@
 
 req: R-jew-1c-3
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1c-3-01
+    title: 实现订单确认页（0.3-04）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
