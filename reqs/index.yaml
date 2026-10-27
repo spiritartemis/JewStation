@@ -308,7 +308,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       结账前明确费用、目的地限制与适用税费的计算/展示来源
