@@ -42,6 +42,7 @@ tasks:
     input: |
       （待总控补充输入）
     claim: {"session":"v01night","pid":86160,"host":"Mona.local","since":"2026-10-27T15:51:38.959Z","heartbeat":"2026-10-27T15:51:45.841Z"}
+    submitted: {"at":"2026-10-27T15:52:36.336Z","head":"8443678","base":"master","committed":true,"files":1}
   - id: T-jew-1a-1-03
     title: 编写商品内容模板与样例（0.1-06）
     executor: local
