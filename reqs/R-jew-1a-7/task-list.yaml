@@ -10,7 +10,12 @@ tasks:
   - id: T-jew-1a-7-01
     title: 提交首批商品资料（0.1-11）
     executor: owner
-    status: ready
+    status: in_progress
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/11-首批商品资料采集表.md
+        kind: file
+        checksum: sha256:250753eeffa8a4562e2f870a92038ad9915e67c1ce9b67a80d863f506308cdd0
+        at: 2026-10-27T16:05:08Z
