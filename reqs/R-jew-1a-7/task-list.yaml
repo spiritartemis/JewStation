@@ -6,4 +6,11 @@
 
 req: R-jew-1a-7
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-7-01
+    title: 提交首批商品资料（0.1-11）
+    executor: owner
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
