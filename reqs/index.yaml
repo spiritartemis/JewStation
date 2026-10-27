@@ -98,3 +98,15 @@ requirements:
       按商品模板提交真实售价/库存/类型/材质/尺寸/重量/照片/标签/手工差异说明，缺项逐条补齐
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-8
+    title: 交易与售后规则确认
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      收款主体、支付意向、配送国家、运费时效、退换货、客服邮箱；取消/退款是否回补库存
+    analysis: |
+      （待讨论产出）
