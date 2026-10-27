@@ -380,7 +380,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       详情页 Similar Style、首页 You may like；首次访问新品爆款，回访且同意后个性化
