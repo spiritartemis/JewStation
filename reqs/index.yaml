@@ -50,3 +50,15 @@ requirements:
       移动优先、低饱和留白图片优先；手工款与流行款视觉差异；字体间距卡片按钮动效规范
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-4
+    title: 站点文案与合规文本
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      关于我们/FAQ/隐私/Cookie/退换货/手工瑕疵与金属过敏说明初稿，待业务与法律审核
+    analysis: |
+      （待讨论产出）
