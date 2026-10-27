@@ -80,11 +80,11 @@ const HELP = `gd-core — 会话级核心工作流（板 / 两轴账 / 认领 / 
   gd-core task add <需求id> --task "[执行体id:]标题"… [--force]
   gd-core task update <任务id> [--title|--input|--executor] [--req <需求id>]
   gd-core task delete <任务id> [--req <需求id>]
-  gd-core release new "<名称>" [--version <x.y>] [--note "…"]        开对外版本（draft；版本号缺省取下一个可用号）
+  gd-core release new "<名称>" [--version <x.y.z|x.y>] [--note "…"]   开对外版本（draft；缺省取同线 patch+1，如 0.70.5 ⇒ 0.70.6）
   gd-core release list [--json] · show <x.y> [--json]
   gd-core release add <x.y> --req <需求id>…                          收需求进版本（仅 draft；多对多，可 backport）
-  gd-core release freeze <x.y> --evidence "<回归证据>"                冻结成员（铁律：须人拍）
-  gd-core release tag <x.y> --tag <tag>                              打 tag（铁律：须人拍）
+  gd-core release freeze <版本> --evidence "<回归证据>"               冻结成员（铁律：须人拍）
+  gd-core release tag <版本> --tag <tag>                              打 tag（铁律：须人拍）
   gd-core line claim|release|list <线段> [--as <名字>]                开发线归属：claim 认领 / release 释放 / list 清单（线段 = 里程碑 id 去 m- 前缀）
   gd-core ver list [--json]
   gd-core ver reach <x.y.z> --confirm <x.y.z> [--on <YYYY-MM-DD>] [--note "…"] [--force]   结版（**存量兼容面**；铁律：须点名）

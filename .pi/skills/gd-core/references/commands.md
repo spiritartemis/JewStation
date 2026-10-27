@@ -51,10 +51,20 @@ gd-core check <任务id> --pass | --reject "原因" [--by <验收人>] [--note <
 - **有 done 无 remain ⇒ 一次到位进 `review`**（合法流转表含 `ready → review`）；交件必带 `--done`/`--remain` 至少一项，空交件拒。
 - 未派（`executor` 空）不可交件；他人持有且租约未过期 ⇒ 拒（等过期 / `work release` / `--force` 接管留痕）。
 
+## 发布轴（发版账）
+
+```bash
+gd-core release new "<名称>" [--version <x.y.z|x.y>]  # 版本线 x.y · 发版具体版本 x.y.z；缺省同线 patch+1
+gd-core release list [--json] · show <版本> [--json]  # 三态（draft / frozen / tagged）+ 成员
+gd-core release add <版本> --req <需求id>…            # 仅 draft；多对多，可 backport
+gd-core release freeze <版本> --evidence "…"          # 冻结成员（人拍）
+gd-core release tag <版本> --tag v0.70.6              # 打 tag（人拍）
+```
+
 ## 结版与版本线（存量兼容面）
 
-开发轴结版是 `gd-core milestone reach <id> --confirm <id>`；发布轴是 `gd-core release freeze|tag`（族名同 `gd`）。
-下面 `ver` 族保留**写能力**但不再扩展，也不再作为新需求的坐标：
+开发轴结版是 `gd-core milestone reach <id> --confirm <id>`。下面 `ver` 族只服务**存量子版账**：
+保留**写能力**、不再扩展，也不再作为新需求的坐标。
 
 ```bash
 gd-core ver list                                     # 子版清单：完成度（派生） + 结版态（宣告）

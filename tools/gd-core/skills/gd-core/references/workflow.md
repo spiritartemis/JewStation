@@ -7,7 +7,7 @@
 | 里程碑 | `gd-core milestone add "…" --target <YYYY-MM-DD> --alias <意涵缩写>` | 开发线的载体（卡 id 铸 `m-1a`）；`alias` 只供人读检索，不参与排序 |
 | 需求 | `gd-core req new "<标题>" --line <开发线段>` | 需求落**开发线**，id 自动 `R-<板>-<线段>-<线内序号>`（如 `R-gm-1a-0`）；**需求态由任务态派生**，不手改。`--ver <x.y>` / `--subver x.y.z` 是旧模型 / 存量口径，只给存量板用 |
 | 任务 | `gd-core task add <需求id> --task "local:<标题>"` | 底层；`local` = 板内名册的执行体（会话 / 人的手） |
-| 对外版本 | `gd-core release new/add/freeze/tag` | **发布轴账**（`releases.yaml`）：版本 ↔ 需求成员多对多（可 backport）；版本号只在这里产生，需求不挂版本号 |
+| 对外版本 | `gd-core release new/add/freeze/tag` | **发布轴账**（`releases.yaml`）：版本 ↔ 需求成员多对多（可 backport）；版本号只在这里产生（`x.y` = 版本线 / `x.y.z` = 发版的具体版本，缺省同线 patch+1），需求不挂版本号 |
 
 编号规则：新模型需求 `R-<板id>-<线段>-<线内序号>`（如 `R-gm-1a-0`）· 旧模型 `R-<板id>-<版本段>-<子版号>` · 存量 `R-<板id>-001`；缺陷 `B-<板id>-<6位>`；任务 `T-<板id>-<线段>-<线内序号>-NN`。
 

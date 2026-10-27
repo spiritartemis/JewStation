@@ -12,6 +12,9 @@ import { readReqEntries, withBoardLock } from "./board.mjs";
 import { findRelease, isReleaseVersion, nextReleaseVersion, readReleases, releasesView, validateReleases, writeReleases } from "./releases.mjs";
 import { out } from "./style.mjs";
 
+/** 版本号 → 建议 tag 名：`0.70` ⇒ `v0.70.0`；`0.70.6` ⇒ `v0.70.6`（已是三段就别再补） */
+const tagOf = (ver) => `v${String(ver ?? "").split(".").length >= 3 ? ver : `${ver}.0`}`;
+
 const ok = (lines, extra = {}) => ({ ok: true, lines, ...extra });
 const bad = (lines) => ({ ok: false, code: 1, lines });
 const asJson = (obj) => ({ ok: true, lines: [], json: obj });
@@ -22,7 +25,7 @@ export function releaseNewPlan({ board, name = "", version = "", note = "", json
     const fresh = readReleases(board.root);
     if (!fresh.ok) return bad([`✗ 发版账读取失败：${fresh.error}`]);
     const ver = String(version ?? "").trim() || nextReleaseVersion(fresh.list);
-    if (!isReleaseVersion(ver)) return bad([`✗ 版本号形态非法：${ver}（应为 x.y，如 0.70）`]);
+    if (!isReleaseVersion(ver)) return bad([`✗ 版本号形态非法：${ver}（应为 x.y 或 x.y.z，如 0.70.6）`]);
     if (findRelease(fresh.list, ver)) return bad([`✗ 版本 ${ver} 已在发版账里（不重号）`]);
     const entry = { version: ver, status: "draft", reqs: [], tag: "", evidence: "", note: String(note ?? "").trim(), created: dateStrOf() };
     const next = [...fresh.list, entry];
@@ -33,7 +36,7 @@ export function releaseNewPlan({ board, name = "", version = "", note = "", json
     return ok([
       out.ok(`✅ 已开对外版本 ${ver}（draft）${name ? ` · ${name}` : ""}`),
       out.dim("  · 收需求：gd release add " + ver + " --req <需求id>"),
-      out.dim("  · 冻结（成员锁定）→ 打 tag：gd release freeze " + ver + " --evidence \"…\" → gd release tag " + ver + " --tag v" + ver + ".0"),
+      out.dim("  · 冻结（成员锁定）→ 打 tag：gd release freeze " + ver + " --evidence \"…\" → gd release tag " + ver + " --tag " + tagOf(ver)),
     ]);
   });
 }
@@ -113,7 +116,7 @@ export function releaseFreezePlan({ board, version, evidence = "", json = false 
     if (json) return asJson({ ok: true, board: board.id, version: ver, status: "frozen" });
     return ok([
       out.ok(`✅ 版本 ${ver} 已冻结（成员 ${rec.reqs.length} 条锁定）`),
-      out.dim("  · 下一步：gd release tag " + ver + " --tag v" + ver + ".0"),
+      out.dim("  · 下一步：gd release tag " + ver + " --tag " + tagOf(ver)),
     ]);
   });
 }

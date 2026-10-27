@@ -30,8 +30,14 @@ import { parseYaml, unquoteScalar } from "./yaml.mjs";
 
 export const RELEASES_FILE = "releases.yaml";
 
-/** 对外版本号形态 `x.y` */
-export const RELEASE_VERSION_RE = /^\d+\.\d+$/;
+/** 对外版本号形态：`x.y`（**版本线**）或 `x.y.z`（对外发版的具体版本）
+ *
+ *  为什么两段三段都收（B-gm-000065）：`x.y` 是**版本线**（并行隔离 + blocker 门禁的坐标），
+ *  `x.y.z` 才是真正发出去的那个版本。旧实现只认 `x.y`，结果分包号（0.70.6）无处可登记，
+ *  只能去旧模型的子版池里造假——那是拿旧手续给新模型擦屁股。
+ *  兼容：存量 `x.y` 记录一字不动，读侧按 `x.y.0` 参与比较。
+ */
+export const RELEASE_VERSION_RE = /^\d+\.\d+(?:\.\d+)?$/;
 
 /** release 三态（人的宣告，逐级推进） */
 export const RELEASE_STATUSES = ["draft", "frozen", "tagged"];
@@ -43,10 +49,19 @@ export function isReleaseVersion(v) {
   return RELEASE_VERSION_RE.test(String(v ?? "").trim());
 }
 
-/** `x.y` → 数字对（比较 / 递增用；非形态返回 null） */
+/** `x.y` / `x.y.z` → 三段数字（不足补 0；非形态返回 null） */
 export function releaseVersionParts(v) {
-  const m = RELEASE_VERSION_RE.exec(String(v ?? "").trim());
-  return m ? String(v).trim().split(".").map(Number) : null;
+  const raw = String(v ?? "").trim();
+  if (!RELEASE_VERSION_RE.test(raw)) return null;
+  const parts = raw.split(".").map(Number);
+  while (parts.length < 3) parts.push(0);
+  return parts.slice(0, 3);
+}
+
+/** 版本线 = 前两段（`0.70.6` → `0.70`）——并行隔离与 blocker 门禁都按**线**判 */
+export function releaseLineOf(v) {
+  const p = releaseVersionParts(v);
+  return p ? `${p[0]}.${p[1]}` : "";
 }
 
 /** 版本号数值序比较（非形态按 0 处理，调用方先校验形态） */
@@ -54,7 +69,7 @@ export function compareReleaseVersion(a, b) {
   const pa = releaseVersionParts(a);
   const pb = releaseVersionParts(b);
   if (!pa || !pb) return 0;
-  return pa[0] - pb[0] || pa[1] - pb[1];
+  return pa[0] - pb[0] || pa[1] - pb[1] || pa[2] - pb[2];
 }
 
 export function releasesPathOf(boardRoot) {
@@ -110,7 +125,7 @@ export function validateReleases(list) {
   for (const r of list ?? []) {
     const version = String(r?.version ?? "").trim();
     if (!isReleaseVersion(version)) {
-      errors.push({ code: "E_R_VER", version, msg: `版本号形态非法：${version || "（空）"}（应为 x.y，如 0.70）` });
+      errors.push({ code: "E_R_VER", version, msg: `版本号形态非法：${version || "（空）"}（应为 x.y 或 x.y.z，如 0.70 / 0.70.6）` });
     } else if (seen.has(version)) {
       errors.push({ code: "E_R_DUP", version, msg: `版本号重复：${version}` });
     } else {
@@ -176,7 +191,12 @@ export function findRelease(list, version) {
   return (list ?? []).find((r) => String(r?.version ?? "") === want) ?? null;
 }
 
-/** 下一个可用版本号：既有 release 的 x.y 数值序 max + 1（无则 0.1） */
+/** 下一个可用版本号：**同线 patch + 1**（无既有 ⇒ `0.1.0`）
+ *
+ *  为什么是 patch+1 而不是 x.y+1（B-gm-000065）：`x.y` 是**对外版本线**，
+ *  一条线里可能分多次包（同一条线上连续修 / 连续发）。按 x.y+1 递增的话，每分一次包就
+ *  「新开一条线」，线语义被稀释，blocker 门禁按线判也跟着失准。
+ */
 export function nextReleaseVersion(list) {
   let best = null;
   for (const r of list ?? []) {
@@ -184,9 +204,9 @@ export function nextReleaseVersion(list) {
     if (!isReleaseVersion(v)) continue;
     if (best === null || compareReleaseVersion(v, best) > 0) best = v;
   }
-  if (best === null) return "0.1";
-  const [major, minor] = releaseVersionParts(best);
-  return `${major}.${minor + 1}`;
+  if (best === null) return "0.1.0";
+  const [major, minor, patch] = releaseVersionParts(best);
+  return `${major}.${minor}.${patch + 1}`;
 }
 
 /** 派生视图（给 CLI / 站点直接渲染） */
