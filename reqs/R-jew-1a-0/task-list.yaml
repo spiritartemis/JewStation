@@ -6,4 +6,11 @@
 
 req: R-jew-1a-0
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-0-01
+    title: 确认站点地图与导航（0.1-01）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
