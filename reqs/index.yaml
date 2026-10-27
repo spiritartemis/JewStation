@@ -326,3 +326,15 @@ requirements:
       提供并配置支付/物流/邮件服务账户、域名发件验证与安全密钥录入
     analysis: |
       （待讨论产出）
+  - id: R-jew-1d-0
+    title: Cookie 同意与偏好管理
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      首次访问清晰选择；同意/拒绝/撤回可用；未同意不启动非必要个性化追踪
+    analysis: |
+      （待讨论产出）
