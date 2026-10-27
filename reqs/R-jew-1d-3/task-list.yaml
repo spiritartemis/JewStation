@@ -6,4 +6,11 @@
 
 req: R-jew-1d-3
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-3-01
+    title: 实现标签匹配推荐 API（1.0-04）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
