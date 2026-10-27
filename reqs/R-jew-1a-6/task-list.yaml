@@ -40,4 +40,9 @@ tasks:
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/10-品牌与市场信息.md
+        kind: file
+        checksum: sha256:7c2be2dfc8fc35b75b5c90c0c901a7872eeb14b11ae2e605dfc4ed25a4e76ef8
+        at: 2026-10-27T16:04:17Z
     claim: {"session":"v01night","pid":98411,"host":"Mona.local","since":"2026-10-27T16:02:42.731Z","heartbeat":"2026-10-27T16:03:27.057Z"}
