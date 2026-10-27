@@ -10,7 +10,8 @@ tasks:
   - id: T-jew-1a-0-01
     title: 确认站点地图与导航（0.1-01）
     executor: local
-    status: ready
+    status: in_progress
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    claim: {"session":"pid-81877","pid":81877,"host":"Mona.local","since":"2026-10-27T15:46:28.543Z","heartbeat":"2026-10-27T15:46:28.543Z"}
