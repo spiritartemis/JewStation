@@ -6,4 +6,11 @@
 
 req: R-jew-1e-3
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1e-3-01
+    title: 优化转化与性能（1.1-04）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

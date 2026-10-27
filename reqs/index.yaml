@@ -488,7 +488,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       基于真实表现调整图片/导航/筛选/文案；动画轻量、避免密集弹窗
