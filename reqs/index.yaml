@@ -236,7 +236,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       可用于正式销售的实拍图与最终英文商品信息；确认价格/库存/材质声明与实物一致
