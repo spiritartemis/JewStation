@@ -6,4 +6,11 @@
 
 req: R-jew-1a-2
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-2-01
+    title: 明确孤品与可补货商品状态流转（0.1-04）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

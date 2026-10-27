@@ -32,7 +32,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       孤品库存=1；下单锁定/付款成功/取消/退款对库存的影响逐条成文
