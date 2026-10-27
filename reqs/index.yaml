@@ -146,3 +146,15 @@ requirements:
       Hero、新品、手工孤品、流行款、风格入口、初访默认推荐位、安静的订阅入口
     analysis: |
       （待讨论产出）
+  - id: R-jew-1b-2
+    title: 商品列表与筛选
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      风格/品类/材质/价格/手工属性可组合筛选；显示商品类型标记、价格、主图与售罄状态
+    analysis: |
+      （待讨论产出）
