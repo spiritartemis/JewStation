@@ -320,7 +320,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       提供并配置支付/物流/邮件服务账户、域名发件验证与安全密钥录入

@@ -6,4 +6,11 @@
 
 req: R-jew-1c-6
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1c-6-01
+    title: 使用者配置交易服务账户（0.3-07）
+    executor: owner
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
