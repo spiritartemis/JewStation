@@ -356,7 +356,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       服务端存储访客浏览商品 ID/标签/时间；不以 localStorage 为唯一方案；失败时仍可正常浏览

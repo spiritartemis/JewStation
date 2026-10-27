@@ -6,4 +6,11 @@
 
 req: R-jew-1d-2
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-2-01
+    title: 实现浏览行为持久化（1.0-03）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
