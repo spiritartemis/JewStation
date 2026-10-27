@@ -40,7 +40,7 @@ gd core init --id jew          # 建板：账落在 .git/gdtwork（不入任何�
 gd core snap --init            # 建账库：让板账本身能被 git 快照 / 备份
 gd core snap --restore-remote --dry-run    # 拉远端的账 → 先看对比，不改任何东西
 gd core snap --restore-remote --confirm <上面打印的 hash>   # 点名确认后才覆盖
-gd core init --force --id jew  # 把 board.yaml 的 repo 行改成本机路径（见「坑 2」）
+# 改 board.yaml 的 repo 行为本机路径（见「坑 2」）—— 只改这一行，别用 core init --force
 gd core status                 # 自检：板 id / 板根 / 仓库 三行都对才算好
 ```
 
@@ -101,8 +101,23 @@ gd core snap --backup
 1. **两机不能同时写账**。文件锁跨不了机器，同时写会各自数号 → 撞号。
    交接顺序固定：**写的人先 `--backup`，接手的人 `--restore-remote` 再写**。
 2. **`board.yaml` 的 `repo:` 是本机绝对路径**。还原来的账带的是上一个人机器的路径，
-   在本机不存在 → 每次还原后必须 `gd core init --force --id jew` 改回本机路径。
-   （只重写 `board.yaml`，账件一律不覆盖。）
+   在本机不存在 → 每次还原后必须把它改成本机路径。
+   ⚠️ **别用 `gd core init --force`** —— 它会**重写整个 board.yaml**，
+   而 `executors` 是硬编码只写 `local` 的 ⇒ **别人加的执行体（如 `owner`）会被静默抹掉**。
+   正确姿势：**只改 `repo:` 那一行**：
+
+   ```bash
+   # macOS / Linux
+   sed -i '' 's|^repo: .*|repo: '"$PWD"'|' "$(git rev-parse --git-common-dir)/gdtwork/board.yaml"
+   ```
+
+   ```powershell
+   # Windows PowerShell
+   $b = "$(git rev-parse --git-common-dir)/gdtwork/board.yaml"
+   (Get-Content $b) -replace '^repo: .*', "repo: $PWD" | Set-Content $b
+   ```
+
+   改完 `gd core snap` 打一笔快照（账库会自动提交这笔变更），下次 `gd core snap --backup` 推上去。
 3. **非快进 push 会被 git 直接拒**（报「远端比你新」）。出路：先 `--restore-remote` 对比再推，
    **不要强推**。
 4. **`--restore-remote` 是高危覆盖**：必须 `--confirm <hash>`；覆盖前自动存救援点
@@ -120,7 +135,7 @@ gd core snap --backup
 | 现象 | 处理 |
 |---|---|
 | `未定位到板` | 本机还没建板 → 回第 2 节跑 `gd core init --id jew` |
-| `板配置的 repo 不是 git 仓库` | `board.yaml` 的 repo 行是别机路径 → `gd core init --force --id jew` |
+| `板配置的 repo 不是 git 仓库` | `board.yaml` 的 repo 行是别机路径 → 按「坑 2」只改 `repo:` 那一行 |
 | `远端没有 ref gd-board` | 远端还没备份过账 → 跳过还原，正常开工 |
 | `远端比你新（非快进）` | 先 `gd core snap --restore-remote --dry-run` 看对比，再决定 |
 | 体检有 ✗ | `gd core doctor`（并行安全体检，`--fix` 清残留占用） |

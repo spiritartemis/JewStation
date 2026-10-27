@@ -18,6 +18,8 @@ gd-core 以 **仓内 vendored 副本** 随仓提交，**没有全局 `gd-core` �
 - **板 id 固定 `jew`** —— 它是需求编号命名空间（`R-jew-1a-0`）。换 id 会和另一台机撞号，**不要另起 id**。
 - 板账落在本机 `.git/gdtwork/`，**不入任何提交**；靠交付仓远端的一条 `gd-board` ref 接力同步。
 - 账里的 `board.yaml` 的 `repo:` 是**本机绝对路径**。
+- ⚠️ **改 `repo:` 行只改那一行**（sed），**别用 `core init --force`** —— 它重写整个 board.yaml，
+  会把别人加的 `executors`（如 `owner`）静默抹掉。
 
 ## 新机器 / 接手时（一次性，按序）
 
@@ -26,8 +28,11 @@ gd-core 以 **仓内 vendored 副本** 随仓提交，**没有全局 `gd-core` �
 ./tools/gd core snap --init            # 建账库
 ./tools/gd core snap --restore-remote --dry-run
 ./tools/gd core snap --restore-remote --confirm <hash>   # 拉别人的账
-./tools/gd core init --force --id jew  # 把 repo 行改成本机路径（漏这步后面 work start 会报错）
-./tools/gd core status                 # 自检：板 id / 板根 / 仓库 三行
+# 把 board.yaml 的 repo 行改成本机路径（漏这步后面 work start 会报错）
+# ⚠️ 只改 repo 那一行，**不要用 core init --force**（它会抹掉别人加的 executors）
+sed -i '' 's|^repo: .*|repo: '"$PWD"'|' "$(git rev-parse --git-common-dir)/gdtwork/board.yaml"
+./tools/gd core snap                    # 给这笔改动打个快照
+./tools/gd core status                  # 自检：板 id / 板根 / 仓库 三行
 ```
 
 ## 日常
