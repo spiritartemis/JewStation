@@ -164,7 +164,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       商品名与标签搜索；空结果、清空搜索与无结果提示齐备

@@ -6,4 +6,11 @@
 
 req: R-jew-1b-3
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-3-01
+    title: 实现搜索（0.2-04）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
