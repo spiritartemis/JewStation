@@ -27,7 +27,7 @@
 | 系统 | 写法 |
 |---|---|
 | Windows | `tools\gd core status` |
-| macOS / Linux | `./tools/gd core status`（若报 `Permission denied`，改用 `sh tools/gd core status`） |
+| macOS / Linux | `./tools/gd core status`（仓库里已带可执行位；若报 `Permission denied`，改用 `sh tools/gd core status`） |
 
 下面一律写作 `gd <命令>`，按上表替换前缀。
 
@@ -125,3 +125,16 @@ gd core snap --backup
 
 > 板 id 统一 `jew` · 认领用 `work claim` · 交件用 `handoff` · 验收用 `check` ·
 > 收工 `snap --backup` · 接手先 `snap --restore-remote` · 还原后 `core init --force`。
+
+---
+
+## 9. macOS 备注
+
+| 事项 | 说明 |
+|---|---|
+| 命令 | `./tools/gd <命令>`（仓里已带可执行位 755）；万一 `Permission denied` → `sh tools/gd <命令>`，或 `chmod +x tools/gd` |
+| 依赖检查 | `node -v` 要 >= 20；建议用 nvm 装 Node |
+| 列目录 | `ls`（macOS 自带），**不是** PowerShell 的 `Get-ChildItem -Force` |
+| 行尾 | macOS 默认 LF，与仓里的 `.gitattributes` 一致，脚本不会出问题 |
+| 隔离工作区 | `work start` 会在**仓库同级**建 `<仓名>.wt/`，注意给它留够磁盘空间 |
+| 首次拉账 | 仓库只带工具与 skill，**不带账**；账在远端 `gd-board` ref 上，需按第 2 节还原 |
