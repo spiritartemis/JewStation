@@ -176,7 +176,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       图片、材质/尺寸/重量/保养/过敏提示、库存与手工说明、不可复刻提示、相似风格与搭配推荐位
