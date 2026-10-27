@@ -434,3 +434,15 @@ requirements:
       用代表性设备与订单流程核对首页、筛选、搜索、孤品售罄、支付、邮件、同意拒绝追踪与推荐行为
     analysis: |
       （待讨论产出）
+  - id: R-jew-1d-9
+    title: 上线资料与业务审核
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      域名托管授权、支付/邮件/物流配置、库存盘点、英文文案与政策材质声明审核、测试收款退款配送
+    analysis: |
+      （待讨论产出）
