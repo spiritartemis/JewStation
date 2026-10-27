@@ -350,3 +350,15 @@ requirements:
       同意后分配匿名访客 ID 并用 Cookie 识别回访；有过期/撤回/删除规则
     analysis: |
       （待讨论产出）
+  - id: R-jew-1d-2
+    title: 浏览行为持久化
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      服务端存储访客浏览商品 ID/标签/时间；不以 localStorage 为唯一方案；失败时仍可正常浏览
+    analysis: |
+      （待讨论产出）
