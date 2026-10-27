@@ -41,6 +41,11 @@ tasks:
     work_unit: req/R-jew-1a-1
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/03-标签字典与分类规则.md
+        kind: file
+        checksum: sha256:dbd484825469dea0872a1dbf4a13dfa2d6879b9dfdb66cc727de8f5c66f5de9f
+        at: 2026-10-27T15:52:50Z
     claim: {"session":"v01night","pid":86160,"host":"Mona.local","since":"2026-10-27T15:51:38.959Z","heartbeat":"2026-10-27T15:51:45.841Z"}
     submitted: {"at":"2026-10-27T15:52:36.336Z","head":"8443678","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:52:43.625Z","base":"master","head":"8443678","cleanup":{"worktree":"kept","branch":"kept"}}
