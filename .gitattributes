@@ -1,0 +1,3 @@
+# 仓内工具脚本保持 LF —— autocrlf 会把 sh 的 shebang 行弄成 CRLF，Linux/macOS 上直接不可执行
+tools/gd text eol=lf
+tools/gd-core/** text eol=lf

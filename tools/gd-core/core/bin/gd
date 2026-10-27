@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+/**
+ * gd-core — core 层 CLI 自举 wrapper（分发壳体 · 0.19.0 C7 起步）
+ *
+ * 定位问题：core 层的卖点是「**只依赖会话进程与 git 工作区**」——不该要求机器上先有
+ *   `~/.gd/gdmain.yaml`、也不该要求挂在总控仓的固定路径上。
+ *
+ * 方案（三级解析 · 永不猜，照 `gd-agent/bin/gd` 同一范式）：
+ *   ① 环境变量 `GD_MAIN_LOCAL`（显式覆盖，最高优先）
+ *   ② `~/.gd/gdmain.yaml` 的 `main_local`（安装时写的一次性指针）
+ *   ③ `<本包同级上溯>/scripts/gd.mjs`（**只在开发态**：包挂在 gdMain 仓内时）
+ * 三处都解析不到 ⇒ 明确报错 + 两条修复路径，**不静默失败、不猜路径**。
+ *
+ * **安装态（0.23.0 R-gm-045）**：包被 `npm i` 进别的工程的 `node_modules/@inkwill/gd-core` 时，
+ *   ③ 那条上溯只会摸到**宿主工程**（不是我们的仓）——所以安装态下直接跳过 ③，不猜；
+ *   core 层各族的处理完全不变（自包含，不经过这一步）。
+ *
+ * 现状（0.23.0 起）：**core / work 两族 + 登账三族（milestone add / req new / task add）+ 流转两族
+ *   （handoff / check）已真·自包含**——直接由 `core/entry.mjs` 处理，其静态闭包 35 个 core 文件
+ *   （清单 `core/closure.json`，守卫 `scripts/core-closure-check.mjs`），不需要总控仓、不需要引导文件。
+ *   其余（`ver` · `milestone list/reach` · `req status/apply` · `task gen`…）仍属完整 CLI
+ *   （要处理注册项目这类宿主上下文），按下面三级解析转交。
+ */
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { dirname, join, resolve, sep } from "node:path";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+// 安装态：本包路径里带 node_modules 段（npm i 装进别的工程 / 全局装）
+const isInstalled = () => HERE.split(sep).includes("node_modules");
+
+const asCli = (root) => {
+  const p = join(root, "scripts", "gd.mjs");
+  return existsSync(p) ? p : null;
+};
+
+function resolveMainLocal() {
+  const env = process.env.GD_MAIN_LOCAL;
+  if (env && env.trim()) {
+    const hit = asCli(env.trim());
+    if (hit) return { cli: hit, via: "env" };
+  }
+  try {
+    const guide = join(homedir(), ".gd", "gdmain.yaml");
+    if (existsSync(guide)) {
+      const m = readFileSync(guide, "utf8").match(/^main_local:\s*(\S+)/m);
+      if (m && m[1]) {
+        const hit = asCli(m[1].trim());
+        if (hit) return { cli: hit, via: "guide" };
+      }
+    }
+  } catch {}
+  // ③ 包内开发态：core/bin → core → 仓根
+  //   安装态（node_modules 下）不上溯：那只会摸到宿主工程，摸到的 scripts/gd.mjs 未必是我们的仓
+  if (isInstalled()) return null;
+  let dir = resolve(HERE, "..", "..");
+  for (let i = 0; i < 4; i++) {
+    const hit = asCli(dir);
+    if (hit) return { cli: hit, via: "in-repo" };
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+// ① 自包含入口（0.19.0 R-gm-005 · 0.23.0 扩到五族 · 0.23.1 再加结版族 · 0.24.2 补 board）：core 层各族的调用一律交给 `core/entry.mjs`，不依赖总控仓。
+//   自述类调用（无参 / help / --help / -h）也走这里：`gd-core --help` 必须打 gd-core 的自述，
+//   而不是被转交给完整 CLI 打出总控帮助。
+// core 层自有的族与顶层别名（与 `core/entry.mjs` 的 FAMILIES / 别名一致）——一律交给自包含入口，
+//   不经过三级解析：安装态里也要能跑（这是「装上就能用」的全部意义）。
+const SELF_CONTAINED = new Set([
+  "core", "work",
+  "milestone", "req", "task", "handoff", "check", "ver",
+  "skill", "help", "--help", "-h", "--version", "-v", "version", undefined,
+  // `board` 是读面里的无子命令族（0.24.2 R-gm-083）：少了它，装过总控的机器会被转交给完整 CLI 去打注册项目账
+  "board",
+  // `cap` 是能力层族（0.61 R-gm-61-0）：与 milestone/req/task 同属板账实体，装过总控也要走自包含入口
+  "cap",
+]);
+const entry = join(HERE, "..", "entry.mjs");
+if (existsSync(entry) && SELF_CONTAINED.has(process.argv[2])) {
+  const r0 = spawnSync(process.execPath, [entry, ...process.argv.slice(2)], { stdio: "inherit", windowsHide: true });
+  process.exit(r0.status ?? 1);
+}
+
+const found = resolveMainLocal();
+if (!found && existsSync(entry)) {
+  // 孤立部署（没有完整 CLI）：交给入口统一说清「该命令属完整 CLI」并 exit 2
+  const r1 = spawnSync(process.execPath, [entry, ...process.argv.slice(2)], { stdio: "inherit", windowsHide: true });
+  process.exit(r1.status ?? 2);
+}
+if (!found) {
+  console.error("✗ gd-core 找不到 CLI（三级解析全未命中）：");
+  console.error("  ① 设环境变量 GD_MAIN_LOCAL=<gdMain 仓根>");
+  console.error("  ② 或先安装总控（生成 ~/.gd/gdmain.yaml）");
+  console.error(
+    isInstalled()
+      ? "  ③ 本包是 node_modules 安装态，开发态上溯（包挂在 gdMain 仓内）不适用"
+      : "  ③ 或把本包装在 gdMain 仓内（开发态上溯）",
+  );
+  process.exit(2);
+}
+const r = spawnSync(process.execPath, [found.cli, ...process.argv.slice(2)], { stdio: "inherit", windowsHide: true });
+process.exit(r.status ?? 1);

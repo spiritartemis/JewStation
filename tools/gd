@@ -1,0 +1,12 @@
+#!/bin/sh
+# gd —— JewStation 仓内的 gd-core 入口（零安装）
+#
+# 定位：gd-core 以「仓内 vendored 副本」的形式随本仓提交，协作方 pull 完即可用，
+#       不必 npm install、不必管全局包版本、不会与别的工具版本打架。
+# 用法：./tools/gd <命令> [参数]        例：./tools/gd core status
+#
+# 依赖：Node.js >= 20（node -v 自查）。
+# 说明：gd-core 按「当前目录所在的 git 工作区」定位板，所以在本仓任意子目录调用都有效。
+set -e
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec node "$here/gd-core/core/bin/gd" "$@"

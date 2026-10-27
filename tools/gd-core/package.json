@@ -1,0 +1,36 @@
+{
+  "name": "@inkwill/gd-core",
+  "version": "0.70.5",
+  "description": "gd-core — 会话级核心工作流（板 / 三层账 / 认领 / 并发隔离）；零宿主依赖，可缺席席位与工作站",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./core/README.md",
+    "./entry": "./core/entry.mjs"
+  },
+  "bin": {
+    "gd-core": "core/bin/gd"
+  },
+  "gd": {
+    "layer": "core",
+    "contractVersion": 2,
+    "sourceRoot": ".",
+    "selfContained": true,
+    "selfContainedScope": [
+      "core",
+      "work",
+      "milestone",
+      "req",
+      "task",
+      "handoff",
+      "check",
+      "ver",
+      "skill"
+    ],
+    "closure": "./core/closure.json"
+  }
+}
