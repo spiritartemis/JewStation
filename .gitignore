@@ -1,0 +1,72 @@
+# ---------- macOS ----------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ---------- 编辑器 / IDE ----------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+
+# ---------- 本地环境变量 / 密钥 ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+config.local.*
+
+# ---------- 依赖与构建产物 ----------
+node_modules/
+.pnpm-store/
+.yarn/cache/
+dist/
+build/
+out/
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# ---------- 静态站 / 框架 ----------
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+.hugo_build.lock
+public/build/
+_astro/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ---------- 日志与临时文件 ----------
+*.log
+logs/
+npm-debug.log*
+yarn-error.log*
+tmp/
+temp/
+*.tmp
+
+# ---------- WorkBuddy / 本地工具状态 ----------
+.workbuddy/
+
+# ---------- 系统垃圾 ----------
+Thumbs.db
+desktop.ini
