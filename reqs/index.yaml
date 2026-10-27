@@ -302,3 +302,15 @@ requirements:
       下单确认、付款/订单状态、发货通知；内容、发件域名与退信策略明确
     analysis: |
       （待讨论产出）
+  - id: R-jew-1c-5
+    title: 运费与税费展示规则
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      结账前明确费用、目的地限制与适用税费的计算/展示来源
+    analysis: |
+      （待讨论产出）
