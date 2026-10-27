@@ -476,7 +476,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       用点击/加购等汇总指标检查标签质量与推荐点击；规则保持简单透明

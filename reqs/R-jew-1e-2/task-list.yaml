@@ -6,4 +6,11 @@
 
 req: R-jew-1e-2
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1e-2-01
+    title: 优化标签与推荐效果（1.1-03）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
