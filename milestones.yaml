@@ -18,6 +18,7 @@ milestones:
     name: 交易模块上线并完成闭环
     target: 2026-12-04
     status: planned
+    reqs: [R-jew-1c-0]
     alias: checkout
     note: 对外版本 V0.3 · 规格 docs/gd-m1c-bootstrap.md
   - id: m-1d
