@@ -86,3 +86,15 @@ requirements:
       品牌名、Logo/视觉参考、目标国家地区、币种、语言；首页 banner 与商品图提示词与采集清单
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-7
+    title: 首批商品资料提交
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      按商品模板提交真实售价/库存/类型/材质/尺寸/重量/照片/标签/手工差异说明，缺项逐条补齐
+    analysis: |
+      （待讨论产出）
