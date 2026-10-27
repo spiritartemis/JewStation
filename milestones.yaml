@@ -4,7 +4,7 @@ milestones:
     name: 基础需求确认与基础资源制作
     target: 2026-11-06
     status: planned
-    reqs: [R-jew-1a-0, R-jew-1a-1]
+    reqs: [R-jew-1a-0, R-jew-1a-1, R-jew-1a-2]
     alias: foundation
     note: 对外版本 V0.1 · 规格 docs/gd-m1a-bootstrap.md
   - id: m-1b
