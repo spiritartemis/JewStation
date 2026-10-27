@@ -6,4 +6,18 @@
 
 req: R-jew-1a-6
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-6-01
+    title: 准备素材清单（0.1-09）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
+  - id: T-jew-1a-6-02
+    title: 确认品牌与市场信息（0.1-10）
+    executor: owner
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
