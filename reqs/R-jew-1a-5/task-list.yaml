@@ -6,4 +6,11 @@
 
 req: R-jew-1a-5
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-5-01
+    title: 决定技术与服务边界（0.1-08）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
