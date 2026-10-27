@@ -6,4 +6,11 @@
 
 req: R-jew-1a-9
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-9-01
+    title: 确认订阅及账户需求（0.1-13）
+    executor: owner
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
