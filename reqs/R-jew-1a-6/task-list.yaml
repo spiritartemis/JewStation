@@ -14,7 +14,7 @@ tasks:
     created: 2026-10-27
     input: |
       （待总控补充输入）
-    claim: {"session":"v01night","pid":96190,"host":"Mona.local","since":"2026-10-27T16:01:09.002Z","heartbeat":"2026-10-27T16:01:09.002Z"}
+    claim: {"session":"v01night","pid":96324,"host":"Mona.local","since":"2026-10-27T16:01:09.002Z","heartbeat":"2026-10-27T16:01:16.117Z"}
   - id: T-jew-1a-6-02
     title: 确认品牌与市场信息（0.1-10）
     executor: owner
