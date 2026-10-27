@@ -344,7 +344,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       同意后分配匿名访客 ID 并用 Cookie 识别回访；有过期/撤回/删除规则

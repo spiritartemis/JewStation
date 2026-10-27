@@ -6,4 +6,11 @@
 
 req: R-jew-1d-1
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-1-01
+    title: 实现匿名访客标识（1.0-02）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
