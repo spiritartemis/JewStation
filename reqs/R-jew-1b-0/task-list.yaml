@@ -6,4 +6,11 @@
 
 req: R-jew-1b-0
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-0-01
+    title: 实现全局布局与响应式导航（0.2-01）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

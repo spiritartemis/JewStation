@@ -128,7 +128,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       移动端导航、页脚、品牌样式；主流手机宽度无横向溢出
