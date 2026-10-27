@@ -218,3 +218,15 @@ requirements:
       响应式图片、非首屏延迟加载、避免重动画；首屏商品图清晰且不过度拖慢加载
     analysis: |
       （待讨论产出）
+  - id: R-jew-1b-8
+    title: 商品录入流程与首批导入
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      录入流程可重复使用、字段完整率达标、图片与库存信息与实物一致
+    analysis: |
+      （待讨论产出）
