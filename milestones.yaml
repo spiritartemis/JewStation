@@ -24,3 +24,9 @@ milestones:
     status: planned
     alias: launch
     note: 对外版本 V1.0 · 规格 docs/gd-m1d-bootstrap.md
+  - id: m-1e
+    name: 运营优化
+    target: 2026-12-31
+    status: planned
+    alias: growth
+    note: 对外版本 V1.1（滚动线） · 规格 docs/gd-m1e-bootstrap.md
