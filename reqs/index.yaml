@@ -110,3 +110,15 @@ requirements:
       收款主体、支付意向、配送国家、运费时效、退换货、客服邮箱；取消/退款是否回补库存
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-9
+    title: 订阅与账户需求确认
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      邮件服务与订阅用途、订阅内容、是否要求注册、愿望单是否跨设备同步
+    analysis: |
+      （待讨论产出）

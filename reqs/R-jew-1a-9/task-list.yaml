@@ -1,0 +1,9 @@
+# 任务账（v5）— 需求级单一事实源：任务 / 交付件（artifacts）/ 验收（review）内联
+# 规范见 entry/workflow/reqflow.md · JSON Schema：blueprint/schemas/task-list.schema.json
+# 状态机：ready → in_progress → review → done（review 打回 → in_progress · in_progress 回退 → ready）
+# 「未派 / 已派」由 executor 是否为空表达（空 = 未派，仍在待办队列）
+# 工作单元（work_units · 0.41）：一个（执行体 × 需求）一棵工作树 + 一条分支；任务用 work_unit 引用它
+
+req: R-jew-1a-9
+schema_version: 5
+tasks: []
