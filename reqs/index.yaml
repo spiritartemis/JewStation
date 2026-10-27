@@ -392,7 +392,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       邮箱校验、重复订阅处理、同意记录、退订方式；说明新品与手工孤品预告用途

@@ -6,4 +6,11 @@
 
 req: R-jew-1d-5
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-5-01
+    title: 实现邮箱订阅（1.0-06）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
