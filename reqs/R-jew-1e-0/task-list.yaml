@@ -6,4 +6,11 @@
 
 req: R-jew-1e-0
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1e-0-01
+    title: 评估愿望单账户同步（1.1-01）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
