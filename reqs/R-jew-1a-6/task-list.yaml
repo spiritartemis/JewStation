@@ -25,6 +25,11 @@ tasks:
     work_unit: req/R-jew-1a-6
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/09-素材清单.md
+        kind: file
+        checksum: sha256:08ebad8bba10886a36d5e7b55ad9df108efeb5d0ef7f905185a2e374fbe96a25
+        at: 2026-10-27T16:02:22Z
     claim: {"session":"v01night","pid":96324,"host":"Mona.local","since":"2026-10-27T16:01:09.002Z","heartbeat":"2026-10-27T16:01:16.117Z"}
     submitted: {"at":"2026-10-27T16:02:08.053Z","head":"0930aa1","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T16:02:15.414Z","base":"master","head":"0930aa1","cleanup":{"worktree":"kept","branch":"kept"}}
