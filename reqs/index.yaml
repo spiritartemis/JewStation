@@ -440,7 +440,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       域名托管授权、支付/邮件/物流配置、库存盘点、英文文案与政策材质声明审核、测试收款退款配送
