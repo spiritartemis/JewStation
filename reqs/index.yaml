@@ -272,7 +272,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       服务端校验库存；孤品只售一件；并发不超卖；取消/退款按既定规则恢复或不恢复库存
