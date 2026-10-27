@@ -6,4 +6,11 @@
 
 req: R-jew-1a-8
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-8-01
+    title: 确认交易与售后规则（0.1-12）
+    executor: owner
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

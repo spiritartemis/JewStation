@@ -104,7 +104,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       收款主体、支付意向、配送国家、运费时效、退换货、客服邮箱；取消/退款是否回补库存
