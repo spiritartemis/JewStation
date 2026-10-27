@@ -338,3 +338,15 @@ requirements:
       首次访问清晰选择；同意/拒绝/撤回可用；未同意不启动非必要个性化追踪
     analysis: |
       （待讨论产出）
+  - id: R-jew-1d-1
+    title: 匿名访客标识
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      同意后分配匿名访客 ID 并用 Cookie 识别回访；有过期/撤回/删除规则
+    analysis: |
+      （待讨论产出）
