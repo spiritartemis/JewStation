@@ -14,3 +14,15 @@ requirements:
       全站页面清单、导航与页脚链接一次性冻结
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-1
+    title: 商品数据模型与标签字典
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      商品字段定义 + 四类标签标准命名与维护规则 + 英文内容模板样例
+    analysis: |
+      （待讨论产出）
