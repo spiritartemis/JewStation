@@ -1,2 +1,8 @@
-# gd 里程碑账（板级 · 三层 workflow 顶层）——写法见 docs/gd-core-session-workflow-design.md §7；用 `gd milestone` 维护
-milestones: []
+# gd 里程碑账（项目级）—— 写法见 docs/gd-entry-page-design.md §11；用 `gd milestone` 维护，勿手改格式
+milestones:
+  - id: m-1a
+    name: 基础需求确认与基础资源制作
+    target: 2026-11-06
+    status: planned
+    alias: foundation
+    note: 对外版本 V0.1 · 规格 docs/gd-m1a-bootstrap.md
