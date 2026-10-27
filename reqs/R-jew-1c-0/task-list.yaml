@@ -6,4 +6,11 @@
 
 req: R-jew-1c-0
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1c-0-01
+    title: 实现购物车（0.3-01）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

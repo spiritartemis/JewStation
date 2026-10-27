@@ -248,7 +248,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       添加/移除/数量调整/小计；库存变化后重新校验；刷新后恢复策略明确
