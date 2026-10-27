@@ -6,4 +6,11 @@
 
 req: R-jew-1a-3
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-3-01
+    title: 产出低保真页面结构和视觉规范（0.1-05）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
