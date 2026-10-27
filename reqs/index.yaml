@@ -182,3 +182,15 @@ requirements:
       图片、材质/尺寸/重量/保养/过敏提示、库存与手工说明、不可复刻提示、相似风格与搭配推荐位
     analysis: |
       （待讨论产出）
+  - id: R-jew-1b-5
+    title: 品牌 FAQ 与政策页面
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      文案可维护、页内链接正确，上线前由业务方复核
+    analysis: |
+      （待讨论产出）
