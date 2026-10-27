@@ -6,12 +6,23 @@
 
 req: R-jew-1a-6
 schema_version: 5
+work_units:
+  - id: req/R-jew-1a-6
+    executor: local
+    branch: req/R-jew-1a-6
+    path: /Users/whisper/ChatGpt/JewStation.wt/R-jew-1a-6
+    base: master
+    repo: /Users/whisper/ChatGpt/JewStation
+    started: 2026-10-27T16:01:16.756Z
+    session: v01night
+    tasks: [T-jew-1a-6-01]
 tasks:
   - id: T-jew-1a-6-01
     title: 准备素材清单（0.1-09）
     executor: local
     status: in_progress
     created: 2026-10-27
+    work_unit: req/R-jew-1a-6
     input: |
       （待总控补充输入）
     claim: {"session":"v01night","pid":96324,"host":"Mona.local","since":"2026-10-27T16:01:09.002Z","heartbeat":"2026-10-27T16:01:16.117Z"}
