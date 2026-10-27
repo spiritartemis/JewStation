@@ -62,3 +62,15 @@ requirements:
       关于我们/FAQ/隐私/Cookie/退换货/手工瑕疵与金属过敏说明初稿，待业务与法律审核
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-5
+    title: 技术与服务边界决策
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      前端/API/数据库/商品管理/托管/支付/物流/邮件选型 + 环境与密钥管理方案
+    analysis: |
+      （待讨论产出）
