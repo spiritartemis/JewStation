@@ -416,7 +416,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       域名/SSL/托管/支付收款/物流/真实商品图/库存/英文校对/政策审核/监控备份告警逐项有主

@@ -6,4 +6,11 @@
 
 req: R-jew-1d-7
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1d-7-01
+    title: 完成上线前审核与发布准备（1.0-08）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
