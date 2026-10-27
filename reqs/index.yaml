@@ -290,3 +290,15 @@ requirements:
       订单号、商品、金额、配送信息与后续联系说明；未确认付款不显示为已支付
     analysis: |
       （待讨论产出）
+  - id: R-jew-1c-4
+    title: 交易邮件模板
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      下单确认、付款/订单状态、发货通知；内容、发件域名与退信策略明确
+    analysis: |
+      （待讨论产出）
