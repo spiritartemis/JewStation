@@ -55,16 +55,21 @@ gd brief                       # ① 看进度：坐标 / 鸟瞰 / 下一步 / �
 gd work next --claim           # ② 领活（认领带 15 分钟租约）
 gd work start <任务id>         #    开隔离工作区（自动建分支 + worktree）
 #    …… 在工作区里改代码、提交 ……
-gd work submit <任务id> --message "<提交说明>"   #    交件
-gd work land <任务id>          #    合回主线
-gd handoff <任务id> --done "<做成了什么>"        # ③ 交件给验收人
-gd check <任务id> --pass --note "<结论>"         #    验收
+gd work submit <任务id> --message "<提交说明>"   #    提交 + rebase
+gd work land <任务id> --keep   #    合入基线（--keep：保留工作区与分支）
+cd <工作区路径>                #    ⚠ 必须回到工作区（工作区的分支 = 工作单元分支）
+gd handoff <任务id> --done "<做成了什么>" --artifact <件>   # ③ 交件 → review
+gd check <任务id> --pass --note "<结论>"                   #    验收 → done
 ```
 
 命令全集：`gd --help`；工作方法细则读 `.pi/skills/gd-core/SKILL.md`。
 
+> **两个容易踩的点**：
+> 1. `land` 要带 `--keep`。不带的话它会**回收工作区并删掉分支**，之后 `handoff` 会被分支闸门拦（报「当前在分支 master，但 … 的工作单元是 req/…」）。
+> 2. `handoff` **必须在工作区里跑**（cwd 的分支 = 工作单元分支）。在主仓跑会被同一道闸门拦。
+>
 > `work start` 会在**代码仓同级**建 `<仓名>.wt/<单元id>/` 隔离工作区（不进仓、不污染主线），
-> 改完 `work submit` 再 `work land` 合回主线。
+> 改完 `work submit` 再 `work land --keep` 合回主线；`handoff` + `check` 走完后，工作区可用 `gd work sweep` 收掉。
 
 ---
 
@@ -105,6 +110,8 @@ gd core snap --backup
 5. **`tools/gd-core/` 是 vendored 副本**，升级由仓主统一重新装配覆盖；**别手改里面文件**，
    也别对它 `npm i`（`core/` 单独装是坏包）。
 6. **需求 id 以命令实际输出为准**，别照抄文档里的示例号。
+7. **`handoff` 有分支闸门**：`land` 不带 `--keep` 会删掉工作单元分支、`handoff` 在主仓跑也会被拦 ——
+   正确姿势是 `land --keep` → `cd` 回工作区 → `handoff`。详见第 3 节。
 
 ---
 
