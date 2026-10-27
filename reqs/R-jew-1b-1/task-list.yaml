@@ -6,4 +6,11 @@
 
 req: R-jew-1b-1
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-1-01
+    title: 实现首页（0.2-02）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

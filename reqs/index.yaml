@@ -140,7 +140,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       Hero、新品、手工孤品、流行款、风格入口、初访默认推荐位、安静的订阅入口
