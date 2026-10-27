@@ -6,4 +6,11 @@
 
 req: R-jew-1a-4
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1a-4-01
+    title: 起草站点文案与合规文本（0.1-07）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
