@@ -26,3 +26,15 @@ requirements:
       商品字段定义 + 四类标签标准命名与维护规则 + 英文内容模板样例
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-2
+    title: 孤品与库存状态流转规则
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      孤品库存=1；下单锁定/付款成功/取消/退款对库存的影响逐条成文
+    analysis: |
+      （待讨论产出）
