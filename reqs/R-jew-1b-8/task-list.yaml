@@ -6,4 +6,11 @@
 
 req: R-jew-1b-8
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-8-01
+    title: 建立商品录入流程并导入首批商品（0.2-09）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）

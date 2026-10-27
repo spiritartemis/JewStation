@@ -224,7 +224,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       录入流程可重复使用、字段完整率达标、图片与库存信息与实物一致
