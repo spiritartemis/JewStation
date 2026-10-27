@@ -6,4 +6,11 @@
 
 req: R-jew-1b-2
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-2-01
+    title: 实现商品列表与商品卡片（0.2-03）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
