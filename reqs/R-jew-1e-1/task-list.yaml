@@ -6,4 +6,11 @@
 
 req: R-jew-1e-1
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1e-1-01
+    title: 发布博客内容（1.1-02）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
