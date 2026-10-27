@@ -59,7 +59,20 @@ cd <工作区路径>                        # 必须在工作区里交件
 4. **结版 / 开里程碑这类对外宣告由人拍板**，AI 只能问不能替人决定。
 5. **需求 / 任务 / 里程碑 id 一律照命令输出抄**，不要自己拼。
 
-## 更多细节
+## 排障
 
-`GD-CORE.md`（一页上手 + 排障表 + macOS 备注）。
+| 现象 | 处理 |
+|---|---|
+| `未定位到板` | 本机还没建板 → 跑上面「新机器 / 接手时」那段 |
+| `板配置的 repo 不是 git 仓库` | `board.yaml` 的 repo 行是别机路径 → 只改那一行（见上） |
+| `远端没有 ref gd-board` | 远端还没备份过账 → 跳过还原，正常开工 |
+| `远端比你新（非快进）` | 先 `core snap --restore-remote --dry-run` 看对比再决定，**不要强推** |
+| `E_CLAIMED`（他人持有） | 等租约过期（15 分钟无心跳可抢）· 或让持有者 `core snap` 前的 `work release` |
+| 体检有 ✗ | `./tools/gd core doctor`（并行安全体检，`--fix` 清残留占用） |
+| `core 面不认识 --xxx` | 该命令属完整 CLI（app 面）→ 找仓主，不要绕 |
+
+更细的报错对照：`.pi/skills/gd-core/references/errors.md`。
+
+## 方法
+
 工作方法（AI 按需加载）：`.pi/skills/gd-core/`、`.pi/skills/gd-qa/`。
