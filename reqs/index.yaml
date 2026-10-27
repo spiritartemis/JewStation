@@ -260,7 +260,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       支持约定市场/币种/地址/支付方式；处理成功、失败、取消与重复回调

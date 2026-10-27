@@ -6,4 +6,11 @@
 
 req: R-jew-1c-1
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1c-1-01
+    title: 实现结账与支付接入（0.3-02）
+    executor: local
+    status: ready
+    created: 2026-10-27
+    input: |
+      （待总控补充输入）
