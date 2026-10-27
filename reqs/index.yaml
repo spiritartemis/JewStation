@@ -212,7 +212,7 @@ requirements:
     initiator: 用户
     created: 2026-10-27
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     summary: |
       响应式图片、非首屏延迟加载、避免重动画；首屏商品图清晰且不过度拖慢加载
