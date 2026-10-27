@@ -25,6 +25,11 @@ tasks:
     work_unit: req/R-jew-1a-0
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/spec/01-站点地图与导航.md
+        kind: file
+        checksum: sha256:04d8379786dfb95c6070bccbafaa2d1424bee82397209afe481bec0951c61b9a
+        at: 2026-10-27T15:49:39Z
     claim: {"session":"v01night","pid":82780,"host":"Mona.local","since":"2026-10-27T15:48:02.436Z","heartbeat":"2026-10-27T15:48:09.215Z"}
     submitted: {"at":"2026-10-27T15:48:59.971Z","head":"5f74e45","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:49:06.832Z","base":"master","head":"5f74e45","cleanup":{"worktree":"kept","branch":"kept"}}
