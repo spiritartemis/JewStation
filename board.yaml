@@ -1,0 +1,9 @@
+# 板配置（gd core · 0.19.0）——用 `gd core` / `gd milestone` 维护，勿手改格式
+# 口径：docs/gd-core-session-workflow-design.md §3；板根缺省 = <git-common-dir>/gdtwork（worktree 共享、不入提交）
+schema: 1
+board:
+  id: jew                      # 编号命名空间：R-jew-001 / T-jew-001-01
+  name: JewStation
+repo: C:/Users/inkse/JewStation                    # 板实绑定：交付件路径基准（板根 ≠ 代码根时以本行为准）
+executors:                       # core 极简名册（app 注册 producer / 席位后自动扩充）
+  - id: local             # 缺省执行体：本机会话 / 人的手
