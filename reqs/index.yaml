@@ -470,3 +470,15 @@ requirements:
       保养/搭配思路/手工故事主题；文章有 SEO 元数据与内链
     analysis: |
       （待讨论产出）
+  - id: R-jew-1e-2
+    title: 标签与推荐调优
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      用点击/加购等汇总指标检查标签质量与推荐点击；规则保持简单透明
+    analysis: |
+      （待讨论产出）
