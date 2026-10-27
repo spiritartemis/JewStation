@@ -458,3 +458,15 @@ requirements:
       依登录需求与转化数据决定是否接入账户体系；接入则明确数据合并与隐私流程
     analysis: |
       （待讨论产出）
+  - id: R-jew-1e-1
+    title: 博客内容发布
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      保养/搭配思路/手工故事主题；文章有 SEO 元数据与内链
+    analysis: |
+      （待讨论产出）
