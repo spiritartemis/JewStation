@@ -58,3 +58,4 @@ tasks:
     input: |
       （待总控补充输入）
     claim: {"session":"v01night","pid":91193,"host":"Mona.local","since":"2026-10-27T15:56:25.395Z","heartbeat":"2026-10-27T15:56:32.159Z"}
+    submitted: {"at":"2026-10-27T15:57:20.144Z","head":"5c8559a","base":"master","committed":true,"files":1}

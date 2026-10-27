@@ -14,3 +14,4 @@
 {"seq":14,"at":"2026-10-27T15:52:50Z","actor":"local","kind":"deliver","task":"T-jew-1a-1-02","state":"1 件","req":"R-jew-1a-1","artifacts":[{"path":"docs/spec/03-标签字典与分类规则.md","checksum":"sha256:dbd484825469dea0872a1dbf4a13dfa2d6879b9dfdb66cc727de8f5c66f5de9f"}]}
 {"seq":15,"at":"2026-10-27T15:56:25Z","actor":"local","kind":"claim","task":"T-jew-1a-1-03","to":"local","state":"working","text":"会话 v01night 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-1a-1"}
 {"seq":16,"at":"2026-10-27T15:56:32Z","actor":"local","kind":"claim","task":"T-jew-1a-1-03","to":"local","state":"working","text":"会话 v01night 认领（租约 15 分钟 · 续期）","req":"R-jew-1a-1"}
+{"seq":17,"at":"2026-10-27T15:56:33Z","actor":"local","kind":"progress","task":"T-jew-1a-1-03","state":"working","text":"接着用工作区：req/R-jew-1a-1 @ /Users/whisper/ChatGpt/JewStation.wt/R-jew-1a-1（基线 master）","req":"R-jew-1a-1"}
