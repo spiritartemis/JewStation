@@ -38,3 +38,15 @@ requirements:
       孤品库存=1；下单锁定/付款成功/取消/退款对库存的影响逐条成文
     analysis: |
       （待讨论产出）
+  - id: R-jew-1a-3
+    title: 低保真结构与视觉规范
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      移动优先、低饱和留白图片优先；手工款与流行款视觉差异；字体间距卡片按钮动效规范
+    analysis: |
+      （待讨论产出）
