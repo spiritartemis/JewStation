@@ -15,3 +15,4 @@
 {"seq":15,"at":"2026-10-27T15:56:25Z","actor":"local","kind":"claim","task":"T-jew-1a-1-03","to":"local","state":"working","text":"会话 v01night 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-1a-1"}
 {"seq":16,"at":"2026-10-27T15:56:32Z","actor":"local","kind":"claim","task":"T-jew-1a-1-03","to":"local","state":"working","text":"会话 v01night 认领（租约 15 分钟 · 续期）","req":"R-jew-1a-1"}
 {"seq":17,"at":"2026-10-27T15:56:33Z","actor":"local","kind":"progress","task":"T-jew-1a-1-03","state":"working","text":"接着用工作区：req/R-jew-1a-1 @ /Users/whisper/ChatGpt/JewStation.wt/R-jew-1a-1（基线 master）","req":"R-jew-1a-1"}
+{"seq":18,"at":"2026-10-27T15:57:20Z","actor":"local","kind":"progress","task":"T-jew-1a-1-03","state":"working","text":"submit：提交 ae7b374 · rebase 到 master · head 5c8559a","req":"R-jew-1a-1"}
