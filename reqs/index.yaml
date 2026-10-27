@@ -374,3 +374,15 @@ requirements:
       按近期浏览标签推荐；排除当前商品/售罄孤品/不可售商品；无历史回退新品爆款
     analysis: |
       （待讨论产出）
+  - id: R-jew-1d-4
+    title: 推荐位接入
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      详情页 Similar Style、首页 You may like；首次访问新品爆款，回访且同意后个性化
+    analysis: |
+      （待讨论产出）
