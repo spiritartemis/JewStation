@@ -11,7 +11,7 @@ milestones:
     name: 可浏览各个页面及其商店
     target: 2026-11-20
     status: planned
-    reqs: [R-jew-1b-0, R-jew-1b-1, R-jew-1b-2, R-jew-1b-3, R-jew-1b-4, R-jew-1b-5, R-jew-1b-6]
+    reqs: [R-jew-1b-0, R-jew-1b-1, R-jew-1b-2, R-jew-1b-3, R-jew-1b-4, R-jew-1b-5, R-jew-1b-6, R-jew-1b-7]
     alias: storefront
     note: 对外版本 V0.2 · 规格 docs/gd-m1b-bootstrap.md
   - id: m-1c
