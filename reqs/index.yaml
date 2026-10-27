@@ -1,3 +1,16 @@
-# 需求索引（板级单一事实源）——序号锁内自增，勿手改
+# 需求索引 — 本项目需求单一事实源（总控维护）
+# 需求级信息（title / summary / analysis / status / revision）一律在此；reqs/<id>/ 下只有 task-list.yaml
 next_req_no: 1
-requirements: []
+requirements:
+  - id: R-jew-1a-0
+    title: 站点地图与导航确认
+    status: ready
+    initiator: 用户
+    created: 2026-10-27
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      全站页面清单、导航与页脚链接一次性冻结
+    analysis: |
+      （待讨论产出）
