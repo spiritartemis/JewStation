@@ -4,7 +4,7 @@
  */
 export function NewsletterSlot() {
   return (
-    <section className="mt-sp6 border-t border-line">
+    <section className="mt-sp6 border-t border-line bg-band">
       <div className="shell py-sp6">
         <p className="text-aux uppercase tracking-[0.16em] text-muted">Join our list</p>
         <div className="mt-sp3 flex max-w-[420px] items-center gap-sp2">

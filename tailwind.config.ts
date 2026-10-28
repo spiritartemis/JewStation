@@ -2,22 +2,43 @@ import type { Config } from "tailwindcss";
 
 /**
  * Token 来源：docs/spec/05-低保真结构与视觉规范.md §3
+ * 色系：莫兰迪（低饱和 + 灰调），色板明细见 docs/视觉规范-莫兰迪色板.md
  * 强调色为暂定值，待站长提供 Logo/视觉参考后校准（Q-14）。
+ *
+ * 对比度：ink #35322E / accent #5F6F69 与底色（bg、Weak 系列）均 ≥ 4.5:1（WCAG AA）。
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        bg: "#FBFAF8",
-        surface: "#FFFFFF",
-        ink: "#1F1D1B",
-        muted: "#6B6560",
-        line: "#E8E4DF",
-        accent: "#8A7A63",
-        accentWeak: "#F0EBE4",
-        sold: "#9A948C",
-        warn: "#9A6B4F",
+        // 中性基底（雾米白 / 瓷白 / 雾色带）
+        bg: "#F3F0EC",
+        surface: "#FBF9F6",
+        band: "#EDE8E1",
+        ink: "#35322E",
+        muted: "#7C746A",
+        line: "#DED8D0",
+        // 主强调：莫兰迪雾青（CTA、选中态、角标）
+        accent: "#5F6F69",
+        accentWeak: "#E6E7E1",
+        sold: "#948B81",
+        warn: "#A0705C",
+        // 莫兰迪五色相（块面用 Weak，描边/点缀用主色）
+        mist: "#A7B2B8",
+        mistWeak: "#E2E6E8",
+        sage: "#A9B3A6",
+        sageWeak: "#E5E8E0",
+        clay: "#C0A79C",
+        clayWeak: "#EEE5DF",
+        sand: "#CFC5B6",
+        sandWeak: "#F0EAE2",
+        mauve: "#A7989F",
+        mauveWeak: "#EAE4E7",
+      },
+      backgroundImage: {
+        // Hero 底：雾青 → 沙米的莫兰迪渐变（无实拍图时即为正式视觉）
+        hero: "linear-gradient(155deg, #E2E5E1 0%, #E9E2D9 48%, #DAD2CA 100%)",
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],

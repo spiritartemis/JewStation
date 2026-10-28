@@ -17,9 +17,9 @@ export const SITE = {
   currency: "USD",
   supportEmail: "hello@example.com",
   /** 站点版本（随每次发布递增） */
-  version: "0.2.0-m1b",
+  version: "0.2.1-m1b",
   /** 最近更新时间（随每次发布同步） */
-  updatedAt: "2026-10-27",
+  updatedAt: "2026-10-28",
 } as const;
 
 export type NavItem = { label: string; href: string };

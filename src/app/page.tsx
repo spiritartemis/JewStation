@@ -33,12 +33,14 @@ export default function HomePage() {
       <Hero />
 
       <ProductRail title="New arrivals" products={newArrivals} href="/collections/new" />
+      {/* 手工孤品 = 暖陶色，流行款 = 冷雾蓝：色相即品类信号（B-1.7） */}
       <ProductRail
         title="One of a Kind"
         products={oneOfAKind}
         href="/collections/one-of-a-kind"
+        tone="clay"
       />
-      <ProductRail title="Trending" products={trending} href="/collections/restockable" />
+      <ProductRail title="Trending" products={trending} href="/collections/restockable" tone="mist" />
       <StyleGrid />
       {/* 初访默认推荐位：无历史时回退新品（03 §7 兜底策略） */}
       <ProductRail title="You may like" products={newArrivals.slice(0, 6)} />
