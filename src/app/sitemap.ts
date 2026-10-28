@@ -20,7 +20,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...CATEGORY_TAGS.map((t) => t.slug),
     ...STYLE_TAGS.map((t) => t.slug),
     ...MATERIAL_TAGS.map((t) => t.slug),
+    // 两个特殊集合原先漏了：新品与手工作品是首页直接链过去的落地页
+    "new",
     "one-of-a-kind",
+    "restockable",
   ];
 
   const collections = collectionSlugs.map((slug) => ({

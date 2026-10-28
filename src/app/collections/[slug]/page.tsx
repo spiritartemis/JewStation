@@ -12,6 +12,9 @@ import {
 } from "@/lib/filters";
 import { getFilteredProducts, getProductsByCollection } from "@/lib/products";
 import { tagLabel, isKnownCollection } from "@/lib/tags";
+import { JsonLdScript } from "@/components/JsonLd";
+import { buildMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 /** 集合页 slug = 标签 slug（03 §6.6），与列表页共用网格与筛选口径 */
 const SPECIAL = new Set(["new", "one-of-a-kind", "one_of_a_kind", "restockable"]);
@@ -44,6 +47,15 @@ export default async function CollectionPage({
 
   return (
     <div className="pb-sp6">
+      {/* 集合页层级：Home / Shop / 集合名 */}
+      <JsonLdScript
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Shop", path: "/shop" },
+          { name: titleOf(slug), path: basePath },
+        ])}
+      />
+
       <div className="shell pt-sp5">
         <div className="flex items-end justify-between gap-sp4">
           <div>
@@ -90,5 +102,12 @@ export default async function CollectionPage({
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return { title: titleOf(slug) };
+  const name = titleOf(slug);
+
+  // 原先只返回 title，集合页没有 canonical 与 OG——B-2.9 要求每页规范 URL 与分享预览
+  return buildMetadata({
+    title: name,
+    description: `${name} — browse ${name.toLowerCase()} jewellery. Filter by category, style, material, price and type.`,
+    path: `/collections/${slug}`,
+  });
 }

@@ -20,12 +20,17 @@ export function buildMetadata({
   description,
   path,
   noindex = false,
+  image,
 }: {
   title: string;
   description: string;
   path: string;
   noindex?: boolean;
+  /** 分享图；品牌素材到位后传绝对路径。为空时不输出 og:image，不拿占位图顶替 */
+  image?: string;
 }): Metadata {
+  const imageUrl = image ? absoluteUrl(image) : undefined;
+
   return {
     title,
     description,
@@ -37,8 +42,14 @@ export function buildMetadata({
       siteName: SITE.brandName,
       locale: SITE.locale,
       type: "website",
+      ...(imageUrl ? { images: [{ url: imageUrl }] } : {}),
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(imageUrl ? { images: [imageUrl] } : {}),
+    },
     robots: noindex ? { index: false, follow: true } : undefined,
   };
 }
