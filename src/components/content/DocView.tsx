@@ -9,7 +9,7 @@ export function DocView({ doc }: { doc: Doc }) {
     <article className="shell max-w-[68ch] py-sp6">
       <h1 className="font-serif text-h1 text-ink">{doc.title}</h1>
 
-      {doc.status === "pending_review" ? (
+      {doc.status !== "approved" ? (
         <p className="mt-sp3 rounded-btn border border-warn/40 bg-warn/5 px-sp3 py-sp2 text-aux text-warn">
           Draft — pending business/legal review. Not for publication until approved.
         </p>

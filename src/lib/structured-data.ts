@@ -87,3 +87,25 @@ export function productJsonLd(p: Product): JsonLd {
     },
   };
 }
+
+/**
+ * FAQ 级：FAQPage（B-2.9 的延伸）
+ *
+ * 只把**已确定的答案**提交给搜索引擎：带【待确认】的条目在确认前不进结构化数据，
+ * 否则等于把尚未定稿的口径当作正式答案发布出去。
+ */
+export function faqJsonLd(
+  items: { question: string; answer: string; pending?: string }[],
+): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items
+      .filter((i) => !i.pending)
+      .map((i) => ({
+        "@type": "Question",
+        name: i.question,
+        acceptedAnswer: { "@type": "Answer", text: i.answer },
+      })),
+  };
+}
