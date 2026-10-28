@@ -1,10 +1,12 @@
 import { Hero } from "@/components/home/Hero";
+import { JsonLdScript } from "@/components/JsonLd";
 import { buildMetadata } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 import { ProductRail } from "@/components/home/ProductRail";
 import { StyleGrid } from "@/components/home/StyleGrid";
 import { NewsletterSlot } from "@/components/home/NewsletterSlot";
 import { getNewArrivals, getOneOfAKind, getTrending } from "@/lib/products";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 
 /**
  * 首页（B-2.2 区块顺序固定）：
@@ -25,7 +27,11 @@ export default function HomePage() {
 
   return (
     <>
+      {/* 站点级结构化数据：让搜索引擎拿到站点名与站内搜索入口 */}
+      <JsonLdScript data={[websiteJsonLd(), organizationJsonLd()]} />
+
       <Hero />
+
       <ProductRail title="New arrivals" products={newArrivals} href="/collections/new" />
       <ProductRail
         title="One of a Kind"

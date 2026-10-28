@@ -9,6 +9,22 @@ import type { Doc } from "./types";
  * 带【待确认】的句子必须由站长给出答案后回填。
  */
 
+/**
+ * 首页 Hero 文案（B-2.2 第一区块）
+ * 文案放内容源而非组件（B-2.8）；图片素材属站长（Q-16 / Q-53），未到位前只渲染占位。
+ */
+export const HOME_HERO = {
+  headline: "Made by hand, worn every day",
+  subline: "Small-batch jewellery — one-of-a-kind pieces and limited runs.",
+  ctaLabel: "Shop new",
+  ctaHref: "/collections/new",
+  /** 主图为空时的占位说明，不得替换为 AI 生成图（m-1b bootstrap §5） */
+  imagePendingNote: "Hero photo pending",
+  /** 图片就位后填 /public 下的路径；为空则渲染占位块 */
+  imageUrl: "",
+  imageAlt: "",
+} as const;
+
 export const ABOUT: Doc = {
   slug: "about",
   title: "About",
