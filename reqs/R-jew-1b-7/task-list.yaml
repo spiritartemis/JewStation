@@ -10,7 +10,8 @@ tasks:
   - id: T-jew-1b-7-01
     title: 加入图片与性能基线（0.2-08）
     executor: local
-    status: ready
+    status: in_progress
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    claim: {"session":"v01night","pid":23787,"host":"Mona.local","since":"2026-10-28T14:17:10.753Z","heartbeat":"2026-10-28T14:17:10.753Z"}
