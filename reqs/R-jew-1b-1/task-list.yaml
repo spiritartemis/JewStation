@@ -19,8 +19,9 @@ tasks:
   - id: T-jew-1b-1-01
     title: 实现首页（0.2-02）
     executor: local
-    status: ready
+    status: in_progress
     created: 2026-10-27
     work_unit: req/R-jew-1b-1
     input: |
       （待总控补充输入）
+    claim: {"session":"v01night","pid":11654,"host":"Mona.local","since":"2026-10-28T13:38:45.941Z","heartbeat":"2026-10-28T13:38:45.941Z"}
