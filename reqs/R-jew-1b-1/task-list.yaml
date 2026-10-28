@@ -11,10 +11,11 @@ work_units:
     executor: local
     branch: req/R-jew-1b-1
     path: /Users/whisper/ChatGpt/JewStation.wt/R-jew-1b-0/R-jew-1b-1
-    base: master
+    base: req/R-jew-1b-0
     repo: /Users/whisper/ChatGpt/JewStation
     started: 2026-10-28T03:18:34.890Z
     session: v01night
+    tasks: [T-jew-1b-1-01]
 tasks:
   - id: T-jew-1b-1-01
     title: 实现首页（0.2-02）
