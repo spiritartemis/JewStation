@@ -25,5 +25,10 @@ tasks:
     work_unit: req/R-jew-1b-9
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: docs/真实商品素材交付与审核清单.md
+        kind: file
+        checksum: sha256:6049bce645293c37ba39a9068fea00be09015c0543fb93838171d7ef1cc556d8
+        at: 2026-10-28T14:25:05Z
     claim: {"session":"v01night","pid":26901,"host":"Mona.local","since":"2026-10-28T14:23:35.141Z","heartbeat":"2026-10-28T14:24:01.595Z"}
     submitted: {"at":"2026-10-28T14:24:47.621Z","head":"c0618e3","base":"req/R-jew-1b-8","committed":true,"files":2}
