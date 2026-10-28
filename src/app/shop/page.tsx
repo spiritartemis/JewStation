@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { FilterControls } from "@/components/product/FilterControls";
+import { ActiveFilters } from "@/components/product/ActiveFilters";
+import { SortSelect } from "@/components/product/SortSelect";
 import { ProductGrid, ProductGridEmpty } from "@/components/product/ProductGrid";
 import { parseListParams, toProductFilters, countActiveFilters } from "@/lib/filters";
 import { getAllProducts, getFilteredProducts } from "@/lib/products";
@@ -30,11 +32,22 @@ export default async function ShopPage({
   return (
     <div className="pb-sp6">
       <div className="shell pt-sp5">
-        <h1 className="font-serif text-h1 text-ink">All products</h1>
-        <p className="mt-sp2 text-aux text-muted">
-          {products.length} of {total} products
-        </p>
+        <div className="flex items-end justify-between gap-sp4">
+          <div>
+            <h1 className="font-serif text-h1 text-ink">All products</h1>
+            <p className="mt-sp2 text-aux text-muted">
+              {products.length} of {total} products
+            </p>
+          </div>
+          {/* 桌面端排序：移动端的排序在吸顶筛选条里（SortSelect 同一实现） */}
+          <div className="hidden shrink-0 md:block">
+            <SortSelect params={params} basePath="/shop" />
+          </div>
+        </div>
       </div>
+
+      {/* 已选筛选显性化：可单独移除，不必重开抽屉 */}
+      <ActiveFilters params={params} basePath="/shop" />
 
       <div className="md:mt-sp5 md:flex md:gap-sp6 md:px-sp4">
         <FilterControls params={params} resultCount={products.length} basePath="/shop" />

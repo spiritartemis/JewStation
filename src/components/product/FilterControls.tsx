@@ -4,16 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   PRICE_BUCKETS,
-  SORT_OPTIONS,
   buildQueryString,
   countActiveFilters,
   splitList,
   toggleValue,
   type ListParams,
-  type SortKey,
 } from "@/lib/filters";
 import { MATERIAL_TAGS, CATEGORY_TAGS, STYLE_TAGS, PRODUCT_TYPES } from "@/lib/tags";
 import { CloseIcon } from "@/components/layout/icons";
+import { SortSelect } from "./SortSelect";
 
 type Group = {
   key: "category" | "style" | "material" | "type" | "price";
@@ -79,10 +78,6 @@ export function FilterControls({
     go({ ...params, [key]: next.length ? next.join(",") : undefined });
   };
 
-  const onSort = (sort: string) => {
-    go({ ...params, sort: sort === "newest" ? undefined : sort });
-  };
-
   const clearAll = () => {
     go({ sort: params.sort });
   };
@@ -130,7 +125,7 @@ export function FilterControls({
         >
           Filter {activeCount > 0 ? `(${activeCount})` : ""}
         </button>
-        <SortSelect value={params.sort ?? "newest"} onChange={onSort} />
+        <SortSelect params={params} basePath={basePath} />
       </div>
 
       {/* 桌面端：侧栏 */}
@@ -190,24 +185,5 @@ export function FilterControls({
         </div>
       ) : null}
     </>
-  );
-}
-
-function SortSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <label className="flex items-center gap-sp2 text-body text-muted">
-      <span className="sr-only">Sort</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-11 rounded-btn border border-line bg-surface px-sp3 text-body text-ink"
-      >
-        {SORT_OPTIONS.map((o) => (
-          <option key={o.key} value={o.key}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }
