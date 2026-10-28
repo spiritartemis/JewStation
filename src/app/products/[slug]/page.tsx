@@ -70,7 +70,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="shell pt-sp5 md:px-0">
           {isOneOfAKind ? (
-            <span className="inline-block rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-white">
+            <span className="inline-block rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
               One of a Kind
             </span>
           ) : null}
@@ -141,7 +141,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               disabled
               aria-disabled="true"
               aria-describedby="cart-note"
-              className="h-12 w-full rounded-btn bg-accent text-body text-white disabled:opacity-40"
+              className="h-12 w-full rounded-btn bg-accent text-body text-onAccent disabled:opacity-40"
             >
               {sold ? soldLabel(product) : "Add to cart"}
             </button>

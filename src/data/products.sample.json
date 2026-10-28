@@ -1,5 +1,5 @@
 {
-  "_note": "SAMPLE DATA — 占位样例，不是真实商品。真实首批资料由站长提供（0.2-10 / 0.1-11），导入后本文件即废弃。images 为空是因为未拿到实拍图：按 m-1b bootstrap §5，禁止用 AI 生成图冒充正式商品图。",
+  "_note": "SAMPLE DATA — 占位样例，不是真实商品。真实首批资料由站长提供（0.2-10 / 0.1-11），导入后本文件即废弃。images 目前是 AI 生成的概念占位图（AI-generated concept placeholder），用于把版式与视觉跑通；上线前必须全部替换为实拍图，孤品（one_of_a_kind）尤其必须拍「你收到的那一件」，不得以生成图代替。",
   "products": [
     {
       "id": "prd_sample_0001",
@@ -24,7 +24,9 @@
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive ears.",
       "careInstructions": "Avoid water and perfume; store in the supplied pouch.",
       "handmadeVariation": "Each pair is hand-formed; slight differences in wave depth are expected.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-silver-wave-hoops.jpg", "alt": "Silver Wave Hoops — hand-formed sterling silver hoops on a muted studio background", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "earrings",
       "tags": { "style": ["minimal", "delicate"], "material": ["sterling-silver"] }
     },
@@ -52,7 +54,9 @@
       "careInstructions": "Avoid water and perfume; wipe pearls with a soft cloth after wearing.",
       "handmadeVariation": "Natural pearls are never identical; shape and lustre differ by pair.",
       "oneOfAKindNote": "Only one made. Not reproducible after sold.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-baroque-pearl-drops.jpg", "alt": "Baroque Pearl Drops — freshwater pearl drops on sterling silver ear wires", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "earrings",
       "tags": { "style": ["pearl", "nature"], "material": ["sterling-silver", "freshwater-pearl"] }
     },
@@ -77,7 +81,9 @@
       "closureType": "Spring ring",
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive skin.",
       "careInstructions": "Avoid water and perfume; store flat to prevent tangling.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-fine-chain-pendant.jpg", "alt": "Fine Chain Pendant — fine sterling silver chain with a small pendant", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "necklaces",
       "tags": { "style": ["minimal", "delicate"], "material": ["sterling-silver"] }
     },
@@ -102,7 +108,9 @@
       "allergyNotice": "Contains brass, which may contain nickel; not suitable for nickel allergy.",
       "careInstructions": "Avoid water and perfume; brass will patina naturally over time.",
       "handmadeVariation": "Hammer marks differ on every piece.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-hammered-open-ring.jpg", "alt": "Hammered Open Ring — hand-forged brass open ring with matte finish", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "rings",
       "tags": { "style": ["boho", "statement"], "material": ["brass"] }
     },
@@ -128,7 +136,9 @@
       "closureType": "Lobster clasp",
       "allergyNotice": "Gold vermeil over sterling silver; plating will soften with wear.",
       "careInstructions": "Avoid water and perfume; remove before sleeping.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-vintage-link-bracelet.jpg", "alt": "Vintage Link Bracelet — gold vermeil bracelet with oval links", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "bracelets",
       "tags": { "style": ["vintage"], "material": ["gold-vermeil"] }
     },
@@ -154,7 +164,9 @@
       "allergyNotice": "Nickel-free sterling silver; natural stone colour varies by piece.",
       "careInstructions": "Avoid water and perfume; store in the supplied pouch.",
       "handmadeVariation": "Natural stone colour and pattern vary by piece.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-geometric-stone-studs.jpg", "alt": "Geometric Stone Studs — hexagonal natural stone studs in sterling silver", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "earrings",
       "tags": { "style": ["geometric", "minimal"], "material": ["sterling-silver", "natural-stone"] }
     },
@@ -180,7 +192,9 @@
       "careInstructions": "Avoid water and perfume; reshape by hand while damp.",
       "handmadeVariation": "Knot spacing differs along the length.",
       "oneOfAKindNote": "Only one made. Not reproducible after sold.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-hand-knotted-cord-necklace.jpg", "alt": "Hand-Knotted Cord Necklace — linen cord with a matte ceramic bead", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "necklaces",
       "tags": { "style": ["boho", "nature"], "material": ["textile", "ceramic"] }
     },
@@ -205,7 +219,9 @@
       "closureType": "Lobster clasp",
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive skin.",
       "careInstructions": "Avoid water and perfume; store flat to prevent tangling.",
-      "images": [],
+      "images": [
+        { "url": "/images/product-delicate-chain-bracelet.jpg", "alt": "Delicate Chain Bracelet — fine sterling silver chain bracelet", "width": 1024, "height": 1280, "isPrimary": true }
+      ],
       "category": "bracelets",
       "tags": { "style": ["delicate", "minimal"], "material": ["sterling-silver"] }
     }

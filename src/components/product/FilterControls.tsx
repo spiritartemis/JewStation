@@ -176,7 +176,7 @@ export function FilterControls({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="h-12 flex-1 rounded-btn bg-accent text-body text-white"
+                className="h-12 flex-1 rounded-btn bg-accent text-body text-onAccent"
               >
                 Show {resultCount} results
               </button>

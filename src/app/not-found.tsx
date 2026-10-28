@@ -10,7 +10,7 @@ export default function NotFound() {
       <div className="mt-sp5 flex gap-sp4">
         <Link
           href="/"
-          className="inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-white"
+          className="inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-onAccent"
         >
           Back home
         </Link>

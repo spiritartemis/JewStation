@@ -3,31 +3,32 @@
 @tailwind utilities;
 
 :root {
-  /* 莫兰迪色系（低饱和 + 灰调）：色板明细见 docs/视觉规范-莫兰迪色板.md */
-  --c-bg: #f3f0ec;
-  --c-surface: #fbf9f6;
-  --c-band: #ede8e1;
-  --c-text: #35322e;
-  --c-text-muted: #7c746a;
-  --c-line: #ded8d0;
-  --c-accent: #5f6f69;
-  --c-accent-weak: #e6e7e1;
-  --c-sold: #948b81;
-  --c-warn: #a0705c;
+  /* 莫兰迪色系 · 深色版（低饱和 + 灰调）：色板明细见 docs/视觉规范-莫兰迪色板.md */
+  --c-bg: #232120;
+  --c-surface: #2b2926;
+  --c-band: #302d29;
+  --c-text: #e9e4dc;
+  --c-text-muted: #a6a099;
+  --c-line: #3d3a35;
+  --c-accent: #a9b9ad;
+  --c-accent-weak: #34372f;
+  --c-on-accent: #22201d;
+  --c-sold: #8a837a;
+  --c-warn: #c89a85;
 
-  /* 莫兰迪五色相 */
-  --c-mist: #a7b2b8;
-  --c-mist-weak: #e2e6e8;
-  --c-sage: #a9b3a6;
-  --c-sage-weak: #e5e8e0;
-  --c-clay: #c0a79c;
-  --c-clay-weak: #eee5df;
-  --c-sand: #cfc5b6;
-  --c-sand-weak: #f0eae2;
-  --c-mauve: #a7989f;
-  --c-mauve-weak: #eae4e7;
+  /* 莫兰迪五色相 · 深色版（块面 Weak 为暗调，主色为亮调） */
+  --c-mist: #a9b4ba;
+  --c-mist-weak: #2c3134;
+  --c-sage: #aeb8ab;
+  --c-sage-weak: #2e332d;
+  --c-clay: #c6ada2;
+  --c-clay-weak: #332c29;
+  --c-sand: #d3c9ba;
+  --c-sand-weak: #333029;
+  --c-mauve: #b0a1a8;
+  --c-mauve-weak: #302b2e;
 
-  --hero-fade: linear-gradient(155deg, #e2e5e1 0%, #e9e2d9 48%, #dad2ca 100%);
+  --hero-fade: linear-gradient(155deg, #333736 0%, #3a342f 48%, #272421 100%);
 
   --sp-1: 4px;
   --sp-2: 8px;

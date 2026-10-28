@@ -71,7 +71,7 @@ export default async function SearchPage({
         />
         <button
           type="submit"
-          className="h-12 rounded-btn bg-accent px-sp5 text-body text-white"
+          className="h-12 rounded-btn bg-accent px-sp5 text-body text-onAccent"
         >
           Search
         </button>
@@ -114,7 +114,7 @@ export default async function SearchPage({
               </Link>
               <Link
                 href="/shop"
-                className="inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-white"
+                className="inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-onAccent"
               >
                 Browse all products
               </Link>

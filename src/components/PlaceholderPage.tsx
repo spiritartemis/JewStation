@@ -17,7 +17,7 @@ export function PlaceholderPage({
       <p className="mt-sp3 max-w-[52ch] text-body text-muted">{description}</p>
       <Link
         href="/shop"
-        className="mt-sp5 inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-white"
+        className="mt-sp5 inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-onAccent"
       >
         Browse all products
       </Link>

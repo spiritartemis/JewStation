@@ -50,7 +50,7 @@ export function ProductCard({
         )}
 
         {isOneOfAKind ? (
-          <span className="absolute left-sp2 top-sp2 rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-white">
+          <span className="absolute left-sp2 top-sp2 rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
             One of a Kind
           </span>
         ) : null}

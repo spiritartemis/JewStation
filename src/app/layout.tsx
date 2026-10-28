@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -28,6 +28,12 @@ export const metadata: Metadata = {
     template: `%s | ${SITE.brandName}`,
   },
   description: SITE.tagline,
+};
+
+/** 浏览器 UI 配色跟随深色莫兰迪底色（bg #232120） */
+export const viewport: Viewport = {
+  themeColor: "#232120",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

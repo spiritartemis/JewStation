@@ -18,11 +18,16 @@ export const HOME_HERO = {
   subline: "Small-batch jewellery — one-of-a-kind pieces and limited runs.",
   ctaLabel: "Shop new",
   ctaHref: "/collections/new",
-  /** 主图为空时的占位说明，不得替换为 AI 生成图（m-1b bootstrap §5） */
+  /** 主图为空时的占位说明 */
   imagePendingNote: "Hero photo pending",
-  /** 图片就位后填 /public 下的路径；为空则渲染占位块 */
-  imageUrl: "",
-  imageAlt: "",
+  /**
+   * 图片就位后填 /public 下的路径；为空则渲染占位块。
+   * ⚠️ 当前为 AI 生成的概念占位图（public/images/hero-home.jpg），
+   * 上线前需替换为真实品牌视觉 / 实拍场景图。
+   */
+  imageUrl: "/images/hero-home.jpg",
+  imageAlt:
+    "A woman in a soft knit seated by a window in diffused daylight, wearing delicate silver hoop earrings and a fine chain pendant.",
 } as const;
 
 export const ABOUT: Doc = {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/Section";
 import { STYLE_TAGS } from "@/lib/tags";
@@ -14,6 +15,17 @@ const STYLE_TINTS = [
   { bg: "bg-mauveWeak", hover: "hover:border-mauve" },
 ];
 
+/**
+ * 风格入口配图（public/images，AI 生成的概念占位图，上线前替换为实拍）
+ * key = 风格 slug，与 src/data/tags.json 同源。
+ */
+const STYLE_IMAGES: Record<string, string> = {
+  minimal: "/images/style-minimal.jpg",
+  vintage: "/images/style-vintage.jpg",
+  statement: "/images/style-statement.jpg",
+  nature: "/images/style-nature.jpg",
+};
+
 /** 风格入口（B-2.2）：2 列网格，slug 与集合页同源 */
 export function StyleGrid() {
   const styles = STYLE_TAGS.slice(0, 4);
@@ -24,13 +36,32 @@ export function StyleGrid() {
         {styles.map((s, i) => {
           // 莫兰迪五色相循环：块面用 Weak，hover 时描边转对应色相主色
           const tint = STYLE_TINTS[i % STYLE_TINTS.length];
+          const image = STYLE_IMAGES[s.slug];
+
           return (
             <Link
               key={s.slug}
               href={`/collections/${s.slug}`}
-              className={`flex h-24 items-center justify-center rounded-card border border-line font-serif text-body text-ink transition-colors duration-fade ${tint.bg} ${tint.hover}`}
+              className={`group relative flex h-28 items-center justify-center overflow-hidden rounded-card border border-line transition-colors duration-fade md:h-32 ${tint.bg} ${tint.hover}`}
             >
-              {s.label}
+              {image ? (
+                <>
+                  {/* 装饰性配图：文字标签已表达含义，alt 留空避免重复朗读 */}
+                  <Image
+                    src={image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 50vw, 300px"
+                    className="object-cover"
+                  />
+                  {/* 压暗层：保证亮图上的浅色文字仍满足对比度 */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-bg/50 transition-opacity duration-fade group-hover:bg-bg/35"
+                  />
+                </>
+              ) : null}
+              <span className="relative font-serif text-body text-ink">{s.label}</span>
             </Link>
           );
         })}
