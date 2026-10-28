@@ -26,7 +26,8 @@ secrets/
 config.local.*
 
 # ---------- 依赖与构建产物 ----------
-node_modules/
+node_modules
+node_modules_*
 .pnpm-store/
 .yarn/cache/
 dist/
