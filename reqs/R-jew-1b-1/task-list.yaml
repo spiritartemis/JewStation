@@ -14,4 +14,4 @@ tasks:
     created: 2026-10-27
     input: |
       （待总控补充输入）
-    claim: {"session":"v01night","pid":32540,"host":"Mona.local","since":"2026-10-28T03:18:01.603Z","heartbeat":"2026-10-28T03:18:01.603Z"}
+    claim: {"session":"v01night","pid":32735,"host":"Mona.local","since":"2026-10-28T03:18:01.603Z","heartbeat":"2026-10-28T03:18:33.690Z"}
