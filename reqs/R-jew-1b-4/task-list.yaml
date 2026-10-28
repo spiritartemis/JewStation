@@ -25,5 +25,10 @@ tasks:
     work_unit: req/R-jew-1b-4
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/app/products/[slug]/page.tsx
+        kind: file
+        checksum: sha256:6f50fb74391862a1fb5faf08de966590c4b7625192bab04d0f47b589811f4866
+        at: 2026-10-28T14:05:40Z
     claim: {"session":"v01night","pid":18363,"host":"Mona.local","since":"2026-10-28T13:59:32.017Z","heartbeat":"2026-10-28T13:59:48.569Z"}
     submitted: {"at":"2026-10-28T14:04:52.706Z","head":"e37d574","base":"req/R-jew-1b-3","committed":true,"files":2}
