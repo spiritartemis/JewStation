@@ -6,6 +6,9 @@
  *   node scripts/validate-products.mjs                 # 校验 src/data/products.sample.json
  *   node scripts/validate-products.mjs <products.json> # 校验指定文件
  *   node scripts/validate-products.mjs --sample        # 样例模式：缺实拍图只警告不报错
+ *   node scripts/validate-products.mjs --json          # 机器可读输出（CI / 录入工具调用）
+ *
+ * 退出码：0 通过 · 1 有错误（缺项必须逐条补齐，不得留空蒙混 —— B-1.10）
  *
  * 判据来源：
  *   docs/spec/02-商品数据模型.md §4（校验规则 1–7）· §5（完整率 8 项）
@@ -13,7 +16,7 @@
  *   docs/spec/03-标签字典与分类规则.md（标签必须存在于字典）
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
@@ -22,8 +25,16 @@ const root = resolve(here, "..");
 
 const args = process.argv.slice(2);
 const sampleMode = args.includes("--sample");
+const jsonMode = args.includes("--json");
 const fileArg = args.find((a) => !a.startsWith("--"));
 const productsPath = resolve(root, fileArg ?? "src/data/products.sample.json");
+
+if (!existsSync(productsPath)) {
+  const msg = `找不到商品文件：${productsPath}`;
+  if (jsonMode) console.log(JSON.stringify({ ok: false, error: msg }, null, 2));
+  else console.error(`✗ ${msg}`);
+  process.exit(1);
+}
 
 const dict = JSON.parse(readFileSync(resolve(root, "src/data/tags.json"), "utf8"));
 const raw = JSON.parse(readFileSync(productsPath, "utf8"));
@@ -38,7 +49,21 @@ const TYPES = slugsOf(dict.productTypes);
 const errors = [];
 const warnings = [];
 const seenSlugs = new Set();
+const seenSkus = new Set();
 const currencies = new Set();
+
+/** 完整率 8 项（02 §5）：逐款逐项打勾，最后算总完成率 */
+const COMPLETENESS_KEYS = [
+  "price",
+  "stock",
+  "productType",
+  "materials",
+  "dimensions",
+  "weight",
+  "images",
+  "tags",
+];
+const completeness = new Map(); // key → 达标款数
 
 function fail(sku, msg) {
   errors.push(`${sku}: ${msg}`);
@@ -49,6 +74,12 @@ function warn(sku, msg) {
 
 for (const p of products) {
   const sku = p.sku ?? "(no sku)";
+  const ok = new Set();
+
+  // SKU 唯一性（原先只查 slug，SKU 重复会让库存对不上）
+  if (!p.sku) fail(sku, "sku 缺失");
+  else if (seenSkus.has(p.sku)) fail(sku, `sku 重复：${p.sku}`);
+  else seenSkus.add(p.sku);
 
   // slug 唯一性与命名
   if (!p.slug) fail(sku, "slug 缺失");
@@ -59,20 +90,44 @@ for (const p of products) {
   }
 
   // 完整率 8 项（02 §5）
-  if (typeof p.price !== "number") fail(sku, "price 缺失或非数字");
-  if (typeof p.stock !== "number") fail(sku, "stock 缺失或非数字");
-  if (!TYPES.has(p.productType)) fail(sku, `productType 非法：${p.productType}`);
-  if (!Array.isArray(p.materials) || p.materials.length === 0) fail(sku, "materials 缺失");
-  if (!p.dimensions) fail(sku, "dimensions 缺失");
-  if (!p.weight) fail(sku, "weight 缺失");
-  if (!p.tags || !p.category) fail(sku, "tags / category 缺失");
+  if (typeof p.price === "number" && p.price > 0) ok.add("price");
+  else fail(sku, "price 缺失、非数字或不大于 0");
+
+  if (typeof p.stock === "number" && p.stock >= 0) ok.add("stock");
+  else fail(sku, "stock 缺失、非数字或为负");
+
+  if (TYPES.has(p.productType)) ok.add("productType");
+  else fail(sku, `productType 非法：${p.productType}`);
+
+  if (Array.isArray(p.materials) && p.materials.length > 0) ok.add("materials");
+  else fail(sku, "materials 缺失");
+
+  if (p.dimensions) ok.add("dimensions");
+  else fail(sku, "dimensions 缺失");
+
+  if (p.weight) ok.add("weight");
+  else fail(sku, "weight 缺失");
+
+  if (Array.isArray(p.images) && p.images.length > 0) ok.add("images");
+  if (p.tags && p.category) ok.add("tags");
+  else fail(sku, "tags / category 缺失");
+
+  for (const key of COMPLETENESS_KEYS) {
+    if (ok.has(key)) completeness.set(key, (completeness.get(key) ?? 0) + 1);
+  }
 
   // 单位固定（02 §4.5）
   if (p.dimensions && p.dimensions.unit !== "mm") fail(sku, "dimensions.unit 必须为 mm");
   if (p.weight && p.weight.unit !== "g") fail(sku, "weight.unit 必须为 g");
+  if (p.weight && typeof p.weight.value === "number" && p.weight.value <= 0)
+    fail(sku, "weight.value 必须大于 0");
 
   // 单币种（02 §4.6）
   if (p.currency) currencies.add(p.currency);
+
+  // 划线价必须高于售价，否则是假折扣
+  if (typeof p.compareAtPrice === "number" && p.compareAtPrice <= p.price)
+    fail(sku, `compareAtPrice(${p.compareAtPrice}) 必须高于 price(${p.price})`);
 
   // 孤品库存（02 §3 / 04）：入库须为 1，售出后为 0，任何 >1 都是错的
   if (p.productType === "one_of_a_kind") {
@@ -81,18 +136,25 @@ for (const p of products) {
     if (!p.handmadeVariation) fail(sku, "孤品缺 handmadeVariation");
   }
 
+  // 合规文本：过敏提示与保养说明属必填（02 §4.4），缺失直接影响合规
+  if (!p.allergyNotice) fail(sku, "缺 allergyNotice（金属过敏提示，合规必填）");
+  if (!p.careInstructions) fail(sku, "缺 careInstructions（保养说明，合规必填）");
+
   // 图片（02 §4.4）：至少 3 张且每张有 alt
   const images = Array.isArray(p.images) ? p.images : [];
   if (images.length < 3) {
     const msg = `图片不足 3 张（当前 ${images.length}）`;
-    sampleMode ? warn(sku, msg) : fail(sku, msg);
+    if (sampleMode) warn(sku, msg);
+    else fail(sku, msg);
   }
   for (const img of images) {
     if (!img.alt) fail(sku, "存在无 alt 的图片");
+    if (!img.url) fail(sku, "存在无 url 的图片");
     if (typeof img.width !== "number" || typeof img.height !== "number")
       fail(sku, "图片缺 width/height（会引发 CLS）");
   }
   if (images.length && !images.some((i) => i.isPrimary)) warn(sku, "未标记主图 isPrimary");
+  if (images.filter((i) => i.isPrimary).length > 1) fail(sku, "主图 isPrimary 多于 1 张");
 
   // 标签外键（03 §6.1）
   if (p.category && !CATEGORIES.has(p.category)) fail(sku, `category 不在字典：${p.category}`);
@@ -107,6 +169,7 @@ for (const p of products) {
   if (p.seoTitle && p.seoTitle.length > 60) fail(sku, `seoTitle 超 60 字符`);
   if (p.seoDescription && p.seoDescription.length > 155)
     fail(sku, `seoDescription 超 155 字符`);
+  if (!p.seoDescription) warn(sku, "缺 seoDescription（会回落到 shortCopy）");
 
   // availability 派生一致性（02 §4.2）
   if (p.availability && p.availability !== (p.stock > 0 ? "in_stock" : "sold_out"))
@@ -116,17 +179,57 @@ for (const p of products) {
 if (currencies.size > 1)
   errors.push(`全站币种不统一：${[...currencies].join(", ")}（V0.1 单币种）`);
 
-const line = (s) => console.log(s);
-line(`\n校验文件：${productsPath}`);
-line(`商品数：${products.length}`);
-if (warnings.length) {
-  line(`\n警告 ${warnings.length} 条：`);
-  warnings.forEach((w) => line(`  · ${w}`));
+const total = products.length;
+const rate = (n) => (total === 0 ? 0 : Math.round((n / total) * 100));
+const completenessReport = COMPLETENESS_KEYS.map((key) => ({
+  field: key,
+  filled: completeness.get(key) ?? 0,
+  total,
+  percent: rate(completeness.get(key) ?? 0),
+}));
+const overall =
+  total === 0
+    ? 0
+    : Math.round(
+        (completenessReport.reduce((s, r) => s + r.filled, 0) / (total * COMPLETENESS_KEYS.length)) *
+          100,
+      );
+
+if (jsonMode) {
+  console.log(
+    JSON.stringify(
+      {
+        ok: errors.length === 0,
+        file: productsPath,
+        products: total,
+        completeness: { overall, fields: completenessReport },
+        errors,
+        warnings,
+      },
+      null,
+      2,
+    ),
+  );
+} else {
+  const line = (s) => console.log(s);
+  line(`\n校验文件：${productsPath}`);
+  line(`商品数：${total}`);
+
+  line(`\n字段完整率（B-2.11 · 8 项）`);
+  for (const r of completenessReport) {
+    line(`  ${r.field.padEnd(12)} ${String(r.filled).padStart(3)}/${r.total}  ${String(r.percent).padStart(3)}%`);
+  }
+  line(`  ${"总计".padEnd(11)} ${String(overall).padStart(4)}%`);
+
+  if (warnings.length) {
+    line(`\n警告 ${warnings.length} 条：`);
+    warnings.forEach((w) => line(`  · ${w}`));
+  }
+  if (errors.length) {
+    line(`\n错误 ${errors.length} 条：`);
+    errors.forEach((e) => line(`  ✗ ${e}`));
+    line("\n结论：不通过（缺项必须逐条补齐，不得留空蒙混 —— B-1.10）\n");
+    process.exit(1);
+  }
+  line("\n结论：通过\n");
 }
-if (errors.length) {
-  line(`\n错误 ${errors.length} 条：`);
-  errors.forEach((e) => line(`  ✗ ${e}`));
-  line("\n结论：不通过（缺项必须逐条补齐，不得留空蒙混 —— B-1.10）\n");
-  process.exit(1);
-}
-line("\n结论：通过\n");
