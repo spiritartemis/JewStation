@@ -1,5 +1,7 @@
 import { SITE } from "./site";
 import { absoluteUrl, SITE_URL } from "./seo";
+import { isSoldOut, type Product } from "./types";
+import { tagLabel } from "./tags";
 
 /**
  * 结构化数据（B-2.9 的延伸）
@@ -51,5 +53,37 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]): JsonL
       name: item.name,
       item: absoluteUrl(item.path),
     })),
+  };
+}
+
+/**
+ * 商品级：Product（B-2.9 的延伸）
+ *
+ * availability 由 stock 派生（02 §4.2），不手填；无图时不输出 image 字段，
+ * 而不是塞一张占位图——避免把占位图当成商品图喂给搜索引擎。
+ */
+export function productJsonLd(p: Product): JsonLd {
+  const images = p.images.map((i) => absoluteUrl(i.url));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.seoTitle ?? p.title,
+    description: p.seoDescription ?? p.shortCopy,
+    sku: p.sku,
+    category: tagLabel(p.category),
+    material: p.materials.join(", "),
+    ...(images.length ? { image: images } : {}),
+    brand: { "@type": "Brand", name: SITE.brandName },
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/products/${p.slug}`),
+      price: p.price,
+      priceCurrency: p.currency,
+      availability: isSoldOut(p)
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
   };
 }

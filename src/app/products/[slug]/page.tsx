@@ -2,9 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductCard } from "@/components/product/ProductCard";
+import { JsonLdScript } from "@/components/JsonLd";
 import { getProductBySlug, getProductsByCollection } from "@/lib/products";
 import { formatPrice, isSoldOut, lowStockLabel, soldLabel } from "@/lib/types";
 import { tagLabel } from "@/lib/tags";
+import { buildMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
 
 /**
  * 商品详情页（B-2.6 / B-2.7）
@@ -25,8 +28,43 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4);
 
+  const crumbs = [
+    { name: "Home", path: "/" },
+    { name: tagLabel(product.category), path: `/collections/${product.category}` },
+    { name: product.title, path: `/products/${product.slug}` },
+  ];
+
+  // 尺寸可能只有其中一项；全部缺失时明确写 Not specified，不 misleading 地留 —
+  const sizeParts = [
+    product.dimensions.length,
+    product.dimensions.width,
+    product.dimensions.diameter,
+  ].filter(Boolean);
+
   return (
     <article className="pb-sp6">
+      <JsonLdScript data={[productJsonLd(product), breadcrumbJsonLd(crumbs)]} />
+
+      {/* 面包屑：给用户明确的位置感，也让搜索引擎拿到层级 */}
+      <nav aria-label="Breadcrumb" className="shell pt-sp4">
+        <ol className="flex flex-wrap items-center gap-sp2 text-aux text-muted">
+          {crumbs.map((c, i) => (
+            <li key={c.path} className="flex items-center gap-sp2">
+              {i > 0 ? <span aria-hidden="true">/</span> : null}
+              {i === crumbs.length - 1 ? (
+                <span aria-current="page" className="text-ink">
+                  {c.name}
+                </span>
+              ) : (
+                <Link href={c.path} className="hover:text-accent">
+                  {c.name}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       <div className="md:grid md:grid-cols-2 md:gap-sp6 md:px-sp4 md:pt-sp5">
         <ProductGallery images={product.images} title={product.title} />
 
@@ -64,11 +102,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <FactRow label="Material" value={product.materials.join(", ")} />
             <FactRow
               label="Size"
-              value={
-                [product.dimensions.length, product.dimensions.width, product.dimensions.diameter]
-                  .filter(Boolean)
-                  .join(" × ") || "—"
-              }
+              value={sizeParts.length ? `${sizeParts.join(" × ")} ${product.dimensions.unit}` : "Not specified"}
             />
             <FactRow label="Weight" value={`${product.weight.value} ${product.weight.unit}`} />
             {product.closureType ? <FactRow label="Closure" value={product.closureType} /> : null}
@@ -106,14 +140,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               type="button"
               disabled
               aria-disabled="true"
+              aria-describedby="cart-note"
               className="h-12 w-full rounded-btn bg-accent text-body text-white disabled:opacity-40"
             >
               {sold ? soldLabel(product) : "Add to cart"}
             </button>
-            <p className="mt-sp2 text-aux text-muted">
-              Cart and checkout open with V0.3 (m-1c).
+            <p id="cart-note" className="mt-sp2 text-aux text-muted">
+              {sold
+                ? "This piece has been sold. One-of-a-kind items are not restocked."
+                : "Cart and checkout open with V0.3 (m-1c)."}
             </p>
-            <Link href="/policies/shipping" className="mt-sp3 inline-block text-aux text-muted underline">
+            <Link
+              href="/policies/shipping"
+              className="mt-sp3 inline-block text-aux text-muted underline"
+            >
               Shipping &amp; returns
             </Link>
           </div>
@@ -159,10 +199,12 @@ function FactRow({ label, value }: { label: string; value: string }) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) return { title: "Product" };
+  if (!product) return { title: "Product not found" };
 
-  return {
+  // 原先只返回 title/description，缺 canonical 与 OG——B-2.9 要求每页规范 URL 与分享预览齐备
+  return buildMetadata({
     title: product.seoTitle ?? product.title,
     description: product.seoDescription ?? product.shortCopy,
-  };
+    path: `/products/${product.slug}`,
+  });
 }
