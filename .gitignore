@@ -38,6 +38,8 @@ out/
 
 # ---------- 静态站 / 框架 ----------
 .next/
+.next-verify/
+.next-*/
 .nuxt/
 .output/
 .svelte-kit/
