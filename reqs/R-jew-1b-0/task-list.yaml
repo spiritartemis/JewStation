@@ -25,4 +25,4 @@ tasks:
     work_unit: req/R-jew-1b-0
     input: |
       （待总控补充输入）
-    claim: {"session":"v01night","pid":5843,"host":"Mona.local","since":"2026-10-27T16:38:27.665Z","heartbeat":"2026-10-27T16:38:44.486Z"}
+    claim: {"session":"v01night","pid":29811,"host":"Mona.local","since":"2026-10-28T03:14:31.676Z","heartbeat":"2026-10-28T03:14:31.676Z"}
