@@ -11,7 +11,14 @@ import { formatPrice, isSoldOut, lowStockLabel, soldLabel } from "@/lib/types";
  *
  * 图片：样例数据无实拍图时渲染占位块，绝不拿 AI 生成图冒充商品图（m-1b bootstrap §5）。
  */
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  /** 首屏首行的卡片传 true：否则 LCP 图会被延迟加载拖慢（B-2.10） */
+  priority?: boolean;
+}) {
   const primary = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const sold = isSoldOut(product);
   const low = lowStockLabel(product);
@@ -31,7 +38,9 @@ export function ProductCard({ product }: { product: Product }) {
             alt={primary.alt}
             width={primary.width}
             height={primary.height}
-            sizes="(max-width: 768px) 46vw, 240px"
+            sizes="(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"
+            priority={priority}
+            loading={priority ? undefined : "lazy"}
             className="h-auto w-full object-cover"
           />
         ) : (

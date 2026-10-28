@@ -56,6 +56,7 @@ export function ProductGallery({ images, title }: { images: ProductImage[]; titl
                 alt=""
                 width={img.width}
                 height={img.height}
+                sizes="64px"
                 className="h-full w-full object-cover"
               />
             </button>
