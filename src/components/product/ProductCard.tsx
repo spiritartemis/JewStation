@@ -53,7 +53,10 @@ export function ProductCard({
             sizes={feature ? "(max-width: 640px) 92vw, 46vw" : "(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"}
             priority={priority}
             loading={priority ? undefined : "lazy"}
-            className={`w-full object-cover ${feature ? "h-full" : "h-auto"}`}
+            className={`w-full object-cover ${feature ? "h-full" : "h-auto"} ${
+              // 售罄：图片本身去色，比铺半透明蒙版更干净；浅底上蒙版几乎等于没盖
+              sold ? "grayscale" : ""
+            }`}
           />
         ) : (
           <div className="flex aspect-[4/5] w-full items-center justify-center">
@@ -68,9 +71,21 @@ export function ProductCard({
         ) : null}
 
         {sold ? (
-          <span className="absolute inset-0 flex items-center justify-center bg-bg/70 text-body uppercase tracking-[0.16em] text-sold">
-            {soldLabel(product)}
-          </span>
+          <>
+            {/* 薄雾：只压掉一点亮度，让墨色标签浮起来 */}
+            <span aria-hidden className="absolute inset-0 bg-bg/30" />
+            {/* 标签居中：浅底 + 去色图之上，墨色胶囊才有足够对比（白字 4.6:1 以上）。
+                feature 大卡上标签要跟着放大，否则在 580px 宽的图里像一颗小痣 */}
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span
+                className={`rounded-btn border border-white/25 bg-ink/85 uppercase tracking-[0.2em] text-white ${
+                  feature ? "px-sp4 py-sp2 text-body" : "px-sp3 py-sp1 text-aux"
+                }`}
+              >
+                {soldLabel(product)}
+              </span>
+            </span>
+          </>
         ) : null}
       </div>
 
