@@ -32,7 +32,7 @@ export const HOME_HERO = {
    */
   imageUrl: "/images/hero-home.jpg",
   imageAlt:
-    "A woman in a soft knit seated by a window in diffused daylight, wearing delicate silver hoop earrings and a fine chain pendant.",
+    "Silver huggie hoops, a fine chain with a small pendant, a pale-gold stacking ring and a pearl stud, arranged on a pale stone slab over dark textured concrete.",
 } as const;
 
 export const ABOUT: Doc = {

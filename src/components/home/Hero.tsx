@@ -32,9 +32,10 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            // 裁短后取景会变：移动端竖裁，焦点偏左（人物在画面左侧 1/3）；桌面横裁，焦点尽量靠上保住头顶
-            // 推镜（kenburns）：只缩放 5.5%，原点放在焦点上，头部不会被推出画面；reduce motion 时静止
-            className="animate-kenburns origin-[38%_30%] object-cover object-[38%_18%] will-change-transform motion-reduce:animate-none md:origin-[50%_30%] md:object-[50%_8%]"
+            // 取景：主图是深色石板上的首饰特写，首饰簇在画面 60%/44% 处。
+            // 桌面横裁保首饰在右、文案落在左侧空白；移动端竖裁把首饰簇推到右侧（58%），左侧留白给文案
+            // 推镜（kenburns）：只缩放 7.5%，原点压在首饰簇上，放大时首饰不漂移；reduce motion 时静止
+            className="animate-kenburns origin-[60%_44%] object-cover object-[72%_50%] will-change-transform motion-reduce:animate-none md:object-[50%_50%]"
           />
         ) : (
           <span className="text-aux uppercase tracking-[0.16em] text-muted">

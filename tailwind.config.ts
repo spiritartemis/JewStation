@@ -13,35 +13,35 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // 中性基底（深色版：雾褐黑 / 深灰面 / 雾色带）
-        bg: "#232120",
-        surface: "#2B2926",
-        band: "#302D29",
-        ink: "#E9E4DC",
-        muted: "#A6A099",
-        line: "#3D3A35",
-        // 主强调：莫兰迪雾绿（CTA、选中态、角标）—— 深底上用亮色，文字用 onAccent
-        accent: "#A9B9AD",
-        accentWeak: "#34372F",
+        // 中性基底（冷石墨版：去掉暖褐，读起来更现代、更年轻）
+        bg: "#1C1E20",
+        surface: "#24272B",
+        band: "#292D31",
+        ink: "#EFEBE4",
+        muted: "#A3A6A4",
+        line: "#373C40",
+        // 主强调：莫兰迪薄荷（CTA、选中态、角标）—— 比上一版更亮更冷，面向 20–25 岁
+        accent: "#A8CDB7",
+        accentWeak: "#2A3630",
         /** 强调色表面上的文字色（深底 + 亮强调，文字必须走深色） */
-        onAccent: "#22201D",
-        sold: "#8A837A",
-        warn: "#C89A85",
+        onAccent: "#17201B",
+        sold: "#8B8F8D",
+        warn: "#D8A38C",
         // 莫兰迪五色相（深色版：块面用暗调 Weak，描边/点缀用亮调主色）
-        mist: "#A9B4BA",
-        mistWeak: "#2C3134",
-        sage: "#AEB8AB",
-        sageWeak: "#2E332D",
-        clay: "#C6ADA2",
-        clayWeak: "#332C29",
-        sand: "#D3C9BA",
-        sandWeak: "#333029",
-        mauve: "#B0A1A8",
-        mauveWeak: "#302B2E",
+        mist: "#A6C4D8",
+        mistWeak: "#222D36",
+        sage: "#B3D2A7",
+        sageWeak: "#262F28",
+        clay: "#DFB3A2",
+        clayWeak: "#332827",
+        sand: "#E1D0B3",
+        sandWeak: "#332F27",
+        mauve: "#C6AFD0",
+        mauveWeak: "#2C2632",
       },
       backgroundImage: {
-        // Hero 底：深色莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
-        hero: "linear-gradient(155deg, #333736 0%, #3A342F 48%, #272421 100%)",
+        // Hero 底：冷石墨莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
+        hero: "linear-gradient(155deg, #2B3234 0%, #2F2C29 48%, #1B1D1F 100%)",
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],
