@@ -1,6 +1,6 @@
 {
   "entry": "core/entry.mjs",
-  "count": 64,
+  "count": 69,
   "files": [
     "core/entry.mjs",
     "scripts/core-brief.mjs",
@@ -16,14 +16,17 @@
     "scripts/core-version.mjs",
     "scripts/lib/args.mjs",
     "scripts/lib/artifact-conflict.mjs",
+    "scripts/lib/artifact-git.mjs",
     "scripts/lib/artifacts.mjs",
     "scripts/lib/board-account.mjs",
     "scripts/lib/board-actions.mjs",
     "scripts/lib/board-context.mjs",
     "scripts/lib/board-ledger.mjs",
+    "scripts/lib/board-lines.mjs",
     "scripts/lib/board-plans.mjs",
     "scripts/lib/board-read.mjs",
     "scripts/lib/board-resolve.mjs",
+    "scripts/lib/board-ship.mjs",
     "scripts/lib/board-vcs.mjs",
     "scripts/lib/board-vers.mjs",
     "scripts/lib/board.mjs",
@@ -65,6 +68,8 @@
     "scripts/lib/workclaim.mjs",
     "scripts/lib/workunit.mjs",
     "scripts/lib/yaml.mjs",
+    "scripts/reqs/line-cmd.mjs",
+    "scripts/reqs/release-cmd.mjs",
     "scripts/work.mjs"
   ]
 }

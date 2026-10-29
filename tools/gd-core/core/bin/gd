@@ -74,6 +74,9 @@ function resolveMainLocal() {
 const SELF_CONTAINED = new Set([
   "core", "work",
   "milestone", "req", "task", "handoff", "check", "ver",
+  // 0.70.x 两轴（B-gm-000064）：发布轴发版账 / 开发线认领。与 milestone·req·task 同属板账实体，
+  //   不路由的话装过总控的机器会被转交给完整 CLI 去打注册项目账。
+  "release", "line",
   "skill", "help", "--help", "-h", "--version", "-v", "version", undefined,
   // `board` 是读面里的无子命令族（0.24.2 R-gm-083）：少了它，装过总控的机器会被转交给完整 CLI 去打注册项目账
   "board",

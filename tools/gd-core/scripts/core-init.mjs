@@ -10,7 +10,8 @@
  *                [--tag <基线tag>] [--no-tag] [--force] [--dry-run] [--json]
  *   gd core status [--json]
  *
- * init 做什么（幂等；已存在只报告不改，`--force` 才重写配置）：
+ * init 做什么（幂等；已存在只报告不改，`--force` 才重写配置——**重写 = 修配置，不是清配置**：
+ *   未显式给的 id / name / repo 沿用旧值，executors 保留，要清名册得显式 `--reset-executors`）：
  *   ① 探测 git 工作区（worktree 感知：`.git` 文件 + `commondir`）
  *   ② 定板根：缺省 `<git-common-dir>/gdtwork`（worktree 共享 · 不入任何提交）· `--in-tree` 摆仓根 · `--board-dir` 显式
  *   ③ 定板 id（编号命名空间，缺省由目录名 kebab 化）：决定 `R-<id>-001` / `T-<id>-001-01` 形态
@@ -37,16 +38,18 @@ import {
   BOARD_SCHEMA,
   DEFAULT_BOARD_DIR,
   DEFAULT_EXECUTOR,
+  EXECUTOR_FALLBACK_NOTE,
   boardIdFromName,
   boardMissingHint,
   gitWorktreeInfo,
   readBoardConfig,
   resolveBoard,
 } from "./lib/board-resolve.mjs";
+import { isRepo } from "./lib/gitcore.mjs"; // 0.70.6 B-gm-000059：判断旧 repo 还能不能用（路径在不在 ≠ 是不是仓根）
 import { boardViewSummary, readBoardFacts, renderBoardBlock, writeBoardBlock } from "./lib/roadmap-view.mjs";
 import { aheadBehind, commitsBetween, compareAccounts, ensureBoardRepo, fetchRemote, headOf, log as boardLog, push as boardPush, recordBackup, rescuePoint, resolveBackupTarget, restore as boardRestore, setBoardOrigin, snapshot, snapshotEnabled } from "./lib/board-vcs.mjs"; // 0.21.8：账库 · 0.22.4：异地备份与还原
 
-export const CLI_FLAGS = ["--board-dir", "--in-tree", "--id", "--name", "--tag", "--no-tag", "--force", "--dry-run", "--json"];
+export const CLI_FLAGS = ["--board-dir", "--in-tree", "--id", "--name", "--tag", "--no-tag", "--force", "--reset-executors", "--dry-run", "--json"];
 
 /** 视图子命令的旗标（与 init/status 分开：写文件与建板是两件事） */
 export const ROADMAP_FLAGS = ["--write", "--out", "--version", "--json"];
@@ -60,7 +63,8 @@ export const CORE_SUBCOMMANDS = ["init", "status", "roadmap", "snap", "doctor", 
 const USAGE = [
   "用法：",
   "  gd core init [--board-dir <路径>] [--in-tree] [--id <板id>] [--name <显示名>]",
-  "               [--tag <基线tag>] [--no-tag] [--force] [--dry-run] [--json]",
+  "               [--tag <基线tag>] [--no-tag] [--force] [--reset-executors] [--dry-run] [--json]",
+  "               # --force 重写配置：未显式给的字段沿用旧值，executors 保留（清名册要 --reset-executors）",
   "  gd core status [--json] [--doctor]                     # 当前板上下文；--doctor 顺带一行体检摘要（有 ✗ 则 exit 1）",
   "  gd core roadmap [--write] [--version <x.y>] [--out <文件>] [--json]   # 派生视图；--write 写标记块，--version 只刷该版本块（并行友好）",
   "  gd core doctor [--json] [--fix]                      # 并行安全体检：账/占用/版本线/结版积压；--fix 清已收尾的残留占用",
@@ -79,7 +83,13 @@ const SUB_FLAGS = {
   version: ["--json"],
 };
 
-const boardYamlText = ({ id, name, repo }) =>
+/**
+ * 板配置文本（`--force` 重写时也走这里）。
+ *
+ * `executors` 由调用方算好传进来：**`--force` 是「修配置」不是「清配置」**（B-gm-000058）——
+ * 名册里的 `note` 是人的输入，整篇重写会静默抹掉它，所以合并逻辑在 `doInit`，这里只管渲染。
+ */
+const boardYamlText = ({ id, name, repo, executors }) =>
   [
     "# 板配置（gd core · 0.19.0）——用 `gd core` / `gd milestone` 维护，勿手改格式",
     "# 口径：docs/gd-core-session-workflow-design.md §3；板根缺省 = <git-common-dir>/gdtwork（worktree 共享、不入提交）",
@@ -89,13 +99,19 @@ const boardYamlText = ({ id, name, repo }) =>
     `  name: ${name}`,
     `repo: ${repo}                    # 板实绑定：交付件路径基准（板根 ≠ 代码根时以本行为准）`,
     "executors:                       # core 极简名册（app 注册 producer / 席位后自动扩充）",
-    `  - id: ${DEFAULT_EXECUTOR}             # 缺省执行体：本机会话 / 人的手`,
+    ...executors.map((e) =>
+      e.note
+        ? `  - id: ${e.id}\n    note: ${e.note}`
+        : e.id === DEFAULT_EXECUTOR
+          ? `  - id: ${e.id}             # 缺省执行体：本机会话 / 人的手`
+          : `  - id: ${e.id}`
+    ),
     "",
   ].join("\n");
 
 const milestonesYamlText = () =>
   [
-    "# gd 里程碑账（板级 · 三层 workflow 顶层）——写法见 docs/gd-core-session-workflow-design.md §7；用 `gd milestone` 维护",
+    "# gd 里程碑账（板级 · 两轴排期的开发轴顶层：里程碑=开发线，卡不带版号）——写法见 docs/gd-core-session-workflow-design.md §7；用 `gd milestone` 维护",
     "milestones: []",
     "",
   ].join("\n");
@@ -111,6 +127,26 @@ function writeIfAbsent(path, content, { force = false } = {}) {
 
 /** 板 id 原始值校验（不走 `boardIdFromName` 的容错派生：人显式给的 id 写错了就该报错） */
 const BOARD_ID_RE = /^[a-z][a-z0-9-]*$/;
+
+/**
+ * `--force` 重写时的执行体名册：**旧名册 ∪ 缺省 local**（保序、保 note）。
+ *
+ * 为什么不整篇清掉（B-gm-000058）：`executors` 是人的输入（`note` 尤其），而 `--force` 的语义是
+ * 「配置坏了，重写一份」——顺手把名册清空属于另一种动作。要清就明说 `--reset-executors`。
+ * 读面补出来的那条 note（`EXECUTOR_FALLBACK_NOTE`）不落盘：它不是盘上的事实。
+ */
+function mergeExecutors(prev = [], args = {}) {
+  if (args["reset-executors"] === true) return [{ id: DEFAULT_EXECUTOR }];
+  const out = [];
+  for (const e of Array.isArray(prev) ? prev : []) {
+    const id = String(e?.id ?? "").trim();
+    if (!id || out.some((x) => x.id === id)) continue;
+    const note = String(e?.note ?? "").trim();
+    out.push(note && note !== EXECUTOR_FALLBACK_NOTE ? { id, note } : { id });
+  }
+  if (!out.some((x) => x.id === DEFAULT_EXECUTOR)) out.unshift({ id: DEFAULT_EXECUTOR });
+  return out;
+}
 
 function gitTagOk(gitTop, tag) {
   const r = spawnSync("git", ["-C", gitTop, "tag", "--list", tag], { encoding: "utf8" });
@@ -168,13 +204,26 @@ function doInit(args) {
     return 0;
   }
 
-  const name = (typeof args.name === "string" && args.name.trim()) || basename(git.top);
+  // `--force` 的语义是「修配置」，不是「清配置」（B-gm-000058）：旧实现整篇重写 ⇒ executors（含 note）、
+  //   name、id 一起被抹掉，而输出只说「已写」。没显式给的字段一律沿用旧值 —— id 尤其不能变，
+  //   它是编号命名空间（换了 id，既有的 R-<id>-… / T-<id>-… 全成孤儿）。
+  const prev = existing.present && !existing.error ? existing : null;
+  const name = (typeof args.name === "string" && args.name.trim()) || prev?.name || basename(git.top);
   const rawId = typeof args.id === "string" && args.id.trim() ? args.id.trim() : null;
-  const id = rawId ?? boardIdFromName(name);
+  const id = rawId ?? prev?.id ?? boardIdFromName(name);
   if (!id || !BOARD_ID_RE.test(id)) {
     console.error(errOut.err(`✗ 板 id 非法："${rawId ?? name}"——需小写 kebab（与 R-<id>-001 同形，如 gm / gdmain）；目录名派生失败时显式给 --id`));
     return 1;
   }
+
+  // repo 是「本机 ↔ 代码仓」的绑定，跨机会失效（B-gm-000059）：旧值还能用就保留，
+  //   用不了（路径不在 / 不是仓根）才重绑到当前 git 顶层，并在回显里点名改了什么。
+  //   为什么不是无条件写 git.top：在 worktree 里跑 init --force 时 git.top 是**那块工作区**，
+  //   无条件写会把板绑到临时目录上。
+  const prevRepo = String(prev?.repo ?? "").trim();
+  const repoStale = prevRepo ? !isRepo(prevRepo) : false;
+  const repo = prevRepo && !repoStale ? prevRepo : git.top;
+  const executors = mergeExecutors(prev?.executors, args);
 
   const plan = {
     root: root.split("\\").join("/"),
@@ -183,7 +232,8 @@ function doInit(args) {
     gitCommonDir: git.commonDir,
     id,
     name,
-    repo: git.top,
+    repo,
+    executors: executors.map((e) => e.id),
     tag: args["no-tag"] === true ? null : String(args.tag ?? "core-base"),
     files: [join(root, BOARD_FILE), join(root, "milestones.yaml"), join(root, "reqs", "index.yaml")].map((p) => p.split("\\").join("/")),
   };
@@ -195,6 +245,7 @@ function doInit(args) {
       console.log(`将建板：${plan.root}   # ${rootMode}`);
       console.log(`  板 id：${id}（编号前缀 R-${id}-001 / T-${id}-001-01）`);
       console.log(`  仓库：${plan.repo}`);
+      console.log(`  执行体：${plan.executors.join(" / ")}`);
       for (const f of plan.files) console.log(out.dim(`    · ${f}  将写`));
     }
     return 0;
@@ -203,10 +254,21 @@ function doInit(args) {
   mkdirSync(join(root, "reqs"), { recursive: true });
   const force = args.force === true;
   const wrote = {
-    board: writeIfAbsent(join(root, BOARD_FILE), boardYamlText({ id, name, repo: git.top }), { force }),
+    board: writeIfAbsent(join(root, BOARD_FILE), boardYamlText({ id, name, repo, executors }), { force }),
     milestones: writeIfAbsent(join(root, "milestones.yaml"), milestonesYamlText()),
     reqsIndex: writeIfAbsent(join(root, "reqs", "index.yaml"), reqsIndexText()),
   };
+
+  // `--force` 改了什么必须说清（B-gm-000058）：静默重写会让人以为「什么都没变」，
+  //   等下次用名册里的 w2 时才发现它没了。
+  const rewrite = force && prev
+    ? [
+        `executors ${executors.length} 条（${executors.map((e) => e.id).join(" / ")}）${args["reset-executors"] === true ? "· --reset-executors 已清名册" : "保留"}`,
+        prev.id !== id ? `id ${prev.id} → ${id}` : null,
+        (prev.name ?? "") !== name ? `name ${prev.name ?? "（空）"} → ${name}` : null,
+        repoStale ? `repo 重绑 ${prevRepo} → ${repo}（旧路径不是 git 仓根）` : (prevRepo && prevRepo !== repo ? `repo ${prevRepo} → ${repo}` : null),
+      ].filter(Boolean)
+    : null;
 
   // 基线 tag（并行会话的同一出发点；已存在则跳过）
   let tagResult = null;
@@ -224,7 +286,7 @@ function doInit(args) {
   const verify = readBoardConfig(root);
   const okVerify = verify.present && !verify.error && verify.id === id;
 
-  const payload = { ok: okVerify, created: true, wrote, tag: tagResult, board: verify };
+  const payload = { ok: okVerify, created: true, wrote, tag: tagResult, rewrite, board: verify };
   if (json) {
     console.log(JSON.stringify(payload, null, 2));
     return okVerify ? 0 : 1;
@@ -234,6 +296,7 @@ function doInit(args) {
   console.log(`  仓库：${verify.repo ?? git.top}   # 交付件路径基准`);
   console.log(`  执行体：${verify.executors.map((e) => e.id).join(" / ")}   # 名册内自由；app 注册后扩充`);
   console.log(`  模式：${verify.mode}   # 由数据派生（seats/index.yaml 存在 ⇒ seat）`);
+  if (rewrite) console.log(out.dim(`  · --force 重写配置：${rewrite.join(" · ")}`));
   for (const [label, p, w] of [
     ["板配置", join(root, BOARD_FILE), wrote.board],
     ["里程碑账", join(root, "milestones.yaml"), wrote.milestones],
@@ -261,13 +324,14 @@ function doInit(args) {
 function printNext(board) {
   const id = board.id ?? "<板id>";
   console.log("");
-  console.log("下一步（三层 workflow）：");
+  console.log("下一步（两轴：开发轴 里程碑→需求→任务 · 发布轴 对外版本 → 需求成员）：");
   console.log("  ① 装工作法 skill（宿主按需加载）：gd-core skill install   # 替代旧的 guide：SOP 已改为 skills/gd-core");
-  console.log('  ② 顶层：gd milestone add "<里程碑名>" --target <YYYY-MM-DD> --alias <版本号> --board');
-  console.log(`  ③ 中层：gd req new "<需求标题>" --board            # 编号 R-${id}-001 锁内自增`);
-  console.log('  ④ 底层：gd task add <需求id> --board --task "local:<任务标题>"');
+  console.log('  ② 开发轴顶层：gd milestone add "<开发线名>" --target <YYYY-MM-DD> --alias <意涵缩写> --board   # 卡 id 自动铸 m-1a，不带版号');
+  console.log(`  ③ 开发轴中层：gd req new "<需求标题>" --line <线段> --board   # 线段 = 卡 id 去 m- 前缀（m-1a ⇒ 1a），id 落 R-${id}-1a-0 线内自增`);
+  console.log('  ④ 开发轴底层：gd task add <需求id> --board --task "local:<任务标题>"');
   console.log(out.dim("  ⑤ 干活：gd work claim → start → submit → land → handoff → check（work 族不加 --board，其余加）"));
-  console.log(out.dim("  ⑥ 账与备份（可选 · 账库默认关）：gd core snap --init（建账库）→ gd core snap --backup --remote <url>"));
+  console.log(out.dim('  ⑥ 发布轴（可选 · 对外版本）：gd release new "<版本名>" --version <x.y> → gd release add <x.y> --req <需求id> → freeze --evidence "…"（须人拍）'));
+  console.log(out.dim("  ⑦ 账与备份（可选 · 账库默认关）：gd core snap --init（建账库）→ gd core snap --backup --remote <url>"));
   console.log(out.dim(`  临时切板：export ${BOARD_ENV}=<板根目录>；本板根 = ${board.root}`));
 }
 
@@ -304,7 +368,7 @@ function doStatus(args) {
   return fail === 0 ? 0 : 1;
 }
 
-/** `gd core roadmap` —— 板上三层账的派生视图（默认打印；--write 写进 roadmap.md 标记块） */
+/** `gd core roadmap` —— 板上两轴账的派生视图（开发轴需求线 + 发布轴对外版本；默认打印；--write 写进 roadmap.md 标记块） */
 function doRoadmap(args) {
   const json = args.json === true;
   const rb = resolveBoard({ cwd: process.cwd() });

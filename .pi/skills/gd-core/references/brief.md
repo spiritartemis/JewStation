@@ -28,8 +28,8 @@
 |---|---|
 | 1 | 本会话持有、租约未过期的 `in_progress` 任务 |
 | 2 | `review` 状态任务（待验收） |
-| 3 | `ready` 且依赖已满足的任务（按子版 → id 排序） |
-| 4 | 活跃里程碑的版号上最早的未结版子版，取其未完成需求 |
+| 3 | `ready` 且依赖已满足的任务（按需求坐标 → id 排序） |
+| 4 | 活跃里程碑上最早的未完成需求（存量板回落「版号上最早的未结版子版」） |
 | 5 | 全板最早未完成需求 |
 
 ```jsonc
@@ -67,7 +67,7 @@
 }
 ```
 
-**版本瘦身规则**：非 `--full` 时 `versions[]` **只含还没结版的版本**（+ 该版号上还没开工的空位）；
+**版本瘦身规则（存量板）**：非 `--full` 时 `versions[]` **只含还没结版的版本**（+ 该版号上还没开工的空位）；
 已结版版本只计数（`versions_closed` / `versions_total`）。原因：全量展开实测让 `map` 段涨到 13 KB，
 把整个 JSON 顶破 16 KB 预算。
 
@@ -84,8 +84,8 @@
   "subvers": [ { "alias": "0.48.0", "closed": false, "reqs_done": 0, "reqs_total": 1 } ] }
 ```
 
-- `planned: true` = 里程碑有版号、但该版本还没排活（**不是欠账**）
-- `closed` = 其下子版全部已结版
+- `planned: true` = 里程碑有版号、但该版本还没排活（**不是欠账**；存量板口径）
+- `closed` = 其下子版全部已结版（存量板口径）
 
 ## recent（上次干到哪儿）
 
@@ -109,8 +109,10 @@
 | 1 | 你手上的占用（续作） | 本会话租约内的 `in_progress` | `gd work start <id>` |
 | 2 | 待你验收 | `review` | `gd check <id> --pass` |
 | 3 | 可开工 | `ready` 且依赖全 `done` | `gd work claim <id> && gd work start <id>` |
-| 4 | 子版待结版（要人拍） | 子版下需求全验收但未结版 | `gd ver reach x.y.z --confirm x.y.z` |
-| 5 | 需求未拆任务 | 未终态需求零任务 | `gd task add <rid> --task "…"` |
+| 4 | 对外版本成员已全验收（冻结要人拍） | `releases.yaml` 里 draft 版本且成员需求全 `done` | `gd release freeze <x.y> --evidence "…"` |
+| 5 | 开发线未认领（并行时会抢线） | 线上还有未完成需求，`lines.yaml` 无该线段归属 | `gd line claim <线段> --as <名字>` |
+| 6 | 子版待结版（**存量口径** · 要人拍） | 子版下需求全验收但未结版 | `gd ver reach x.y.z --confirm x.y.z` |
+| 7 | 需求未拆任务 | 未终态需求零任务 | `gd task add <rid> --task "…"` |
 
 ```jsonc
 { "rank": 3, "why": "可开工（依赖已满足）",
@@ -118,7 +120,7 @@
   "cmd": "gd work claim T-gm-48-0-01 && gd work start T-gm-48-0-01" }
 ```
 
-`target.kind` ∈ `task` / `subver` / `req`；`kind: subver` 时 `title` 为 `null`（id 已自解释）。
+`target.kind` ∈ `task` / `release` / `line` / `subver` / `req`；`kind` 为 `release` / `line` / `subver` 时 `title` 为 `null`（id 已自解释）。
 
 ## drift（账上的矛盾）
 
@@ -136,15 +138,17 @@
 
 | code | level | 判据 | 建议命令 |
 |---|---|---|---|
-| `VER_UNCLAIMED` | warn | 版本线有未结版需求，`lanes.yaml` 无该版本归属 | `gd ver claim <x.y>` |
-| `REQ_ON_CLOSED_SUBVER` | warn | 需求挂在已结版子版上、状态非终态 | `gd req status <rid>` |
-| `REQ_VERSION_IN_RANGE` | warn | 需求子版落在某里程碑的版号上，却没挂那张里程碑 | `gd milestone update <m> --req-add <rid>` |
+| `VER_UNCLAIMED` | warn | **存量板**：版本线有未结版需求，`lanes.yaml` 无该版本归属 | `gd ver claim <x.y>` |
+| `LINE_UNCLAIMED` | info | 开发线有未完成需求，`lines.yaml` 无该线段归属（并行时会抢线） | `gd line claim <线段> --as <名字>` |
+| `RELEASE_DRAFT_DONE` | info | 对外版本是 `draft` 但成员需求已全验收（冻结要人拍） | `gd release freeze <x.y> --evidence "…"` |
+| `REQ_ON_CLOSED_SUBVER` | warn | **存量板**：需求挂在已结版子版上、状态非终态 | `gd req status <rid>` |
+| `REQ_VERSION_IN_RANGE` | warn | **存量板**：需求子版落在某里程碑的版号上，却没挂那张里程碑 | `gd milestone update <m> --req-add <rid>` |
 | `CLAIM_EXPIRED` | warn | 占用租约已过期（非 done 任务） | `gd work claim <tid>` |
 | `DONE_WITH_CLAIM` | warn | `done` / `review` 却仍带占用 | `gd core doctor --fix` |
 | `UNPUSHED_COMMITS` | warn | 主仓有未推送提交；**无 upstream 时整项不出现** | `git push` |
 | `DIRTY_MAIN` | info | 主树有未提交改动 | `git status --short` |
 | `REQ_NO_TASK` | info | 未终态需求零任务 | `gd task add <rid> --task "…"` |
-| `SUBVER_READY_UNCLOSED` | info | 子版需求已全验收但未结版（结版要人拍） | `gd ver reach x.y.z --confirm x.y.z` |
+| `SUBVER_READY_UNCLOSED` | info | **存量板**：子版需求已全验收但未结版（结版要人拍） | `gd ver reach x.y.z --confirm x.y.z` |
 
 **「无假字段」判据**：拿不到的事实整项不出现。`UNPUSHED_COMMITS` 在没有 upstream 时**不报 0**
 （0 会把人骗成"已推送"）；`--no-git` 时两条 git 类判据一起消失。

@@ -21,9 +21,52 @@ export const DEFAULT_LEASE_MINUTES = 15;
 
 /** 认领时从环境取的会话标识（pi 会话 id；无则退化为 pid+host，仍可追踪） */
 export function sessionIdFromEnv(env = process.env) {
-  const raw = String(env.PI_SESSION_ID ?? env.PI_INTERCOM_SESSION_ID ?? env.GD_SESSION ?? "").trim();
+  // 取**第一个非空**的那个（B-gm-000061）：用 `??` 链会被空串短路——包装脚本把 PI_SESSION_ID 设成 "" 时，
+  //   GD_SESSION 就永远读不到，人明明 export 了却还是退化成 pid-<pid>，症状和「忘了 export」一模一样。
+  const raw = [env.PI_SESSION_ID, env.PI_INTERCOM_SESSION_ID, env.GD_SESSION]
+    .map((v) => String(v ?? "").trim())
+    .find((v) => v) ?? "";
   if (!raw) return `pid-${process.pid}`;
   return raw.replace(/-/g, "").slice(0, 8); // 短号：人读够用、账里不占宽
+}
+
+/**
+ * 会话号是不是「裸进程」退化的（没 export `GD_SESSION` / `PI_SESSION_ID` ⇒ 每条 gd 命令一个新 pid）。
+ *
+ * 为什么值得单独判（B-gm-000061）：退化会话**永远不会续期**——续期靠「同一会话再动账」，
+ * 而下一个进程的 pid 必然不同。于是它有两件后果，缺一条人都只会去干等：
+ *   ① 挡自己：上一条命令留下的占用，下一条命令眼里就是「他人持有」（E_CLAIMED）；
+ *   ② 保不住活：没有任何后续命令能续期，15 分钟后必然可被抢（长活干到一半被人接走）。
+ */
+export function isPidSession(session) {
+  return /^pid-\d+$/.test(String(session ?? "").trim());
+}
+
+/**
+ * 占用拒单的出路 —— `claim` / `handoff` / `release` 共用一份措辞（B-gm-000061）。
+ *
+ * 判据：**双方都是 pid 会话** ⇒ 几乎一定是同一个人连跑两条命令
+ *   （同机真有两个裸进程抢同一任务，概率远低于「忘了 export」）。
+ *   这时先教固定会话号，再给「立刻能走」的那一步——只给「等 15 分钟」等于让人干等。
+ *
+ * @returns {string[]} 裸行（不带缩进前缀，由调用方决定怎么排）
+ */
+export function claimBlockHints({ taskId, holder, session, ttl = DEFAULT_LEASE_MINUTES }) {
+  const h = String(holder ?? "").trim();
+  if (isPidSession(h) && isPidSession(session)) {
+    return [
+      `你这台 shell 没设会话号：每条 gd 命令都是新进程 ⇒ 会话退化成 ${h}，自己撞自己`,
+      `正解：export GD_SESSION=<固定短名>（≤8 字符，整轮别改）——之后认领 / 交件 / 交还都认得出是你`,
+      `现在就要接过来：gd work release ${taskId} --force（裸进程会话不会续期，也可以等 ${ttl} 分钟自动过期）`,
+    ];
+  }
+  if (isPidSession(h)) {
+    return [
+      `持有者 ${h} 是裸进程会话（没设 GD_SESSION）——它不会续期，${ttl} 分钟后自动可抢`,
+      `确认那是你自己上一条命令：gd work release ${taskId} --force`,
+    ];
+  }
+  return [`等租约过期（${ttl} 分钟无心跳即自动可抢），或让持有者 gd work release ${taskId}`];
 }
 
 /** 宿主名（审计用；认领只在同机有意义，跨机协作走 app 层） */

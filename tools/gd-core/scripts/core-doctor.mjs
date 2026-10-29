@@ -20,7 +20,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { out } from "./lib/style.mjs";
-import { resolveBoard } from "./lib/board-resolve.mjs";
+import { repoBindOf, resolveBoard } from "./lib/board-resolve.mjs";
 import { readAllLedgers, readReqEntries, readTaskLedger, withBoardLock, writeTaskLedger } from "./lib/board.mjs";
 import { isClaimExpired, claimOf } from "./lib/workclaim.mjs";
 import { boardOrigin, deliveryOrigin, log as boardLog, readBackupMark, snapshotEnabled } from "./lib/board-vcs.mjs";
@@ -60,6 +60,21 @@ export function doctorChecks(board, { now = Date.now() } = {}) {
     push("board-backup", "异地备份（板账远端）", "warn", `远端可推导（${ownRemote ? "板账仓 origin" : "交付仓 origin"}）但本机从未备份过（gd core snap --backup）`);
   } else {
     push("board-backup", "异地备份（板账远端）", "ok", `已备份 · ${String(mark.at ?? "").slice(0, 16).replace("T", " ")} · ${mark.ref}@${String(mark.hash ?? "").slice(0, 7)}`);
+  }
+
+  // ①c 板 ↔ 代码仓绑定（B-gm-000059）：repo 记的是「当初 init 那台机」的绝对路径，跨机 / 换盘符后失效，
+  //   而体检原先完全不看它 —— 6 项全过、碰代码的命令却一条都跑不动（假绿）。
+  //   判据与写面报错共用 `repoBindOf`（同一判据两个渲染层 ⇒ 判据下沉一层）。
+  //   等级：缺失 ⇒ warn（账面照用，只是碰代码的命令没路）；失效 / 非仓根 ⇒ fail（矛盾：说绑了其实绑不上）。
+  const bind = repoBindOf(board);
+  if (bind.state === "missing") {
+    push("repo-bind", "代码仓绑定（repo）", "warn", "board.yaml 未记 repo —— 交付件基准与工作区只能退回板根（跨机搬板后多半要补这一行）");
+  } else if (bind.state === "absent") {
+    push("repo-bind", "代码仓绑定（repo）", "fail", `repo 路径在本机不存在：${bind.path} —— 换机 / 换盘符后要改成当前机器的路径（手改 board.yaml 顶格那行，或 gd core init --force 自动重绑）`);
+  } else if (bind.state === "not-repo") {
+    push("repo-bind", "代码仓绑定（repo）", "fail", `repo 不是 git 仓根：${bind.path} —— 要指向含 .git 且 show-toplevel 等于自身的目录`);
+  } else {
+    push("repo-bind", "代码仓绑定（repo）", "ok", `已绑定 ${bind.path}`);
   }
 
   // ② 账自洽

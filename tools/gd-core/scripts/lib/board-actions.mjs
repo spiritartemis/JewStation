@@ -18,13 +18,73 @@
 import { locateBoardTask } from "./board-context.mjs";
 import { applyTransition, checkTraceAttach, currentArtifactsOf } from "./board-ledger.mjs";
 import { artifactOf, checksumOfPath } from "./artifacts.mjs";
+import { checksumOfPathAt, commitsTouching, dirtyPaths, headOf, isGitRepo, typeAt } from "./artifact-git.mjs";
 import { ARTIFACT_ERRORS, collideLines, normPath } from "./artifact-conflict.mjs"; // 0.70.5 R-gm-70-5：冲突拒单码 + 行化 + 路径归一（判据本身在 board-ledger 锁内）
 import { nowIso } from "./board.mjs"; // 0.33.1：trace 关联的登记时间
 import { readTaskLedger, reqStatusOfLedger } from "./board.mjs"; // 0.49.6（F2）：派生态回显不能靠「有没有变化」猜
 import { join } from "node:path";
-import { claimOf, describeClaim, isClaimExpired, sessionIdFromEnv } from "./workclaim.mjs"; // 0.24.2 R-gm-087：占用闸门（core 层租约判据）
+import { existsSync } from "node:fs";
+import { claimBlockHints, claimOf, describeClaim, isClaimExpired, sessionIdFromEnv } from "./workclaim.mjs"; // 0.24.2 R-gm-087：占用闸门（core 层租约判据）· B-gm-000061：出路与 claim 同源
 import { out, errOut } from "./style.mjs";
 import { spawnSync } from "node:child_process";
+
+/**
+ * 交付件条目：优先取**落地提交里的内容**（0.70.6 · B-gm-000060）。
+ *
+ * 为什么指纹不取工作树字节：工作树会被后续任务合法改动（改同文件 / 删文件），
+ *   拿它当事实源 ⇒「后续任务合法改动」与「成果被回退」判成同一件事。
+ *   取提交内容则：成果在不在，看提交就知；后续改动动不了既成事实。
+ * 取不到（无提交 / 非 git 仓 / 该件没进那个提交）⇒ 退回工作树视图，并在账上标明 source。
+ * @param {string} basis 交付件基准（代码仓根）
+ * @param {string} rel 仓内相对路径
+ * @param {string|null} base 落地 / 提交提交号（可为 null）
+ */
+function artifactAt(basis, rel, base) {
+  const norm = String(rel).split("\\").join("/");
+  if (base && isGitRepo(basis)) {
+    const type = typeAt(basis, base, norm);
+    if (type === "blob" || type === "tree") {
+      const kind = type === "tree" ? "package" : "file";
+      const checksum = checksumOfPathAt(basis, base, norm, kind);
+      // source_commit 逐件记下「这个指纹是从哪个提交算的」——任务的 landed.head 不稳
+      //   （同工作单元里再 land 一次会把它刷成新头），逐件记才能定位「我交的是哪一版」。
+      if (checksum) return { path: norm, kind, checksum, at: nowIso(), source: "commit", source_commit: base };
+    }
+  }
+  return artifactOf(basis, rel);
+}
+
+/**
+ * 任务的「事实源提交」：落地提交优先，其次提交提交。
+ * @param {object|null} task 任务账条目
+ * @returns {string|null} 提交号（读不到返回 null）
+ */
+function commitBaseOf(task) {
+  const pick = (v) => {
+    if (!v) return null;
+    if (typeof v === "object") {
+      const head = v.head ?? v.commit ?? null;
+      return typeof head === "string" && head.trim() ? head.trim() : null;
+    }
+    if (typeof v === "string") {
+      const s = v.trim();
+      if (/^[0-9a-f]{7,40}$/i.test(s)) return s; // 直接就是提交号
+      // 账里的 `landed` / `submitted` 是**对象** ⇒ 本仓 yaml 子集不认非空 flow mapping
+      //   ⇒ parseYaml 读回来是一串 JSON 文本（序列化时也是这么写的）。这里把它解开。
+      if (s.startsWith("{")) {
+        try {
+          const o = JSON.parse(s);
+          const head = o?.head ?? o?.commit ?? null;
+          return typeof head === "string" && head.trim() ? head.trim() : null;
+        } catch {
+          return null;
+        }
+      }
+    }
+    return null;
+  };
+  return pick(task?.landed) ?? pick(task?.submitted);
+}
 
 /**
  * 当前分支（core 层最小实现）。
@@ -46,6 +106,25 @@ function branchOfCwd() {
 
 /** handoff 只驱动这两档：`in_progress` 认领 / 返工，`review` 交件（`done` 归 check） */
 export const HANDOFF_STATUSES = ["in_progress", "review"];
+
+/**
+ * 工作单元的工作区路径（账上 `work_units[].path`）——只给报错文案用。
+ *
+ * 为什么要读账：分支闸门拒单时要告诉人「cd 到哪儿」，而这个路径只有账上有；
+ *   猜路径（`<repo>.wt/<需求id>`）在 `--worktree-dir` 自定义时就是错的。
+ * 读不到（账缺 / 解析失败 / 单元不在册）一律返回 null，由调用方退回落文案——不因为读不到就拒。
+ */
+function workUnitPathOf(loc, unit) {
+  try {
+    const ledger = readTaskLedger(loc.projDir, loc.reqId);
+    const units = Array.isArray(ledger.workUnits) ? ledger.workUnits : [];
+    const hit = units.find((u) => String(u?.id ?? "") === unit || String(u?.branch ?? "") === unit);
+    const path = String(hit?.path ?? "").trim();
+    return path || null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * 需求**当前**派生态（0.49.6 F2）——只给回显用。
@@ -133,21 +212,27 @@ export function handoffOnBoard(p) {
   const forced = p.force === true;
   if (held && !isClaimExpired(held)) {
     const holder = String(held.session ?? "");
-    const mine = holder && holder === sessionIdFromEnv();
+    const session = sessionIdFromEnv();
+    const mine = holder && holder === session;
     if (!mine && !forced) {
       return {
         ok: false,
         code: 1,
         lines: [
-          errOut.err(`✗ 不可交件：${p.taskId} 正被占用（持有者 ${holder || "?"} · ${describeClaim(held)}）`),
-          `  · 等租约过期（无心跳即自动可抢）· 让持有者 gd work release ${p.taskId} · 确需接管：加 --force（留痕）`,
+          errOut.err(`✗ 不可交件：${p.taskId} 正被占用（${describeClaim(held)}）`), // 会话名在 describeClaim 里，别再前缀一遍（B-gm-000061 顺带修的重复渲染）
+          // B-gm-000061：出路与 `gd work claim` 的 E_CLAIMED 用同一份措辞（自己撞自己时先教会话号）
+          ...claimBlockHints({ taskId: p.taskId, holder, session }).map((l) => `  · ${l}`),
+          `  · 确需接管：加 --force（留痕）`,
         ],
       };
     }
   }
   const artifacts = [];
+  const basis = loc.artifactRoot ?? loc.projDir; // 基准是代码仓（artifactBasis）
+  const base = commitBaseOf(loc.task);
   for (const rel of p.artifacts ?? []) {
-    const art = artifactOf(loc.artifactRoot ?? loc.projDir, rel); // 基准是代码仓（artifactBasis）
+    // 指纹优先取**落地提交里的内容**（权威事实源）；没有提交可依时退回工作树视图（source 标出来）
+    const art = artifactAt(basis, rel, base);
     if (!art) return { ok: false, code: 1, lines: [errOut.err(`✗ 交付件不存在（相对项目根）：${rel}`)] };
     artifacts.push(art);
   }
@@ -188,15 +273,22 @@ export function handoffOnBoard(p) {
     }
     const br = unit && !direct ? branchOfCwd() : "";
     if (br && br !== unit) {
-      return {
-        ok: false,
-        code: 1,
-        lines: [
-          errOut.err(`✗ 不可交件：当前在分支 ${br}，但 ${p.taskId} 的工作单元是 ${unit}`),
-          `  · cd 到工作区再交件（gd work list 可查目录）`,
-          `  · 确需在别的分支交件：加 --direct（落事件留痕）`,
-        ],
-      };
+      // B-gm-000057：报错里的「cd 到工作区」必须是**能跑通**的——`land` 默认回收工作区 + 删分支，
+      //   此时人回主仓交件，原来那句指引指向一个已被删掉的目录（判据：指引必须可执行）。
+      //   出路按「工作区还在不在」分岔：在 ⇒ 给绝对路径；不在 ⇒ 给 `gd work start` 原地重开。
+      const unitPath = workUnitPathOf(loc, unit);
+      const gone = unitPath ? !existsSync(unitPath) : false;
+      const lines = [errOut.err(`✗ 不可交件：当前在分支 ${br}，但 ${p.taskId} 的工作单元是 ${unit}`)];
+      if (gone) {
+        lines.push(`  · 工作区已被 land 回收（${unitPath}）——原地重开：gd work start ${p.taskId}`);
+        lines.push(`    然后 cd 进去交件；回收是 land 的默认行为，下次合入用 gd work land ${p.taskId} --keep`);
+      } else if (unitPath) {
+        lines.push(`  · cd 到工作区再交件：${unitPath}（gd work list 可查目录）`);
+      } else {
+        lines.push(`  · cd 到工作区再交件（gd work list 可查目录）`);
+      }
+      lines.push(`  · 确需在别的分支交件：加 --direct（落事件留痕）`);
+      return { ok: false, code: 1, lines };
     }
   }
 
@@ -251,7 +343,7 @@ export function handoffOnBoard(p) {
   if (done.length || remain.length || p.decision || p.next) {
     lines.push(`  交接四要素：done ${done.length} · remain ${remain.length} · decision ${p.decision ? "有" : "无"} · next ${p.next ?? "—"}`);
   }
-  for (const a of entered) lines.push(`  交付件：${a.path}（${a.kind} · ${a.checksum}）`);
+  for (const a of entered) lines.push(`  交付件：${a.path}（${a.kind} · ${a.checksum} · ${a.source === "commit" ? "取自落地提交" : "工作树视图"}）`);
   for (const d of deduped) lines.push(out.dim(`  ↺ 判重跳过：${d.path}（同路径同指纹 ${d.checksum}，账上已有，不重复入账）`));
   for (const id of traceIds) lines.push(`  决策 trace：${id}（验收时按它回填后验标签）`);
   if (result.to === "review") lines.push("  ℹ 已进入验收窗口：gd check <任务id> --pass | --reject \"原因\"");
@@ -283,24 +375,78 @@ export function checkOnBoard(p) {
   // B-gm-000004：验收前复算「当前有效」交付件指纹。
   //   背景：artifacts 段曾只追加不失效——同一文件被后续任务改动后，原任务账上的旧指纹永远对不上，
   //   而 `--pass` 完全不看件，于是「账说 sha256:A、代码是 B」也能过验收，审计无从分辨。
-  //   现在：对不上就不许静默 pass；两条收口——改动方补 handoff（推荐，账上留痕）或 --force 覆盖留痕。
+  // 0.70.6 改判据（B-gm-000060）：事实源从「当前工作树字节」换成「**落地提交里那份内容**」。
+  //   为什么换：工作树会被后续任务合法改动（改同一个文件 / 删掉它），
+  //     拿它当事实源 ⇒「后续任务合法改动」与「成果被回退」被判成同一件事
+  //     （本仓 3 次触发全是假阳性、0 次真阳性）。
+  //   三问（顺序即优先级）：
+  //     ① 成果还在吗：落地提交里该件内容 vs 账上指纹 ⇒ 对得上就是成果仍在
+  //     ② 后续谁碰过：落地提交之后哪些提交改过它 ⇒ **只提示，不拦**（成果仍在就是成果仍在）
+  //     ③ 工作树干不干净：未提交的改动**不会**被 land 带走，与已交付内容无关 ⇒ 只提示，不拦
+  //   判定程序（任一成立即「成果仍在」）：
+  //     · 落地提交里该件内容 == 账上指纹   （交过且已入提交——最常见）
+  //     · 当前工作树字节 == 账上指纹       （没入提交但也没人动过）
+  //     · 有后续提交改过它                （后续任务合法改动 / 删除）
+  //   三条都不成立 ⇒ **真失配**（账实不符且无解释）⇒ 拦。
+  //   落地提交读不到（非 git 仓 / 无 landed 记录）⇒ 自动退回「比工作树字节」的旧口径。
   const stale = [];
+  const hints = [];
   if (p.pass) {
     const basis = loc.artifactRoot ?? loc.projDir;
+    const taskBase = commitBaseOf(task);
+    const isGit = isGitRepo(basis);
+    const head = isGit ? headOf(basis) : null;
+    const paths = [];
     for (const a of currentArtifactsOf(task)) {
       if (!a.checksum) continue; // 存量条目无指纹：无从校验，跳过（不报假警）
-      const now = checksumOfPath(join(basis, a.path));
-      if (now !== a.checksum) stale.push({ path: a.path, recorded: a.checksum, current: now });
+      paths.push(a.path);
+      // **逐件**取事实源提交：件自己记的 source_commit（我交的是哪一版）优先；
+      //   没有就退回任务的落地头（老账）。不能用任务级头当唯一事实源——
+      //   同工作单元里再 land 一次会把它刷成新头（原任务因此误判失配，实测踩过）。
+      const base = a.source_commit ?? taskBase;
+      const atCommit = base && isGit ? checksumOfPathAt(basis, base, a.path, a.kind ?? null) : null;
+      const atWorktree = checksumOfPath(join(basis, a.path));
+      if (atCommit !== null && atCommit === a.checksum) {
+        // ① 成果仍在（按落地提交）——后续谁碰过它，只提示
+        if (head) {
+          const later = commitsTouching(basis, base, head, a.path);
+          if (later && later.length) {
+            hints.push(`${a.path}：后续提交 ${later.map((c) => `${c.sha} ${c.subject}`).join("；")} 改过它 —— 成果仍在（按落地提交核），放行`);
+          }
+          if (typeAt(basis, head, a.path) === null) {
+            hints.push(`${a.path}：已被后续提交删除 —— 交付时它在、现在不在，不判失配`);
+          }
+        }
+        continue;
+      }
+      if (atWorktree === a.checksum) continue; // ② 工作树还是交付时那份
+      // ③ 后续提交碰过它吗？碰过 ⇒ 后续任务合法改动，放行（只提示）
+      const later = head && base ? commitsTouching(basis, base, head, a.path) : null;
+      if (later && later.length) {
+        hints.push(`${a.path}：后续提交 ${later.map((c) => `${c.sha} ${c.subject}`).join("；")} 改过它 —— 成果仍在，放行`);
+        continue;
+      }
+      stale.push({
+        path: a.path,
+        recorded: a.checksum,
+        current: atCommit ?? atWorktree,
+        why: atCommit === null ? "落地提交读不到，按当前工作树核也对不上" : "落地提交里该件内容与账上指纹不符，且没有后续提交能解释",
+      });
+    }
+    // 工作树有没有未提交改动（只提示，不拦）
+    const dirty = dirtyPaths(basis, paths);
+    if (dirty && dirty.length) {
+      hints.push(`工作树有未提交改动（${dirty.join("；")}）—— 未提交的改动不会被 land 带走，与已交付内容无关，不影响验收`);
     }
     if (stale.length > 0 && p.force !== true) {
       return {
         ok: false,
         code: 1,
         lines: [
-          errOut.err(`✗ 不可验收：${p.taskId} 的交付件已与账不符（E_ARTIFACT_STALE · ${stale.length} 件）`),
-          ...stale.map((s) => `  · ${s.path}：账上 ${s.recorded} · 当前 ${s.current ?? "（文件已不存在）"}`),
-          "  两种收口（推荐第一种）：",
-          `    ① 让改动方对当前文件补一条交件：gd handoff ${p.taskId} --done "…" --artifact <路径>（账上留痕）`,
+          errOut.err(`✗ 不可验收：${p.taskId} 的交付件与账不符（E_ARTIFACT_STALE · ${stale.length} 件）`),
+          ...stale.map((s) => `  · ${s.path}：账上 ${s.recorded} · ${s.current === null ? "当前（文件已不存在）" : `当前 ${s.current}`}${s.why ? ` —— ${s.why}` : ""}`),
+          "  这是真失配（账实不符且无解释），两条收口：",
+          "    ① 恢复成果：把该件改回交付时的内容并提交，再验收",
           `    ② 确认改动无害：gd check ${p.taskId} --pass --force（覆盖项记进 review.artifact_override）`,
         ],
       };
@@ -332,6 +478,8 @@ export function checkOnBoard(p) {
     out.ok(`✅ 验收${p.pass ? "通过" : "打回"}：${p.taskId}（${task.title ?? ""}）`),
     `  状态：${result.from} → ${result.to} · 结论：${review.verdict} by ${by}${p.pass ? "" : ` · 原因：${p.reject}`}`,
     ...(override ? [out.warn(`  ⚠ 已用 --force 覆盖 ${override.length} 件失效交付件（覆盖项记进 review.artifact_override）`)] : []),
+    // 0.70.6（B-gm-000060）：后续改动 / 未提交改动只提示——它们不改「成果在不在」这个事实
+    ...hints.map((h) => out.dim(`  ℹ ${h}`)),
     // 0.33.1：后验标签（有 trace 关联才回填；没关联就不提，免得让人以为标签机制坏了）
     ...((result.labels ?? []).length > 0
       ? [`  后验标签：${result.labels.map((l) => `${l.trace_id} → ${l.label}`).join(" · ")}（落 ${join(loc.projDir, "labels.jsonl")}；gd decision eval 可聚合）`]
