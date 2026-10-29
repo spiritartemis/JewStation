@@ -1,1 +1,2 @@
 {"seq":1,"at":"2026-10-29T14:26:07Z","actor":"local","kind":"claim","task":"T-jew-1b-10-01","to":"local","state":"working","text":"会话 v29d 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-1b-10"}
+{"seq":2,"at":"2026-10-29T14:26:34Z","actor":"local","kind":"claim","task":"T-jew-1b-10-01","to":"local","state":"working","text":"会话 v29d 认领（租约 15 分钟 · 续期）","req":"R-jew-1b-10"}
