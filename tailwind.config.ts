@@ -48,6 +48,14 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
+        /**
+         * Hero 展示级字号：随视口缩放（375px ≈ 36px → 桌面 ≈ 68px），行高压到 1.04 做编辑感排版。
+         * 仍遵循「移动优先 + 不溢出」：用 vw 而非固定值，窄屏不会撑破。
+         */
+        display: [
+          "clamp(2.25rem, 9vw, 4.25rem)",
+          { lineHeight: "1.04", letterSpacing: "-0.015em" },
+        ],
         // 移动端口径：H1 20/28 · H2 16/20 · 正文 14/22 · 辅助 12/18（05 §3.2）
         h1: ["1.25rem", { lineHeight: "1.75rem" }],
         h2: ["1rem", { lineHeight: "1.25rem" }],

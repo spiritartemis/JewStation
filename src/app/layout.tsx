@@ -12,6 +12,8 @@ import { SITE } from "@/lib/site";
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  // Hero 的斜体大字要用真正的斜体字形，而不是浏览器合成的倾斜
+  style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
 });

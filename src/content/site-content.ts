@@ -14,7 +14,12 @@ import type { Doc } from "./types";
  * 文案放内容源而非组件（B-2.8）；图片素材属站长（Q-16 / Q-53），未到位前只渲染占位。
  */
 export const HOME_HERO = {
-  headline: "Made by hand, worn every day",
+  /** 眉标：一行小字，交代品牌身份（不抢主标语） */
+  eyebrow: "Handmade in small batches",
+  /** 主标语第一行（正体） */
+  headline: "Made by hand,",
+  /** 主标语第二行（斜体 + 陶粉色，构成编辑感的双行大字） */
+  headlineAccent: "worn every day.",
   subline: "Small-batch jewellery — one-of-a-kind pieces and limited runs.",
   ctaLabel: "Shop new",
   ctaHref: "/collections/new",
