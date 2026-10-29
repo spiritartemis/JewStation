@@ -25,5 +25,78 @@ tasks:
     work_unit: req/R-jew-1b-10
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: tailwind.config.ts
+        kind: file
+        checksum: sha256:70298c898934e798229897f824b6d68f3c06f41b5c1fabe20d5868e98075b452
+        at: 2026-10-29T14:44:20Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/app/globals.css
+        kind: file
+        checksum: sha256:cb7e9cc4131f09ce0e6dfde3ffb364755f4fd23aed0fc2fb8fe852120ef99ad3
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/app/layout.tsx
+        kind: file
+        checksum: sha256:93709c1a1422991427fd8b70b19076a1c38357bd174c3a0491aa8dbf55af390a
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/app/page.tsx
+        kind: file
+        checksum: sha256:1ae6c967c267ca21deb6f6a437b48381e26779f3acce16088047a7986ec1c09e
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/components/Section.tsx
+        kind: file
+        checksum: sha256:fe2d8295eb26e0ca8f7f5984764bb6c66bc686a68d9e14bb5cb7f152071b2da0
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/components/home/Hero.tsx
+        kind: file
+        checksum: sha256:2a6418dc314118e67497da5886587c05d7df2b70023153a7412bcf34af604881
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/components/home/StyleGrid.tsx
+        kind: file
+        checksum: sha256:b4ea77d935f493b800b768e266fc172e5e6021ff16d3c609705b4bb663de239b
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/components/home/ProductRail.tsx
+        kind: file
+        checksum: sha256:d1fe07cca7693725af47eb96a176a938bd1c44dbceb02aaa1034b9acf758ec1e
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/components/product/ProductCard.tsx
+        kind: file
+        checksum: sha256:c4a5c2a1024c5dc28da4a143c0a7d171be33213a0725f2fe68b7a8fc6b2090eb
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/content/site-content.ts
+        kind: file
+        checksum: sha256:6290d34fe971114f9f9dfd84a094d07726ab7b40b2a3439949609487652155d3
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: src/lib/site.ts
+        kind: file
+        checksum: sha256:9e67019de6eef03b19ad53f0ed9cb30541421282c6db3d99dbe71d5870e80774
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
+      - path: docs/视觉规范-莫兰迪色板.md
+        kind: file
+        checksum: sha256:44fd9b10ed489b990c8393148627e3b0142483a71ddf8754c3a9879bcf660d87
+        at: 2026-10-29T14:44:21Z
+        source: commit
+        source_commit: a7b426b
     submitted: {"at":"2026-10-29T14:43:50.159Z","head":"a7b426b","base":"master","committed":false,"files":0}
     landed: {"at":"2026-10-29T14:43:57.088Z","base":"master","head":"a7b426b","cleanup":{"worktree":"kept","branch":"kept"}}
