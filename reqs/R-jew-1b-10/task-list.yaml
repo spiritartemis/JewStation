@@ -10,7 +10,8 @@ tasks:
   - id: T-jew-1b-10-01
     title: 首页视觉迭代：品牌落地 + 莫兰迪浅色版 + 图片重制（0.2-11~0.2-10）
     executor: local
-    status: ready
+    status: in_progress
     created: 2026-10-29
     input: |
       （待总控补充输入）
+    claim: {"session":"v29d","pid":69677,"host":"Mona.local","since":"2026-10-29T14:26:06.956Z","heartbeat":"2026-10-29T14:26:06.956Z"}
