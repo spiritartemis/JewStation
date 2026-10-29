@@ -79,6 +79,19 @@ const config: Config = {
         // 克制动效：淡入 120ms（05 §3.4）
         fade: "120ms",
       },
+      keyframes: {
+        /**
+         * Hero 缓慢推镜（Ken Burns）：22s 单向、alternate 来回，整周期 44s。
+         * 幅度 7.5%（1.0 → 1.075）—— 再小看不出在动，再大就晕；只动 transform，不触发布局。
+         */
+        kenburns: {
+          "0%": { transform: "scale(1.0) translate3d(0, 0, 0)" },
+          "100%": { transform: "scale(1.075) translate3d(-1.2%, -0.9%, 0)" },
+        },
+      },
+      animation: {
+        kenburns: "kenburns 22s ease-in-out infinite alternate",
+      },
       maxWidth: {
         shell: "1200px",
       },

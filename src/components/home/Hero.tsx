@@ -33,7 +33,8 @@ export function Hero() {
             priority
             sizes="100vw"
             // 裁短后取景会变：移动端竖裁，焦点偏左（人物在画面左侧 1/3）；桌面横裁，焦点尽量靠上保住头顶
-            className="object-cover object-[38%_18%] md:object-[50%_8%]"
+            // 推镜（kenburns）：只缩放 5.5%，原点放在焦点上，头部不会被推出画面；reduce motion 时静止
+            className="animate-kenburns origin-[38%_30%] object-cover object-[38%_18%] will-change-transform motion-reduce:animate-none md:origin-[50%_30%] md:object-[50%_8%]"
           />
         ) : (
           <span className="text-aux uppercase tracking-[0.16em] text-muted">
