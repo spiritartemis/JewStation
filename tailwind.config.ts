@@ -81,7 +81,7 @@ const config: Config = {
       },
       keyframes: {
         /**
-         * Hero 缓慢推镜（Ken Burns）：22s 单向、alternate 来回，整周期 44s。
+         * Hero 缓慢推镜（Ken Burns）：18s 单向、alternate 来回，整周期 36s。
          * 幅度 7.5%（1.0 → 1.075）—— 再小看不出在动，再大就晕；只动 transform，不触发布局。
          */
         kenburns: {
@@ -90,7 +90,7 @@ const config: Config = {
         },
       },
       animation: {
-        kenburns: "kenburns 22s ease-in-out infinite alternate",
+        kenburns: "kenburns 18s ease-in-out infinite alternate",
       },
       maxWidth: {
         shell: "1200px",
