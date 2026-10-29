@@ -500,7 +500,7 @@ requirements:
     initiator: 用户
     created: 2026-10-29
     revision: 1
-    task_count: 0
+    task_count: 1
     task_done: 0
     analysis: |
       （待讨论产出）

@@ -6,4 +6,11 @@
 
 req: R-jew-1b-10
 schema_version: 5
-tasks: []
+tasks:
+  - id: T-jew-1b-10-01
+    title: 首页视觉迭代：品牌落地 + 莫兰迪浅色版 + 图片重制（0.2-11~0.2-10）
+    executor: local
+    status: ready
+    created: 2026-10-29
+    input: |
+      （待总控补充输入）
