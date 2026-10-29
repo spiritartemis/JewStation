@@ -3,32 +3,32 @@
 @tailwind utilities;
 
 :root {
-  /* 莫兰迪色系 · 冷石墨版（低饱和 + 灰调，面向 20–25 岁）：色板明细见 docs/视觉规范-莫兰迪色板.md */
-  --c-bg: #1c1e20;
-  --c-surface: #24272b;
-  --c-band: #292d31;
-  --c-text: #efebe4;
-  --c-text-muted: #a3a6a4;
-  --c-line: #373c40;
-  --c-accent: #a8cdb7;
-  --c-accent-weak: #2a3630;
-  --c-on-accent: #17201b;
-  --c-sold: #8b8f8d;
-  --c-warn: #d8a38c;
+  /* 莫兰迪色系 · 暖纸浅色版（低饱和 + 灰调，面向 20–25 岁）：色板明细见 docs/视觉规范-莫兰迪色板.md */
+  --c-bg: #f4f1eb;
+  --c-surface: #fbfaf7;
+  --c-band: #ece7df;
+  --c-text: #2c2d2a;
+  --c-text-muted: #6f6c65;
+  --c-line: #dcd6cb;
+  --c-accent: #56745f;
+  --c-accent-weak: #dfe8e1;
+  --c-on-accent: #ffffff;
+  --c-sold: #67645d;
+  --c-warn: #b5794f;
 
-  /* 莫兰迪五色相 · 冷石墨版（块面 Weak 为暗调，主色为亮调） */
-  --c-mist: #a6c4d8;
-  --c-mist-weak: #222d36;
-  --c-sage: #b3d2a7;
-  --c-sage-weak: #262f28;
-  --c-clay: #dfb3a2;
-  --c-clay-weak: #332827;
-  --c-sand: #e1d0b3;
-  --c-sand-weak: #332f27;
-  --c-mauve: #c6afd0;
-  --c-mauve-weak: #2c2632;
+  /* 莫兰迪五色相 · 浅色版（块面 Weak 为浅调，主色为同色系深调，用于描边/文字） */
+  --c-mist: #6b8497;
+  --c-mist-weak: #e3eaef;
+  --c-sage: #6f8a6d;
+  --c-sage-weak: #e5ece0;
+  --c-clay: #a9765f;
+  --c-clay-weak: #f1e3db;
+  --c-sand: #9a8659;
+  --c-sand-weak: #f0e8d8;
+  --c-mauve: #8b7595;
+  --c-mauve-weak: #eae2ed;
 
-  --hero-fade: linear-gradient(155deg, #2b3234 0%, #2f2c29 48%, #1b1d1f 100%);
+  --hero-fade: linear-gradient(155deg, #f6f3ed 0%, #efeae1 48%, #e4ded3 100%);
 
   --sp-1: 4px;
   --sp-2: 8px;

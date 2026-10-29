@@ -2,46 +2,46 @@ import type { Config } from "tailwindcss";
 
 /**
  * Token 来源：docs/spec/05-低保真结构与视觉规范.md §3
- * 色系：莫兰迪（低饱和 + 灰调），**深色版**（dark Morandi），色板明细见 docs/视觉规范-莫兰迪色板.md
+ * 色系：莫兰迪（低饱和 + 灰调），**浅色版 / 暖纸调**（light Morandi），色板明细见 docs/视觉规范-莫兰迪色板.md
  * 强调色为暂定值，待站长提供 Logo/视觉参考后校准（Q-14）。
  *
- * 对比度：ink #E9E4DC / accent #A9B9AD 在深色底（bg、Weak 系列）上均 ≥ 4.5:1；
- * accent 上的文字统一用 onAccent #22201D（≈ 7:1），不要用白色。
+ * 对比度：ink #2C2D2A 在 bg #F4F1EB 上 ≈ 12:1；muted #6F6C65 ≈ 4.7:1（正文级）；
+ * accent #56745F 上放 onAccent #FFFFFF ≈ 5.2:1。浅色版不再需要「深底亮字」那套反色规则。
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // 中性基底（冷石墨版：去掉暖褐，读起来更现代、更年轻）
-        bg: "#1C1E20",
-        surface: "#24272B",
-        band: "#292D31",
-        ink: "#EFEBE4",
-        muted: "#A3A6A4",
-        line: "#373C40",
-        // 主强调：莫兰迪薄荷（CTA、选中态、角标）—— 比上一版更亮更冷，面向 20–25 岁
-        accent: "#A8CDB7",
-        accentWeak: "#2A3630",
-        /** 强调色表面上的文字色（深底 + 亮强调，文字必须走深色） */
-        onAccent: "#17201B",
-        sold: "#8B8F8D",
-        warn: "#D8A38C",
-        // 莫兰迪五色相（深色版：块面用暗调 Weak，描边/点缀用亮调主色）
-        mist: "#A6C4D8",
-        mistWeak: "#222D36",
-        sage: "#B3D2A7",
-        sageWeak: "#262F28",
-        clay: "#DFB3A2",
-        clayWeak: "#332827",
-        sand: "#E1D0B3",
-        sandWeak: "#332F27",
-        mauve: "#C6AFD0",
-        mauveWeak: "#2C2632",
+        // 中性基底（暖纸调：米白 + 灰褐，莫兰迪画作的底子色）
+        bg: "#F4F1EB",
+        surface: "#FBFAF7",
+        band: "#ECE7DF",
+        ink: "#2C2D2A",
+        muted: "#6F6C65",
+        line: "#DCD6CB",
+        // 主强调：莫兰迪深鼠尾草绿（CTA、选中态、角标）—— 在浅底上够沉，压得住米白
+        accent: "#56745F",
+        accentWeak: "#DFE8E1",
+        /** 强调色表面上的文字色（深绿强调 + 白字，≈ 5.2:1） */
+        onAccent: "#FFFFFF",
+        sold: "#67645D",
+        warn: "#B5794F",
+        // 莫兰迪五色相（浅色版：块面用浅调 Weak，描边/文字用同色系深调主色）
+        mist: "#6B8497",
+        mistWeak: "#E3EAEF",
+        sage: "#6F8A6D",
+        sageWeak: "#E5ECE0",
+        clay: "#A9765F",
+        clayWeak: "#F1E3DB",
+        sand: "#9A8659",
+        sandWeak: "#F0E8D8",
+        mauve: "#8B7595",
+        mauveWeak: "#EAE2ED",
       },
       backgroundImage: {
-        // Hero 底：冷石墨莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
-        hero: "linear-gradient(155deg, #2B3234 0%, #2F2C29 48%, #1B1D1F 100%)",
+        // Hero 底：暖纸莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
+        hero: "linear-gradient(155deg, #F6F3ED 0%, #EFEAE1 48%, #E4DED3 100%)",
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],

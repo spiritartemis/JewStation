@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 /** 浏览器 UI 配色跟随深色莫兰迪底色（bg #232120） */
 export const viewport: Viewport = {
-  themeColor: "#1C1E20",
+  themeColor: "#F4F1EB",
   colorScheme: "dark",
 };
 

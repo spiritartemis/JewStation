@@ -32,34 +32,34 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            // 取景：主图是深色石板上的首饰特写，首饰簇在画面 60%/44% 处。
-            // 桌面横裁保首饰在右、文案落在左侧空白；移动端竖裁把首饰簇推到右侧（58%），左侧留白给文案
+            // 取景：主图是暖白石膏面上的首饰特写，首饰簇在画面 62%/48% 处。
+            // 浅色版把首饰留在右侧、文案落在左侧留白；移动端竖裁把首饰簇推到 62%，上方留白给眉标、下方压字
             // 推镜（kenburns）：只缩放 7.5%，原点压在首饰簇上，放大时首饰不漂移；reduce motion 时静止
-            className="animate-kenburns origin-[60%_44%] object-cover object-[72%_50%] will-change-transform motion-reduce:animate-none md:object-[50%_50%]"
+            className="animate-kenburns origin-[62%_48%] object-cover object-[62%_46%] will-change-transform motion-reduce:animate-none md:object-[54%_50%]"
           />
         ) : (
           <span className="text-aux uppercase tracking-[0.16em] text-muted">
             {HOME_HERO.imagePendingNote}
           </span>
         )}
-        {/* 底部压暗：大字压在图上，压暗只覆盖下 60%，不破坏图片整体（05 §1 图片优先） */}
+        {/* 底部提亮：大字压在图上，用页面底色把下 60% 拉回米白，让文字落在干净面上（05 §1 图片优先） */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-bg/95 via-bg/55 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-bg via-bg/60 to-transparent"
         />
-        {/* 左侧横向压暗：文字栏固定压左边，左侧加一层薄雾，换任何主图都能读（不遮人物一侧） */}
+        {/* 左侧横向提亮：文字栏固定压左边，左侧加一层纸白雾，换任何主图都能读（不遮首饰一侧） */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-bg/70 via-bg/25 to-transparent md:w-3/5"
+          className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-bg/90 via-bg/35 to-transparent md:w-3/5"
         />
       </div>
 
       <div className="shell pointer-events-none absolute inset-x-0 bottom-sp5 md:bottom-sp6">
         <div className="max-w-[46ch]">
           {/* 眉标：细引线 + 全大写小字，交代品牌身份。
-              这一层压在照片中段偏亮处，用 ink/75 而非 muted，保证叠在窗光上也读得清 */}
-          <p className="flex items-center gap-sp3 text-aux uppercase tracking-[0.22em] text-ink/75 fade-in drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
-            <span aria-hidden className="h-px w-8 shrink-0 bg-ink/40 md:w-12" />
+              浅色版压在照片中段偏亮的纸面上，用 ink/70 而非 muted，保证叠在窗影上也读得清 */}
+          <p className="flex items-center gap-sp3 text-aux uppercase tracking-[0.22em] text-ink/70 fade-in">
+            <span aria-hidden className="h-px w-8 shrink-0 bg-ink/35 md:w-12" />
             {HOME_HERO.eyebrow}
           </p>
 

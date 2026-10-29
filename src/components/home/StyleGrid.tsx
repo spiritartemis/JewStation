@@ -54,14 +54,17 @@ export function StyleGrid() {
                     sizes="(max-width: 768px) 50vw, 300px"
                     className="object-cover"
                   />
-                  {/* 压暗层：保证亮图上的浅色文字仍满足对比度 */}
+                  {/* 薄雾层：只压掉一点图的锐度，让入口图仍有画面感（55% 会把图洗成灰板） */}
                   <span
                     aria-hidden
-                    className="absolute inset-0 bg-bg/50 transition-opacity duration-fade group-hover:bg-bg/35"
+                    className="absolute inset-0 bg-bg/25 transition-opacity duration-fade group-hover:bg-bg/10"
                   />
                 </>
               ) : null}
-              <span className="relative font-serif text-body text-ink">{s.label}</span>
+              {/* 标签做成半透明墨色胶囊：不依赖图片明暗，任何配图上都读得清 */}
+              <span className="relative rounded-btn bg-ink/55 px-sp2 py-sp1 font-serif text-body text-white backdrop-blur-[2px]">
+                {s.label}
+              </span>
             </Link>
           );
         })}

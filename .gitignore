@@ -73,3 +73,6 @@ temp/
 # ---------- 系统垃圾 ----------
 Thumbs.db
 desktop.ini
+
+# ---------- 图片生成原始稿（AI 生成 PNG，不入库） ----------
+public/images/_gen/

@@ -14,13 +14,14 @@ import type { Doc } from "./types";
  * 文案放内容源而非组件（B-2.8）；图片素材属站长（Q-16 / Q-53），未到位前只渲染占位。
  */
 export const HOME_HERO = {
-  /** 眉标：一行小字，交代品牌身份（不抢主标语） */
-  eyebrow: "Handmade in small batches",
-  /** 主标语第一行（正体） */
-  headline: "Made by hand,",
-  /** 主标语第二行（斜体 + 陶粉色，构成编辑感的双行大字） */
-  headlineAccent: "worn every day.",
-  subline: "Small-batch jewellery — one-of-a-kind pieces and limited runs.",
+  /** 眉标：品牌名（Morrow & Muse / 明日缪斯），全大写 + 大字距，交代身份但不抢主标语 */
+  eyebrow: "Morrow & Muse",
+  /** 主标语第一行（正体）：品牌 Slogan「Made for your becoming.」的上半句 */
+  headline: "Made for your",
+  /** 主标语第二行（斜体 + 陶色，构成编辑感的双行大字）：Slogan 的下半句 */
+  headlineAccent: "becoming.",
+  /** 副标：把 Slogan 落到具体动作（小批量、手作、孤品），中文语义「为你而生」 */
+  subline: "Small-batch, handmade pieces for the person you're becoming.",
   ctaLabel: "Shop new",
   ctaHref: "/collections/new",
   /** 主图为空时的占位说明 */
@@ -30,20 +31,24 @@ export const HOME_HERO = {
    * ⚠️ 当前为 AI 生成的概念占位图（public/images/hero-home.jpg），
    * 上线前需替换为真实品牌视觉 / 实拍场景图。
    */
-  imageUrl: "/images/hero-home.jpg",
+  imageUrl: "/images/hero-home-light.jpg",
   imageAlt:
-    "Silver huggie hoops, a fine chain with a small pendant, a pale-gold stacking ring and a pearl stud, arranged on a pale stone slab over dark textured concrete.",
+    "Two polished silver huggie hoops, a fine silver chain with a small round pendant and a single baroque pearl stud, resting on a warm off-white plaster surface in soft window light.",
 } as const;
 
 export const ABOUT: Doc = {
   slug: "about",
   title: "About",
   status: "draft",
-  updatedAt: "2026-10-27",
+  updatedAt: "2026-10-29",
   blocks: [
     {
       type: "p",
-      text: "We make small-batch jewellery: some pieces are hand-formed one at a time, others are produced in limited runs. Both are made to be worn every day, not kept in a box.",
+      text: "Morrow is what's coming. Muse is what moves you. Morrow & Muse makes small-batch jewellery for the person you're becoming — pieces you keep on, not put away.",
+    },
+    {
+      type: "p",
+      text: "Some pieces are hand-formed one at a time, others are produced in limited runs. Both are made to be worn every day, not kept in a box.",
     },
     { type: "h", text: "Handmade means variation" },
     {
@@ -57,7 +62,7 @@ export const ABOUT: Doc = {
     },
     {
       type: "note",
-      text: "【待确认 Q-44】品牌名与品牌故事待站长提供后回填；此处为占位文案。",
+      text: "【待确认 Q-44】品牌故事细节（创立契机、工作室所在地、主理人）待站长补充；品牌名与 Slogan 已于 2026-10-29 定稿。",
     },
   ],
 };

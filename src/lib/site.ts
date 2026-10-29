@@ -5,19 +5,20 @@
  * `version` 与 `updatedAt` 两处，二者会直接显示在页脚。不得只改内容不动这两处。
  *
  * 待站长确认项（见 docs/V0.1-待站长确认问题清单.md）：
- *  - brandName / tagline：Q-44（品牌名定稿）
  *  - currency：Q-05（主币种与目标市场）
  *  - supportEmail：Q-33（客服邮箱）
+ * 已定稿：brandName / tagline —— Q-44（2026-10-29 站长给出）
  */
 export const SITE = {
-  /** 占位品牌名，待 Q-44 定稿后回填 */
-  brandName: "JewStation",
-  tagline: "Handmade & trending jewellery",
+  /** 品牌名（Q-44 已定稿）：Morrow & Muse / 中文「明日缪斯」 */
+  brandName: "Morrow & Muse",
+  /** 品牌 Slogan（Q-44 已定稿）：Made for your becoming. / 中文「为你而生」 */
+  tagline: "Made for your becoming.",
   locale: "en",
   currency: "USD",
   supportEmail: "hello@example.com",
   /** 站点版本（随每次发布递增） */
-  version: "0.2.7-m1b",
+  version: "0.2.8-m1b",
   /** 最近更新时间（随每次发布同步） */
   updatedAt: "2026-10-29",
 } as const;
