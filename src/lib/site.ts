@@ -17,7 +17,7 @@ export const SITE = {
   currency: "USD",
   supportEmail: "hello@example.com",
   /** 站点版本（随每次发布递增） */
-  version: "0.2.3-m1b",
+  version: "0.2.4-m1b",
   /** 最近更新时间（随每次发布同步） */
   updatedAt: "2026-10-29",
 } as const;

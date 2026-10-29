@@ -18,8 +18,13 @@ export function Hero() {
 
   return (
     <section aria-label="Featured" className="relative">
-      {/* 底为深色莫兰迪渐变：图片未加载 / 缺失时的兜底视觉 */}
-      <div className="relative flex aspect-[4/5] w-full items-center justify-center bg-hero md:aspect-[16/9]">
+      {/*
+        高度按视口算，不用固定宽高比：16:9 在 1440 宽屏上会到 810px，
+        加上顶栏就把底部大字推到首屏之外（只露出字头）。
+        svh 取「可视高度」而非布局高度，移动端浏览器地址栏收起/展开都不会跳动。
+        max-h 兜住超高大屏，min-h 保证窄高屏上图文不挤压。
+      */}
+      <div className="relative flex h-[72svh] max-h-[560px] min-h-[420px] w-full items-center justify-center overflow-hidden bg-hero md:h-[76svh] md:max-h-[660px] md:min-h-[460px]">
         {hasImage ? (
           <Image
             src={HOME_HERO.imageUrl}
@@ -27,7 +32,8 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            // 裁短后取景会变：移动端竖裁，焦点偏左（人物在画面左侧 1/3）；桌面横裁，焦点尽量靠上保住头顶
+            className="object-cover object-[38%_18%] md:object-[50%_8%]"
           />
         ) : (
           <span className="text-aux uppercase tracking-[0.16em] text-muted">
@@ -39,13 +45,19 @@ export function Hero() {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-bg/95 via-bg/55 to-transparent"
         />
+        {/* 左侧横向压暗：文字栏固定压左边，左侧加一层薄雾，换任何主图都能读（不遮人物一侧） */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-bg/70 via-bg/25 to-transparent md:w-3/5"
+        />
       </div>
 
       <div className="shell pointer-events-none absolute inset-x-0 bottom-sp5 md:bottom-sp6">
         <div className="max-w-[46ch]">
-          {/* 眉标：细引线 + 全大写小字，交代品牌身份 */}
-          <p className="flex items-center gap-sp3 text-aux uppercase tracking-[0.22em] text-muted fade-in">
-            <span aria-hidden className="h-px w-8 shrink-0 bg-line md:w-12" />
+          {/* 眉标：细引线 + 全大写小字，交代品牌身份。
+              这一层压在照片中段偏亮处，用 ink/75 而非 muted，保证叠在窗光上也读得清 */}
+          <p className="flex items-center gap-sp3 text-aux uppercase tracking-[0.22em] text-ink/75 fade-in drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
+            <span aria-hidden className="h-px w-8 shrink-0 bg-ink/40 md:w-12" />
             {HOME_HERO.eyebrow}
           </p>
 
