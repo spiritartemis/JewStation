@@ -2,6 +2,7 @@ import { Hero } from "@/components/home/Hero";
 import { JsonLdScript } from "@/components/JsonLd";
 import { buildMetadata } from "@/lib/seo";
 import { SITE } from "@/lib/site";
+import { HOME_SECTIONS } from "@/content/site-content";
 import { ProductRail } from "@/components/home/ProductRail";
 import { StyleGrid } from "@/components/home/StyleGrid";
 import { NewsletterSlot } from "@/components/home/NewsletterSlot";
@@ -33,12 +34,15 @@ export default function HomePage() {
       <Hero />
 
       <ProductRail title="New arrivals" products={newArrivals} href="/collections/new" />
-      {/* 手工孤品 = 暖陶色，流行款 = 冷雾蓝：色相即品类信号（B-1.7） */}
+      {/* 手工孤品 = 暖陶色，流行款 = 冷雾蓝：色相即品类信号（B-1.7）。
+          孤品通常只有 1–2 件，用两列大卡填满容器，避免横滑条右侧留白 */}
       <ProductRail
         title="One of a Kind"
         products={oneOfAKind}
         href="/collections/one-of-a-kind"
         tone="clay"
+        description={HOME_SECTIONS.oneOfAKind.description}
+        layout="pair"
       />
       <ProductRail title="Trending" products={trending} href="/collections/restockable" tone="mist" />
       <StyleGrid />

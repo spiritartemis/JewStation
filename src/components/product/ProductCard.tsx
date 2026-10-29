@@ -14,15 +14,22 @@ import { formatPrice, isSoldOut, lowStockLabel, soldLabel } from "@/lib/types";
 export function ProductCard({
   product,
   priority = false,
+  size = "rail",
 }: {
   product: Product;
   /** 首屏首行的卡片传 true：否则 LCP 图会被延迟加载拖慢（B-2.10） */
   priority?: boolean;
+  /**
+   * rail：横滑条里的窄卡（默认）；
+   * feature：区块只有 1–2 件时用的大卡（两列填满容器，避免右侧大片空白）
+   */
+  size?: "rail" | "feature";
 }) {
   const primary = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const sold = isSoldOut(product);
   const low = lowStockLabel(product);
   const isOneOfAKind = product.productType === "one_of_a_kind";
+  const feature = size === "feature";
 
   return (
     <Link
@@ -31,17 +38,22 @@ export function ProductCard({
         isOneOfAKind ? "p-sp2" : ""
       }`}
     >
-      <div className="relative overflow-hidden rounded-img bg-accentWeak">
+      <div
+        className={`relative overflow-hidden rounded-img bg-accentWeak ${
+          feature ? "aspect-[3/4]" : ""
+        }`}
+      >
         {primary ? (
           <Image
             src={primary.url}
             alt={primary.alt}
             width={primary.width}
             height={primary.height}
-            sizes="(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"
+            // feature 卡占半屏宽，sizes 必须跟着放大，否则浏览器只取 240px 的模糊图
+            sizes={feature ? "(max-width: 640px) 92vw, 46vw" : "(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"}
             priority={priority}
             loading={priority ? undefined : "lazy"}
-            className="h-auto w-full object-cover"
+            className={`w-full object-cover ${feature ? "h-full" : "h-auto"}`}
           />
         ) : (
           <div className="flex aspect-[4/5] w-full items-center justify-center">
@@ -62,9 +74,11 @@ export function ProductCard({
         ) : null}
       </div>
 
-      <div className="mt-sp3">
-        <h3 className="line-clamp-2 text-body text-ink">{product.title}</h3>
-        <p className="mt-sp1 text-body">
+      <div className={feature ? "mt-sp4" : "mt-sp3"}>
+        <h3 className={`line-clamp-2 text-ink ${feature ? "font-serif text-h1" : "text-body"}`}>
+          {product.title}
+        </h3>
+        <p className={feature ? "mt-sp1 text-body" : "mt-sp1 text-body"}>
           {sold ? (
             <span className="text-sold line-through">{formatPrice(product.price, product.currency)}</span>
           ) : (

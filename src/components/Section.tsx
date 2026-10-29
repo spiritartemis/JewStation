@@ -19,19 +19,27 @@ export function Section({
   title,
   href,
   tone = "plain",
+  description,
   children,
 }: {
   title: string;
   href?: string;
   tone?: SectionTone;
+  /** 标题下的一句说明：用来解释区块规则（如「孤品只有一件」），不写促销话术 */
+  description?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className={`mt-sp6 ${TONE_BG[tone] ? `${TONE_BG[tone]} py-sp5` : ""}`}>
-      <div className="shell flex items-baseline justify-between">
-        <h2 className="text-h2 text-ink">{title}</h2>
+      <div className="shell flex items-baseline justify-between gap-sp4">
+        <div>
+          <h2 className="text-h2 text-ink">{title}</h2>
+          {description ? (
+            <p className="mt-sp1 max-w-[54ch] text-aux text-muted">{description}</p>
+          ) : null}
+        </div>
         {href ? (
-          <Link href={href} className="text-aux text-muted hover:text-accent">
+          <Link href={href} className="shrink-0 text-aux text-muted hover:text-accent">
             View all
           </Link>
         ) : null}

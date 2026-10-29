@@ -36,6 +36,17 @@ export const HOME_HERO = {
     "Two polished silver huggie hoops, a fine silver chain with a small round pendant and a single baroque pearl stud, resting on a warm off-white plaster surface in soft window light.",
 } as const;
 
+/**
+ * 首页区块说明文案（B-2.8：文案不进组件）
+ * ⚠️ 初稿，上线前需由熟悉目标市场的人复核（B-1.8）。
+ */
+export const HOME_SECTIONS = {
+  /** 手工孤品区：说明「只有一件、拍的就是你收到的那件」，是站点承诺而非促销话术 */
+  oneOfAKind: {
+    description: "Each piece is made once — photographed as the exact one you'll receive.",
+  },
+} as const;
+
 export const ABOUT: Doc = {
   slug: "about",
   title: "About",
