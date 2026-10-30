@@ -38,6 +38,11 @@ tasks:
     created: 2026-10-30
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/data/tags.json
+        kind: file
+        checksum: sha256:b60eef912639e1a84c9e345cd53f8864ce228f079645bb0b35d84fb0f91da6a6
+        at: 2026-10-30T09:47:15.360Z
     claim: {"session":"pid-57834","pid":57834,"host":"Mona.local","since":"2026-10-30T09:19:23.239Z","heartbeat":"2026-10-30T09:19:23.239Z"}
   - id: T-jew-001-04
     title: 手链开口/死圈可选规格字段（Q-06）：数据模型 + 详情页选择器
