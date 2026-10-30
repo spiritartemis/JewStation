@@ -1,17 +1,21 @@
 import type { Doc } from "@/content/types";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 /**
  * 内容源渲染器（B-2.8）
  * 未审核的政策文档顶部显式标注，避免被误当作可发布文本（B-1.8）。
  */
-export function DocView({ doc }: { doc: Doc }) {
+export function DocView({ doc, locale }: { doc: Doc; locale: Locale }) {
+  const m = getMessages(locale);
+
   return (
     <article className="shell max-w-[68ch] py-sp6">
       <h1 className="font-serif text-h1 text-ink">{doc.title}</h1>
 
       {doc.status !== "approved" ? (
         <p className="mt-sp3 rounded-btn border border-warn/40 bg-warn/5 px-sp3 py-sp2 text-aux text-warn">
-          Draft — pending business/legal review. Not for publication until approved.
+          {m.policy.draftNotice}
         </p>
       ) : null}
 
@@ -51,7 +55,9 @@ export function DocView({ doc }: { doc: Doc }) {
         })}
       </div>
 
-      <p className="mt-sp6 text-aux text-muted">Last updated {doc.updatedAt}</p>
+      <p className="mt-sp6 text-aux text-muted">
+        {m.policy.lastUpdated} {doc.updatedAt}
+      </p>
     </article>
   );
 }

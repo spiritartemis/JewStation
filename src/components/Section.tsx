@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { localePath, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 /**
  * 区块底色（莫兰迪色板）：plain = 不铺底；其余为对应色相的 Weak 面。
@@ -18,17 +20,21 @@ const TONE_BG: Record<SectionTone, string> = {
 export function Section({
   title,
   href,
+  locale,
   tone = "plain",
   description,
   children,
 }: {
   title: string;
   href?: string;
+  locale: Locale;
   tone?: SectionTone;
   /** 标题下的一句说明：用来解释区块规则（如「孤品只有一件」），不写促销话术 */
   description?: string;
   children: React.ReactNode;
 }) {
+  const m = getMessages(locale);
+
   return (
     <section className={`mt-sp6 ${TONE_BG[tone] ? `${TONE_BG[tone]} py-sp5` : ""}`}>
       <div className="shell flex items-baseline justify-between gap-sp4">
@@ -39,8 +45,11 @@ export function Section({
           ) : null}
         </div>
         {href ? (
-          <Link href={href} className="shrink-0 text-aux text-muted hover:text-accent">
-            View all
+          <Link
+            href={localePath(locale, href)}
+            className="shrink-0 text-aux text-muted hover:text-accent"
+          >
+            {m.common.viewAll}
           </Link>
         ) : null}
       </div>

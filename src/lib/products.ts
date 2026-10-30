@@ -94,19 +94,25 @@ export function searchProducts(query: string): Product[] {
   if (terms.length === 0) return [];
 
   return getAllProducts().filter((p) => {
+    // 检索索引同时装英文底稿与中文名（Q-02）：中文页搜「耳环」「纯银」也要有结果，
+    // 而 slug/英文名是稳定标识，两套都留在 haystack 里，切语言不会让搜索行为突变。
+    const labelOf = (slug: string) => [tagLabel(slug, "en"), tagLabel(slug, "zh")];
     const haystack = [
       p.title,
       p.shortCopy,
+      p.i18n?.zh?.title,
+      p.i18n?.zh?.shortCopy,
       p.category,
-      tagLabel(p.category),
+      ...labelOf(p.category),
       p.productType,
-      tagLabel(p.productType),
+      ...labelOf(p.productType),
       ...p.tags.style,
-      ...p.tags.style.map(tagLabel),
+      ...p.tags.style.flatMap(labelOf),
       ...p.tags.material,
-      ...p.tags.material.map(tagLabel),
+      ...p.tags.material.flatMap(labelOf),
       ...p.materials,
     ]
+      .filter(Boolean)
       .join(" ")
       .toLowerCase();
 

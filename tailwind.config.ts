@@ -46,8 +46,10 @@ const config: Config = {
         hero: "linear-gradient(155deg, #F6F3ED 0%, #EFEAE1 48%, #E4DED3 100%)",
       },
       fontFamily: {
-        serif: ["var(--font-serif)", "Georgia", "serif"],
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        // 中文页（Q-02）：Cormorant / Inter 都没有汉字，回退里必须显式给宋/黑，
+        // 否则浏览器会拿任意一款默认字体，标题的衬线与正文的无衬线对比就没了
+        serif: ["var(--font-serif)", "Georgia", "Songti SC", "Noto Serif SC", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "PingFang SC", "Microsoft YaHei", "sans-serif"],
       },
       fontSize: {
         /**

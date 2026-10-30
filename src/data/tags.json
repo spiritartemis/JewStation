@@ -1,41 +1,43 @@
 {
-  "_note": "标签字典单一真源（03-标签字典与分类规则.md）。新增标签须先改本文件并在 03 §8 变更记录登记，禁止在录入界面自由输入。",
+  "_note": "标签字典单一真源（03-标签字典与分类规则.md）。新增标签须先改本文件并在 03 §8 变更记录登记，禁止在录入界面自由输入。label 为英文底稿，labelZh 为中文审核稿（Q-02），缺省时回退 label。",
   "categories": [
-    { "slug": "earrings", "label": "Earrings" },
-    { "slug": "necklaces", "label": "Necklaces" },
-    { "slug": "rings", "label": "Rings" },
-    { "slug": "bracelets", "label": "Bracelets" }
+    { "slug": "earrings", "label": "Earrings", "labelZh": "耳环" },
+    { "slug": "necklaces", "label": "Necklaces", "labelZh": "项链" },
+    { "slug": "rings", "label": "Rings", "labelZh": "戒指" },
+    { "slug": "bracelets", "label": "Bracelets", "labelZh": "手链" },
+    { "slug": "bag-charms", "label": "Bag Charms", "labelZh": "包挂" },
+    { "slug": "sets", "label": "Sets", "labelZh": "套装" }
   ],
   "styles": [
-    { "slug": "minimal", "label": "Minimal" },
-    { "slug": "vintage", "label": "Vintage" },
-    { "slug": "statement", "label": "Statement" },
-    { "slug": "nature", "label": "Nature-inspired" },
-    { "slug": "pearl", "label": "Pearl" },
-    { "slug": "boho", "label": "Boho" },
-    { "slug": "geometric", "label": "Geometric" },
-    { "slug": "delicate", "label": "Delicate" }
+    { "slug": "minimal", "label": "Minimal", "labelZh": "极简" },
+    { "slug": "vintage", "label": "Vintage", "labelZh": "复古" },
+    { "slug": "statement", "label": "Statement", "labelZh": "造型感" },
+    { "slug": "nature", "label": "Nature-inspired", "labelZh": "自然系" },
+    { "slug": "pearl", "label": "Pearl", "labelZh": "珍珠" },
+    { "slug": "boho", "label": "Boho", "labelZh": "波西米亚" },
+    { "slug": "geometric", "label": "Geometric", "labelZh": "几何" },
+    { "slug": "delicate", "label": "Delicate", "labelZh": "纤细" }
   ],
   "materials": [
-    { "slug": "sterling-silver", "label": "Sterling Silver 925" },
-    { "slug": "gold-filled", "label": "Gold Filled" },
-    { "slug": "gold-vermeil", "label": "Gold Vermeil" },
-    { "slug": "brass", "label": "Brass" },
-    { "slug": "stainless-steel", "label": "Stainless Steel" },
-    { "slug": "titanium", "label": "Titanium" },
-    { "slug": "copper", "label": "Copper" },
-    { "slug": "alloy", "label": "Alloy" },
-    { "slug": "freshwater-pearl", "label": "Freshwater Pearl" },
-    { "slug": "natural-stone", "label": "Natural Stone" },
-    { "slug": "resin", "label": "Resin" },
-    { "slug": "glass", "label": "Glass" },
-    { "slug": "ceramic", "label": "Ceramic" },
-    { "slug": "leather", "label": "Leather" },
-    { "slug": "textile", "label": "Textile / Cord" },
-    { "slug": "crystal", "label": "Crystal" }
+    { "slug": "sterling-silver", "label": "Sterling Silver 925", "labelZh": "925 纯银" },
+    { "slug": "gold-filled", "label": "Gold Filled", "labelZh": "包金" },
+    { "slug": "gold-vermeil", "label": "Gold Vermeil", "labelZh": "镀金银" },
+    { "slug": "brass", "label": "Brass", "labelZh": "黄铜" },
+    { "slug": "stainless-steel", "label": "Stainless Steel", "labelZh": "不锈钢" },
+    { "slug": "titanium", "label": "Titanium", "labelZh": "钛" },
+    { "slug": "copper", "label": "Copper", "labelZh": "铜" },
+    { "slug": "alloy", "label": "Alloy", "labelZh": "合金" },
+    { "slug": "freshwater-pearl", "label": "Freshwater Pearl", "labelZh": "淡水珍珠" },
+    { "slug": "natural-stone", "label": "Natural Stone", "labelZh": "天然石" },
+    { "slug": "resin", "label": "Resin", "labelZh": "树脂" },
+    { "slug": "glass", "label": "Glass", "labelZh": "玻璃" },
+    { "slug": "ceramic", "label": "Ceramic", "labelZh": "陶瓷" },
+    { "slug": "leather", "label": "Leather", "labelZh": "皮革" },
+    { "slug": "textile", "label": "Textile / Cord", "labelZh": "织物 / 绳" },
+    { "slug": "crystal", "label": "Crystal", "labelZh": "水晶" }
   ],
   "productTypes": [
-    { "slug": "one_of_a_kind", "label": "One of a Kind" },
-    { "slug": "restockable", "label": "Restockable" }
+    { "slug": "one_of_a_kind", "label": "One of a Kind", "labelZh": "孤品" },
+    { "slug": "restockable", "label": "Restockable", "labelZh": "可补货" }
   ]
 }

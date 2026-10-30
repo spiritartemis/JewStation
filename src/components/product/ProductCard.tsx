@@ -1,22 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { formatPrice, isSoldOut, lowStockLabel, soldLabel } from "@/lib/types";
+import { isSoldOut, localizeProduct, lowStockLabel, soldLabel } from "@/lib/types";
+import { localePath, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
+import { Price } from "@/components/currency/Price";
 
 /**
  * 商品卡片（B-2.4 / 05 §4）
  * - 商品类型标记（One of a Kind 实心角标）、价格、主图、售罄状态在列表中可见
  * - 手工/孤品：1px 暖调描边 + 实心角标；可补货：库存 ≤3 显示 Only N left
  * - 差异不依赖颜色单一通道：角标是文字，不靠颜色传达（无障碍）
+ * - 价格走 <Price>，按当前展示币种换算（Q-05 / Q-08）
  *
- * 图片：样例数据无实拍图时渲染占位块，绝不拿 AI 生成图冒充商品图（m-1b bootstrap §5）。
+ * 图片：无实拍图时渲染占位块，绝不拿 AI 生成图冒充商品图（m-1b bootstrap §5）。
  */
 export function ProductCard({
-  product,
+  product: raw,
+  locale,
   priority = false,
   size = "rail",
 }: {
   product: Product;
+  locale: Locale;
   /** 首屏首行的卡片传 true：否则 LCP 图会被延迟加载拖慢（B-2.10） */
   priority?: boolean;
   /**
@@ -25,16 +31,18 @@ export function ProductCard({
    */
   size?: "rail" | "feature";
 }) {
+  const m = getMessages(locale);
+  const product = localizeProduct(raw, locale);
   const primary = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const sold = isSoldOut(product);
-  const low = lowStockLabel(product);
+  const low = lowStockLabel(product, locale);
   const isOneOfAKind = product.productType === "one_of_a_kind";
   const feature = size === "feature";
 
   return (
     <Link
-      href={`/products/${product.slug}`}
-      className={`group block ${isOneOfAKind ? "rounded-card border border-accentWeak" : ""} ${
+      href={localePath(locale, `/products/${product.slug}`)}
+      className={`block ${isOneOfAKind ? "rounded-card border border-accentWeak" : ""} ${
         isOneOfAKind ? "p-sp2" : ""
       }`}
     >
@@ -50,7 +58,11 @@ export function ProductCard({
             width={primary.width}
             height={primary.height}
             // feature 卡占半屏宽，sizes 必须跟着放大，否则浏览器只取 240px 的模糊图
-            sizes={feature ? "(max-width: 640px) 92vw, 46vw" : "(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"}
+            sizes={
+              feature
+                ? "(max-width: 640px) 92vw, 46vw"
+                : "(max-width: 768px) 46vw, (max-width: 1024px) 30vw, 240px"
+            }
             priority={priority}
             loading={priority ? undefined : "lazy"}
             className={`w-full object-cover ${feature ? "h-full" : "h-auto"} ${
@@ -60,13 +72,13 @@ export function ProductCard({
           />
         ) : (
           <div className="flex aspect-[4/5] w-full items-center justify-center">
-            <span className="text-aux text-muted">Photo pending</span>
+            <span className="text-aux text-muted">{m.product.photoPending}</span>
           </div>
         )}
 
         {isOneOfAKind ? (
           <span className="absolute left-sp2 top-sp2 rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
-            One of a Kind
+            {m.product.oneOfAKindBadge}
           </span>
         ) : null}
 
@@ -82,7 +94,7 @@ export function ProductCard({
                   feature ? "px-sp4 py-sp2 text-body" : "px-sp3 py-sp1 text-aux"
                 }`}
               >
-                {soldLabel(product)}
+                {soldLabel(product, locale)}
               </span>
             </span>
           </>
@@ -93,12 +105,11 @@ export function ProductCard({
         <h3 className={`line-clamp-2 text-ink ${feature ? "font-serif text-h1" : "text-body"}`}>
           {product.title}
         </h3>
-        <p className={feature ? "mt-sp1 text-body" : "mt-sp1 text-body"}>
-          {sold ? (
-            <span className="text-sold line-through">{formatPrice(product.price, product.currency)}</span>
-          ) : (
-            <span className="text-ink">{formatPrice(product.price, product.currency)}</span>
-          )}
+        <p className="mt-sp1 text-body">
+          <Price
+            usd={product.price}
+            className={sold ? "text-sold line-through" : "text-ink"}
+          />
         </p>
         {!sold && low ? <p className="mt-sp1 text-aux text-warn">{low}</p> : null}
       </div>

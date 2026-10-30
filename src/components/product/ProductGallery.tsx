@@ -3,19 +3,32 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { ProductImage } from "@/lib/types";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 /**
  * 商品图区（B-2.6）
  * 首图 priority（LCP），其余按需加载；有宽高故不产生 CLS（05 §5）。
  * 无实拍图时只渲染占位块，绝不用 AI 图冒充商品图。
  */
-export function ProductGallery({ images, title }: { images: ProductImage[]; title: string }) {
+export function ProductGallery({
+  images,
+  title,
+  locale,
+}: {
+  images: ProductImage[];
+  title: string;
+  locale: Locale;
+}) {
   const [index, setIndex] = useState(0);
+  const m = getMessages(locale);
 
   if (images.length === 0) {
     return (
       <div className="flex aspect-[4/5] w-full items-center justify-center bg-accentWeak">
-        <span className="text-aux uppercase tracking-[0.16em] text-muted">Photo pending</span>
+        <span className="text-aux uppercase tracking-[0.16em] text-muted">
+          {m.product.photoPending}
+        </span>
       </div>
     );
   }
@@ -45,7 +58,8 @@ export function ProductGallery({ images, title }: { images: ProductImage[]; titl
               key={img.url}
               type="button"
               onClick={() => setIndex(i)}
-              aria-label={`Show image ${i + 1}`}
+              // 缩略图序号对读屏没有意义，直接说"看第几张图"
+              aria-label={locale === "zh" ? `查看第 ${i + 1} 张图` : `Show image ${i + 1}`}
               aria-current={i === index}
               className={`h-16 w-16 shrink-0 overflow-hidden rounded-img border ${
                 i === index ? "border-accent" : "border-line"

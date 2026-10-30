@@ -1,6 +1,7 @@
 import { Section, type SectionTone } from "@/components/Section";
 import { ProductCard } from "@/components/product/ProductCard";
 import type { Product } from "@/lib/types";
+import type { Locale } from "@/i18n/config";
 
 /**
  * 横向滑动商品条（05 §2.1：横向滑动卡片，不截端）
@@ -12,6 +13,7 @@ import type { Product } from "@/lib/types";
 export function ProductRail({
   title,
   products,
+  locale,
   href,
   tone,
   description,
@@ -19,6 +21,7 @@ export function ProductRail({
 }: {
   title: string;
   products: Product[];
+  locale: Locale;
   href?: string;
   /** 区块底色：手工孤品 / 流行款用不同莫兰迪色相做区分（B-1.7） */
   tone?: SectionTone;
@@ -30,10 +33,16 @@ export function ProductRail({
 
   if (layout === "pair") {
     return (
-      <Section title={title} href={href} tone={tone} description={description}>
+      <Section title={title} href={href} locale={locale} tone={tone} description={description}>
         <div className="shell grid gap-sp5 sm:grid-cols-2">
           {products.map((p, i) => (
-            <ProductCard key={p.slug} product={p} size="feature" priority={i === 0} />
+            <ProductCard
+              key={p.slug}
+              product={p}
+              locale={locale}
+              size="feature"
+              priority={i === 0}
+            />
           ))}
         </div>
       </Section>
@@ -41,11 +50,11 @@ export function ProductRail({
   }
 
   return (
-    <Section title={title} href={href} tone={tone} description={description}>
+    <Section title={title} href={href} locale={locale} tone={tone} description={description}>
       <div className="flex gap-sp4 overflow-x-auto px-sp4 pb-sp2">
         {products.map((p) => (
           <div key={p.slug} className="w-[46%] shrink-0 sm:w-[220px]">
-            <ProductCard product={p} />
+            <ProductCard product={p} locale={locale} />
           </div>
         ))}
       </div>

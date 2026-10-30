@@ -1,5 +1,5 @@
 {
-  "_note": "SAMPLE DATA — 占位样例，不是真实商品。真实首批资料由站长提供（0.2-10 / 0.1-11），导入后本文件即废弃。images 目前是 AI 生成的概念占位图（AI-generated concept placeholder），用于把版式与视觉跑通；上线前必须全部替换为实拍图，孤品（one_of_a_kind）尤其必须拍「你收到的那一件」，不得以生成图代替。",
+  "_note": "SAMPLE DATA — 占位样例，不是真实商品。真实首批资料由站长提供（0.2-10 / 0.1-11），导入后本文件即废弃。images 目前是 AI 生成的概念占位图（AI-generated concept placeholder），用于把版式与视觉跑通；上线前必须全部替换为实拍图，孤品（one_of_a_kind）尤其必须拍「你收到的那一件」，不得以生成图代替。 2026-10-30 增补：新增 Bag Charms / Sets 两个品类各 1 件样例（Q-04），手链增加开口/死圈可选规格（Q-06），全部商品补中文稿（Q-02，待站长审）。",
   "products": [
     {
       "id": "prd_sample_0001",
@@ -10,25 +10,65 @@
       "title": "Silver Wave Hoops",
       "shortCopy": "Hand-formed sterling silver hoops with a soft wave.",
       "description": "Hand-formed from a single length of sterling silver, these hoops carry a gentle wave that catches light differently at every angle.",
-      "highlights": ["Hand-formed", "Nickel-free"],
+      "highlights": [
+        "Hand-formed",
+        "Nickel-free"
+      ],
       "price": 48,
       "currency": "USD",
       "productType": "restockable",
       "stock": 12,
       "status": "active",
-      "materials": ["Sterling silver 925"],
+      "materials": [
+        "Sterling silver 925"
+      ],
       "metalPurity": "925",
-      "dimensions": { "length": "32mm", "width": "4mm", "unit": "mm" },
-      "weight": { "value": 3.2, "unit": "g" },
+      "dimensions": {
+        "length": "32mm",
+        "width": "4mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 3.2,
+        "unit": "g"
+      },
       "closureType": "Latch back",
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive ears.",
       "careInstructions": "Avoid water and perfume; store in the supplied pouch.",
       "handmadeVariation": "Each pair is hand-formed; slight differences in wave depth are expected.",
       "images": [
-        { "url": "/images/product-silver-wave-hoops.jpg", "alt": "Silver Wave Hoops — hand-formed sterling silver hoops on a muted studio background", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-silver-wave-hoops.jpg",
+          "alt": "Silver Wave Hoops — hand-formed sterling silver hoops on a muted studio background",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "earrings",
-      "tags": { "style": ["minimal", "delicate"], "material": ["sterling-silver"] }
+      "tags": {
+        "style": [
+          "minimal",
+          "delicate"
+        ],
+        "material": [
+          "sterling-silver"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "银波纹耳扣",
+          "shortCopy": "手作成形的纯银耳扣，带一道柔和的波纹。",
+          "description": "由一整段 925 纯银手工弯成，弧面上那道波纹在不同角度会折出不一样的光。",
+          "highlights": [
+            "手工成形",
+            "不含镍"
+          ],
+          "allergyNotice": "不含镍的 925 纯银，适合大多数敏感耳。",
+          "careInstructions": "避开水和香水；不戴时放进随附绒袋。",
+          "handmadeVariation": "每对都是手工弯制，波纹深浅略有差异属正常。"
+        }
+      }
     },
     {
       "id": "prd_sample_0002",
@@ -39,26 +79,70 @@
       "title": "Baroque Pearl Drops",
       "shortCopy": "One pair only: baroque freshwater pearls on hand-wrapped silver.",
       "description": "A single pair made from two unmatched baroque pearls, hand-wrapped on sterling silver ear wires.",
-      "highlights": ["One of a kind", "Hand-wrapped"],
+      "highlights": [
+        "One of a kind",
+        "Hand-wrapped"
+      ],
       "price": 96,
       "currency": "USD",
       "productType": "one_of_a_kind",
       "stock": 1,
       "status": "active",
-      "materials": ["Sterling silver 925", "Freshwater pearl"],
+      "materials": [
+        "Sterling silver 925",
+        "Freshwater pearl"
+      ],
       "metalPurity": "925",
-      "dimensions": { "length": "45mm", "width": "12mm", "unit": "mm" },
-      "weight": { "value": 5.4, "unit": "g" },
+      "dimensions": {
+        "length": "45mm",
+        "width": "12mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 5.4,
+        "unit": "g"
+      },
       "closureType": "Ear wire",
       "allergyNotice": "Nickel-free sterling silver; natural pearls vary in shape and lustre.",
       "careInstructions": "Avoid water and perfume; wipe pearls with a soft cloth after wearing.",
       "handmadeVariation": "Natural pearls are never identical; shape and lustre differ by pair.",
       "oneOfAKindNote": "Only one made. Not reproducible after sold.",
       "images": [
-        { "url": "/images/product-baroque-pearl-drops.jpg", "alt": "Baroque Pearl Drops — freshwater pearl drops on sterling silver ear wires", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-baroque-pearl-drops.jpg",
+          "alt": "Baroque Pearl Drops — freshwater pearl drops on sterling silver ear wires",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "earrings",
-      "tags": { "style": ["pearl", "nature"], "material": ["sterling-silver", "freshwater-pearl"] }
+      "tags": {
+        "style": [
+          "pearl",
+          "nature"
+        ],
+        "material": [
+          "sterling-silver",
+          "freshwater-pearl"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "巴洛克珍珠耳坠",
+          "shortCopy": "仅此一对：巴洛克淡水珍珠，手缠纯银耳钩。",
+          "description": "用两颗形状各不相同的巴洛克珍珠做成的一对，珍珠手工缠在 925 纯银耳钩上。",
+          "highlights": [
+            "孤品一件",
+            "手工缠绕"
+          ],
+          "allergyNotice": "不含镍的 925 纯银；天然珍珠的形状与光泽每颗不同。",
+          "careInstructions": "避开水和香水；佩戴后用软布轻擦珍珠。",
+          "handmadeVariation": "天然珍珠不可能完全相同，形状与光泽因颗而异。",
+          "oneOfAKindNote": "只做这一件，售出后无法复刻。",
+          "closureType": "耳钩"
+        }
+      }
     },
     {
       "id": "prd_sample_0003",
@@ -74,18 +158,51 @@
       "productType": "restockable",
       "stock": 3,
       "status": "active",
-      "materials": ["Sterling silver 925"],
+      "materials": [
+        "Sterling silver 925"
+      ],
       "metalPurity": "925",
-      "dimensions": { "length": "420mm", "width": "10mm", "unit": "mm" },
-      "weight": { "value": 4.1, "unit": "g" },
+      "dimensions": {
+        "length": "420mm",
+        "width": "10mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 4.1,
+        "unit": "g"
+      },
       "closureType": "Spring ring",
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive skin.",
       "careInstructions": "Avoid water and perfume; store flat to prevent tangling.",
       "images": [
-        { "url": "/images/product-fine-chain-pendant.jpg", "alt": "Fine Chain Pendant — fine sterling silver chain with a small pendant", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-fine-chain-pendant.jpg",
+          "alt": "Fine Chain Pendant — fine sterling silver chain with a small pendant",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "necklaces",
-      "tags": { "style": ["minimal", "delicate"], "material": ["sterling-silver"] }
+      "tags": {
+        "style": [
+          "minimal",
+          "delicate"
+        ],
+        "material": [
+          "sterling-silver"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "细链圆盘项链",
+          "shortCopy": "一条几乎察觉不到的细链，挂一枚拉丝圆盘。",
+          "description": "细 925 纯银链配一枚拉丝圆盘，为日常叠戴而设计。",
+          "allergyNotice": "不含镍的 925 纯银，适合大多数敏感肌。",
+          "careInstructions": "避开水和香水；平放收纳以免打结。",
+          "closureType": "弹簧扣"
+        }
+      }
     },
     {
       "id": "prd_sample_0004",
@@ -101,18 +218,55 @@
       "productType": "restockable",
       "stock": 8,
       "status": "active",
-      "materials": ["Brass"],
-      "dimensions": { "diameter": "17mm", "width": "3mm", "unit": "mm" },
-      "weight": { "value": 2.6, "unit": "g" },
-      "sizeOptions": ["16", "17", "18"],
+      "materials": [
+        "Brass"
+      ],
+      "dimensions": {
+        "diameter": "17mm",
+        "width": "3mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 2.6,
+        "unit": "g"
+      },
+      "sizeOptions": [
+        "16",
+        "17",
+        "18"
+      ],
       "allergyNotice": "Contains brass, which may contain nickel; not suitable for nickel allergy.",
       "careInstructions": "Avoid water and perfume; brass will patina naturally over time.",
       "handmadeVariation": "Hammer marks differ on every piece.",
       "images": [
-        { "url": "/images/product-hammered-open-ring.jpg", "alt": "Hammered Open Ring — hand-forged brass open ring with matte finish", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-hammered-open-ring.jpg",
+          "alt": "Hammered Open Ring — hand-forged brass open ring with matte finish",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "rings",
-      "tags": { "style": ["boho", "statement"], "material": ["brass"] }
+      "tags": {
+        "style": [
+          "boho",
+          "statement"
+        ],
+        "material": [
+          "brass"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "锤纹开口戒",
+          "shortCopy": "手工锤纹黄铜，开口可微调。",
+          "description": "手工锤打出手工切面，开口设计可轻微调节圈口。",
+          "allergyNotice": "含黄铜，可能含镍，镍过敏者不建议佩戴。",
+          "careInstructions": "避开水和香水；黄铜会自然生成包浆。",
+          "handmadeVariation": "每一件的锤痕都不一样。"
+        }
+      }
     },
     {
       "id": "prd_sample_0005",
@@ -122,25 +276,71 @@
       "updatedAt": "2026-10-27T00:00:00Z",
       "title": "Vintage Link Bracelet",
       "shortCopy": "Antique-inspired links with a soft, worn finish.",
-      "description": "Cast links finished by hand for a softly worn look, closed with a lobster clasp.",
+      "description": "Cast links finished by hand for a softly worn look — made as either an open cuff or a closed bangle, your choice at order.",
       "price": 74,
       "currency": "USD",
       "productType": "restockable",
       "stock": 0,
       "status": "active",
-      "materials": ["Gold vermeil"],
+      "materials": [
+        "Gold vermeil"
+      ],
       "metalPurity": "14k",
       "plating": "14k gold vermeil",
-      "dimensions": { "length": "185mm", "width": "6mm", "unit": "mm" },
-      "weight": { "value": 8.8, "unit": "g" },
-      "closureType": "Lobster clasp",
+      "dimensions": {
+        "length": "185mm",
+        "width": "6mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 8.8,
+        "unit": "g"
+      },
       "allergyNotice": "Gold vermeil over sterling silver; plating will soften with wear.",
       "careInstructions": "Avoid water and perfume; remove before sleeping.",
       "images": [
-        { "url": "/images/product-vintage-link-bracelet.jpg", "alt": "Vintage Link Bracelet — gold vermeil bracelet with oval links", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-vintage-link-bracelet.jpg",
+          "alt": "Vintage Link Bracelet — gold vermeil bracelet with oval links",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "bracelets",
-      "tags": { "style": ["vintage"], "material": ["gold-vermeil"] }
+      "tags": {
+        "style": [
+          "vintage"
+        ],
+        "material": [
+          "gold-vermeil"
+        ]
+      },
+      "options": [
+        {
+          "name": "Closure",
+          "nameZh": "款式",
+          "values": [
+            {
+              "label": "Open cuff",
+              "labelZh": "开口"
+            },
+            {
+              "label": "Closed bangle",
+              "labelZh": "死圈"
+            }
+          ]
+        }
+      ],
+      "i18n": {
+        "zh": {
+          "title": "复古链节手链",
+          "shortCopy": "复古链节，表面做了柔和的旧化处理。",
+          "description": "每一节链都由手工收尾，磨旧感是刻意留下的，不是磨损。开口款直接卡上手腕，死圈款套进手腕佩戴。",
+          "allergyNotice": "925 纯银镀金（gold vermeil），镀层会随佩戴变淡。",
+          "careInstructions": "避开水和香水；睡前取下。"
+        }
+      }
     },
     {
       "id": "prd_sample_0006",
@@ -156,19 +356,55 @@
       "productType": "restockable",
       "stock": 15,
       "status": "active",
-      "materials": ["Sterling silver 925", "Natural stone"],
+      "materials": [
+        "Sterling silver 925",
+        "Natural stone"
+      ],
       "metalPurity": "925",
-      "dimensions": { "length": "8mm", "width": "8mm", "unit": "mm" },
-      "weight": { "value": 1.9, "unit": "g" },
+      "dimensions": {
+        "length": "8mm",
+        "width": "8mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 1.9,
+        "unit": "g"
+      },
       "closureType": "Butterfly back",
       "allergyNotice": "Nickel-free sterling silver; natural stone colour varies by piece.",
       "careInstructions": "Avoid water and perfume; store in the supplied pouch.",
       "handmadeVariation": "Natural stone colour and pattern vary by piece.",
       "images": [
-        { "url": "/images/product-geometric-stone-studs.jpg", "alt": "Geometric Stone Studs — hexagonal natural stone studs in sterling silver", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-geometric-stone-studs.jpg",
+          "alt": "Geometric Stone Studs — hexagonal natural stone studs in sterling silver",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "earrings",
-      "tags": { "style": ["geometric", "minimal"], "material": ["sterling-silver", "natural-stone"] }
+      "tags": {
+        "style": [
+          "geometric",
+          "minimal"
+        ],
+        "material": [
+          "sterling-silver",
+          "natural-stone"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "几何方石耳钉",
+          "shortCopy": "方形天然石嵌在干净的银框里。",
+          "description": "方形切割天然石配素银框——克制的一点几何，适合每天戴。",
+          "allergyNotice": "不含镍的 925 纯银；天然石的颜色每件不同。",
+          "careInstructions": "避开水和香水；放进随附绒袋。",
+          "handmadeVariation": "天然石的颜色与纹路每件不同。",
+          "closureType": "耳堵"
+        }
+      }
     },
     {
       "id": "prd_sample_0007",
@@ -184,19 +420,56 @@
       "productType": "one_of_a_kind",
       "stock": 0,
       "status": "active",
-      "materials": ["Textile / Cord", "Ceramic"],
-      "dimensions": { "length": "460mm", "width": "14mm", "unit": "mm" },
-      "weight": { "value": 6.2, "unit": "g" },
+      "materials": [
+        "Textile / Cord",
+        "Ceramic"
+      ],
+      "dimensions": {
+        "length": "460mm",
+        "width": "14mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 6.2,
+        "unit": "g"
+      },
       "closureType": "Sliding knot",
       "allergyNotice": "Cord and ceramic only; no metal components.",
       "careInstructions": "Avoid water and perfume; reshape by hand while damp.",
       "handmadeVariation": "Knot spacing differs along the length.",
       "oneOfAKindNote": "Only one made. Not reproducible after sold.",
       "images": [
-        { "url": "/images/product-hand-knotted-cord-necklace.jpg", "alt": "Hand-Knotted Cord Necklace — linen cord with a matte ceramic bead", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-hand-knotted-cord-necklace.jpg",
+          "alt": "Hand-Knotted Cord Necklace — linen cord with a matte ceramic bead",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "necklaces",
-      "tags": { "style": ["boho", "nature"], "material": ["textile", "ceramic"] }
+      "tags": {
+        "style": [
+          "boho",
+          "nature"
+        ],
+        "material": [
+          "textile",
+          "ceramic"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "手编绳结项链",
+          "shortCopy": "仅此一件：手编绳，配一颗雕刻珠。",
+          "description": "手工打结的一件，串一颗雕刻陶瓷珠。",
+          "allergyNotice": "仅绳与陶瓷，无金属部件。",
+          "careInstructions": "避开水和香水；微湿时用手整形。",
+          "handmadeVariation": "绳结间距沿长度略有不同。",
+          "oneOfAKindNote": "只做这一件，售出后无法复刻。",
+          "closureType": "活动结"
+        }
+      }
     },
     {
       "id": "prd_sample_0008",
@@ -212,18 +485,193 @@
       "productType": "restockable",
       "stock": 20,
       "status": "active",
-      "materials": ["Sterling silver 925"],
+      "materials": [
+        "Sterling silver 925"
+      ],
       "metalPurity": "925",
-      "dimensions": { "length": "170mm", "width": "2mm", "unit": "mm" },
-      "weight": { "value": 2.2, "unit": "g" },
+      "dimensions": {
+        "length": "170mm",
+        "width": "2mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 2.2,
+        "unit": "g"
+      },
       "closureType": "Lobster clasp",
       "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive skin.",
       "careInstructions": "Avoid water and perfume; store flat to prevent tangling.",
       "images": [
-        { "url": "/images/product-delicate-chain-bracelet.jpg", "alt": "Delicate Chain Bracelet — fine sterling silver chain bracelet", "width": 1024, "height": 1280, "isPrimary": true }
+        {
+          "url": "/images/product-delicate-chain-bracelet.jpg",
+          "alt": "Delicate Chain Bracelet — fine sterling silver chain bracelet",
+          "width": 1024,
+          "height": 1280,
+          "isPrimary": true
+        }
       ],
       "category": "bracelets",
-      "tags": { "style": ["delicate", "minimal"], "material": ["sterling-silver"] }
+      "tags": {
+        "style": [
+          "delicate",
+          "minimal"
+        ],
+        "material": [
+          "sterling-silver"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "纤细链条款手链",
+          "shortCopy": "一条细链，安静地和什么都搭。",
+          "description": "细 925 纯银链带延长扣，为叠戴而做。",
+          "allergyNotice": "不含镍的 925 纯银，适合大多数敏感肌。",
+          "careInstructions": "避开水和香水；平放收纳以免打结。",
+          "closureType": "龙虾扣"
+        }
+      }
+    },
+    {
+      "id": "prd_sample_0009",
+      "sku": "JS-BAG-0001",
+      "slug": "pearl-bag-charm",
+      "createdAt": "2026-10-29T00:00:00Z",
+      "updatedAt": "2026-10-30T00:00:00Z",
+      "title": "Pearl Bag Charm",
+      "shortCopy": "One small pearl on a short chain — a new expression for your bag.",
+      "description": "A single baroque freshwater pearl on a fine sterling silver chain with a small clasp and ring, made to clip onto a bag strap or a key ring.",
+      "highlights": [
+        "Clips on",
+        "Hand-knotted"
+      ],
+      "price": 32,
+      "currency": "USD",
+      "productType": "restockable",
+      "stock": 10,
+      "status": "active",
+      "materials": [
+        "Sterling silver 925",
+        "Freshwater pearl"
+      ],
+      "metalPurity": "925",
+      "dimensions": {
+        "length": "70mm",
+        "width": "12mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 2.1,
+        "unit": "g"
+      },
+      "closureType": "Clasp and split ring",
+      "allergyNotice": "Nickel-free sterling silver; natural pearls vary in shape and lustre.",
+      "careInstructions": "Avoid water and perfume; wipe the pearl with a soft cloth.",
+      "handmadeVariation": "Each pearl is a different shape; the charm you receive is the one photographed.",
+      "images": [
+        {
+          "url": "/images/product-pearl-bag-charm.jpg",
+          "alt": "Pearl Bag Charm — a single baroque freshwater pearl on a short sterling silver chain with a clasp, on a warm off-white plaster surface",
+          "width": 1024,
+          "height": 1196,
+          "order": 0,
+          "isPrimary": true
+        }
+      ],
+      "category": "bag-charms",
+      "tags": {
+        "style": [
+          "pearl",
+          "minimal"
+        ],
+        "material": [
+          "sterling-silver",
+          "freshwater-pearl"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "珍珠包挂",
+          "shortCopy": "一颗小珍珠配一段短链，给包换个表情。",
+          "description": "一颗巴洛克淡水珍珠，串在细 925 纯银链上，配小扣与挂环，可以挂在包带或钥匙圈上。",
+          "highlights": [
+            "可挂可拆",
+            "手工打结"
+          ],
+          "allergyNotice": "不含镍的 925 纯银；天然珍珠的形状与光泽每颗不同。",
+          "careInstructions": "避开水和香水；用软布轻擦珍珠。",
+          "handmadeVariation": "每颗珍珠形状都不同，你收到的就是照片里那一颗。",
+          "closureType": "扣件与挂环"
+        }
+      }
+    },
+    {
+      "id": "prd_sample_0010",
+      "sku": "JS-SET-0001",
+      "slug": "chain-and-hoop-set",
+      "createdAt": "2026-10-29T00:00:00Z",
+      "updatedAt": "2026-10-30T00:00:00Z",
+      "title": "Chain and Hoop Set",
+      "shortCopy": "The fine chain and the small hoops, made to be worn together.",
+      "description": "A fine sterling silver chain with a brushed disc pendant, paired with a matching pair of small polished hoops. Bought as a set, worn as one.",
+      "highlights": [
+        "Two pieces",
+        "Nickel-free"
+      ],
+      "price": 79,
+      "currency": "USD",
+      "productType": "restockable",
+      "stock": 6,
+      "status": "active",
+      "materials": [
+        "Sterling silver 925"
+      ],
+      "metalPurity": "925",
+      "dimensions": {
+        "length": "420mm",
+        "width": "10mm",
+        "unit": "mm"
+      },
+      "weight": {
+        "value": 6.8,
+        "unit": "g"
+      },
+      "closureType": "Spring ring and latch back",
+      "allergyNotice": "Nickel-free sterling silver; suitable for most sensitive skin.",
+      "careInstructions": "Avoid water and perfume; store flat to prevent tangling.",
+      "images": [
+        {
+          "url": "/images/product-chain-and-hoop-set.jpg",
+          "alt": "Chain and Hoop Set — a fine silver chain with a round disc pendant and a pair of small silver hoops laid out together on a warm off-white surface",
+          "width": 1024,
+          "height": 1196,
+          "order": 0,
+          "isPrimary": true
+        }
+      ],
+      "category": "sets",
+      "tags": {
+        "style": [
+          "minimal",
+          "delicate"
+        ],
+        "material": [
+          "sterling-silver"
+        ]
+      },
+      "i18n": {
+        "zh": {
+          "title": "细链与耳扣套装",
+          "shortCopy": "一条细链、一对小耳扣，本来就该一起戴。",
+          "description": "细 925 纯银链配一枚拉丝圆盘坠，同色小号抛光耳扣一对。成套买，也成套戴。",
+          "highlights": [
+            "两件成套",
+            "不含镍"
+          ],
+          "allergyNotice": "不含镍的 925 纯银，适合大多数敏感肌。",
+          "careInstructions": "避开水和香水；平放收纳以免打结。",
+          "closureType": "弹簧扣与耳扣"
+        }
+      }
     }
   ]
 }

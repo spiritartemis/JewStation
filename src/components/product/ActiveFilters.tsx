@@ -9,13 +9,22 @@ import {
   type ListParams,
 } from "@/lib/filters";
 import { tagLabel } from "@/lib/tags";
+import { getMessages } from "@/i18n/messages";
+import type { Locale } from "@/i18n/config";
 
 const KEYS = ["category", "style", "material", "type", "price"] as const;
 
-function labelOf(key: (typeof KEYS)[number], value: string): string {
-  if (key === "price") return PRICE_BUCKETS.find((b) => b.id === value)?.label ?? value;
+function labelOf(
+  key: (typeof KEYS)[number],
+  value: string,
+  locale: Locale,
+): string {
+  if (key === "price") {
+    const m = getMessages(locale);
+    return m.list.priceBuckets[value as keyof typeof m.list.priceBuckets] ?? value;
+  }
   // 品类/风格/材质/类型都在同一份标签字典里，tagLabel 能覆盖
-  return tagLabel(value);
+  return tagLabel(value, locale);
 }
 
 /**
@@ -24,8 +33,17 @@ function labelOf(key: (typeof KEYS)[number], value: string): string {
  * 抽屉关掉之后用户看不到"自己选了什么"，只能靠重开筛选才能改。
  * 这里把每个筛选值显性化，可单独移除，也可一键清空，且都写回 URL。
  */
-export function ActiveFilters({ params, basePath }: { params: ListParams; basePath: string }) {
+export function ActiveFilters({
+  params,
+  basePath,
+  locale,
+}: {
+  params: ListParams;
+  basePath: string;
+  locale: Locale;
+}) {
   const router = useRouter();
+  const m = getMessages(locale);
   const count = countActiveFilters(params);
   if (count === 0) return null;
 
@@ -48,9 +66,9 @@ export function ActiveFilters({ params, basePath }: { params: ListParams; basePa
             type="button"
             onClick={() => remove(key, value)}
             className="inline-flex h-9 items-center gap-sp2 rounded-btn border border-line bg-surface px-sp3 text-aux text-ink"
-            aria-label={`Remove filter ${labelOf(key, value)}`}
+            aria-label={m.list.removeFilter(labelOf(key, value, locale))}
           >
-            {labelOf(key, value)}
+            {labelOf(key, value, locale)}
             <span aria-hidden="true" className="text-muted">
               ×
             </span>
@@ -63,7 +81,7 @@ export function ActiveFilters({ params, basePath }: { params: ListParams; basePa
         onClick={clearAll}
         className="h-9 px-sp2 text-aux text-muted underline hover:text-accent"
       >
-        Clear all ({count})
+        {m.list.clearAll(count)}
       </button>
     </div>
   );

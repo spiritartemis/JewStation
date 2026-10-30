@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/Section";
-import { STYLE_TAGS } from "@/lib/tags";
+import { STYLE_TAGS, tagLabel } from "@/lib/tags";
+import { localePath, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 /**
  * 莫兰迪色相轮（docs/视觉规范-莫兰迪色板.md）
@@ -27,11 +29,12 @@ const STYLE_IMAGES: Record<string, string> = {
 };
 
 /** 风格入口（B-2.2）：2 列网格，slug 与集合页同源 */
-export function StyleGrid() {
+export function StyleGrid({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
   const styles = STYLE_TAGS.slice(0, 4);
 
   return (
-    <Section title="Shop by style">
+    <Section title={m.home.sections.byStyle} locale={locale}>
       <div className="shell grid grid-cols-2 gap-sp3">
         {styles.map((s, i) => {
           // 莫兰迪五色相循环：块面用 Weak，hover 时描边转对应色相主色
@@ -41,7 +44,7 @@ export function StyleGrid() {
           return (
             <Link
               key={s.slug}
-              href={`/collections/${s.slug}`}
+              href={localePath(locale, `/collections/${s.slug}`)}
               className={`group relative flex h-28 items-center justify-center overflow-hidden rounded-card border border-line transition-colors duration-fade md:h-32 ${tint.bg} ${tint.hover}`}
             >
               {image ? (
@@ -63,7 +66,7 @@ export function StyleGrid() {
               ) : null}
               {/* 标签做成半透明墨色胶囊：不依赖图片明暗，任何配图上都读得清 */}
               <span className="relative rounded-btn bg-ink/55 px-sp2 py-sp1 font-serif text-body text-white backdrop-blur-[2px]">
-                {s.label}
+                {tagLabel(s.slug, locale)}
               </span>
             </Link>
           );
