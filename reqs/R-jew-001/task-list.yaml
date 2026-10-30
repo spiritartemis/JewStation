@@ -25,6 +25,11 @@ tasks:
     created: 2026-10-30
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/lib/currency.ts
+        kind: file
+        checksum: sha256:4bc1f5cbb7a3b3b69d8420e961c182f333ef559a9f0be6a027bd04fe57ecb053
+        at: 2026-10-30T09:47:11.955Z
     claim: {"session":"pid-57701","pid":57701,"host":"Mona.local","since":"2026-10-30T09:19:19.937Z","heartbeat":"2026-10-30T09:19:19.937Z"}
   - id: T-jew-001-03
     title: 新增 Bag Charms / Sets 两个品类（Q-04）：字典 + 导航 + 样例商品
