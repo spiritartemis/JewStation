@@ -76,3 +76,8 @@ tasks:
       按钮显示的是**要切去的那个语言**：中文页显示「English」，点击后整页刷新为英文版，
       按钮同时变成「中文」；英文页显示「中文」，点击后刷新为中文版，按钮变回「English」。
       约束：按钮最多显示 10 个字符，宽度固定（中文两字时按钮不缩窄），切换语言不丢当前路径与筛选条件。
+    artifacts:
+      - path: src/components/i18n/LocaleSwitcher.tsx
+        kind: file
+        checksum: sha256:c716279341c1231c091ab633f0ce51f7f29af6512aa71a9605a5a6a193a704e9
+        at: 2026-10-30T11:22:20.372Z

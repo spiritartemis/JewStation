@@ -1,0 +1,15 @@
+# 交货单（席位分支：件与交货单同分支；**件清单 + 校验和**）
+# 席位：local · 交付链与验收见 entry/workflow/seatflow.md §3.4 / §8
+# v5 schema：blueprint/schemas/deliverables.schema.json（checksum 必填；> 50MB 件走 external 外部引用）
+schema_version: 5
+req: R-jew-001
+task: T-jew-001-06
+seat: local
+agent: local
+execution_seq: 1
+completed: 2026-10-30
+deliverables:
+  - path: src/components/i18n/LocaleSwitcher.tsx
+    kind: file
+    checksum: sha256:c716279341c1231c091ab633f0ce51f7f29af6512aa71a9605a5a6a193a704e9
+    desc: 右上角单按钮语言切换（显示目标语言 + 固定宽度）

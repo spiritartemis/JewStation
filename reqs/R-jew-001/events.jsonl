@@ -16,3 +16,4 @@
 {"seq":16,"at":"2026-10-30T09:47:43Z","actor":"local","kind":"handoff","task":"T-jew-001-05","done":["已完成：义乌发货、仅美国+中国大陆、备货 1–2 天 + 在途 5–14 天、满额包邮（门槛待定价后反推，未编数字）、价含税 DDP 我方申报、中国境内不重复计税，写进配送页/退换页/About/FAQ 与商品页配送摘要；新增条款页路由与结构（正文待 11-06 文本）"],"req":"R-jew-001"}
 {"seq":17,"at":"2026-10-30T11:21:48Z","actor":"local","kind":"claim","task":"T-jew-001-06","state":"ready → in_progress","req":"R-jew-001"}
 {"seq":18,"at":"2026-10-30T11:21:58Z","actor":"local","kind":"handoff","task":"T-jew-001-06","done":["右上角单按钮语言切换：中文页显 English、英文页显中文，点击整页刷新并保留路径与筛选；按钮固定宽度，移动端常显且不挤压搜索与购物袋（0.3.2-m1b 已上线）"],"req":"R-jew-001"}
+{"seq":19,"at":"2026-10-30T11:22:20Z","actor":"local","kind":"deliver","task":"T-jew-001-06","state":"1 件","req":"R-jew-001"}
