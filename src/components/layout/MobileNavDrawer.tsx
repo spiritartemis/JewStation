@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { drawerGroups } from "@/i18n/nav";
-import { CloseIcon, MenuIcon } from "./icons";
+import { CloseIcon, MenuIcon, SearchIcon } from "./icons";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { CurrencySwitcher } from "@/components/currency/CurrencySwitcher";
 import { FxNote } from "@/components/currency/CurrencySwitcher";
@@ -83,6 +83,16 @@ export function MobileNavDrawer({ locale }: { locale: Locale }) {
                 <CloseIcon className="h-6 w-6" />
               </button>
             </div>
+
+            {/* 搜索入口（0.3.3）：<360px 顶栏不放搜索图标，改由抽屉承接，
+                否则 320px 宽品牌名与语言按钮会互相压字 */}
+            <Link
+              href={lp("/search")}
+              className="mt-sp4 flex h-11 items-center gap-sp2 rounded-btn border border-line bg-surface px-sp3 text-body text-muted"
+            >
+              <SearchIcon className="h-4 w-4 shrink-0" />
+              {m.nav.search}
+            </Link>
 
             <nav className="mt-sp5 space-y-sp6">
               {drawerGroups(locale).map((group) => (

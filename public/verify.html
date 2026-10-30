@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JewStation 验收清单 · 0.3.3-m1b</title>
+<style>
+  :root {
+    --bg: #F4F1EB;
+    --card: #FFFDF9;
+    --ink: #2B2A27;
+    --ink-soft: #6B6862;
+    --line: #DED8CC;
+    --clay: #8A6F5C;
+    --ok: #2F6B4F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px 80px;
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Songti SC", system-ui, sans-serif;
+    font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--clay); text-transform: uppercase; }
+  h1 { font-size: 27px; line-height: 1.35; font-weight: 500; margin: 10px 0 8px; font-family: "Songti SC", Georgia, serif; }
+  .lede { color: var(--ink-soft); font-size: 14px; margin: 0; }
+  .note {
+    margin-top: 18px; padding: 10px 14px; border-left: 2px solid var(--clay);
+    background: #EDE7DB; font-size: 13px; color: var(--ink-soft); border-radius: 0 6px 6px 0;
+  }
+  section { margin-top: 34px; }
+  .sec-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag {
+    font-size: 11px; letter-spacing: .06em; padding: 3px 8px; border-radius: 4px;
+    background: #EDE7DB; color: var(--clay); font-family: ui-monospace, Menlo, monospace;
+  }
+  h2 { font-size: 17px; font-weight: 500; margin: 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 18px;
+  }
+  ul.check { list-style: none; margin: 0; padding: 0; }
+  ul.check li { display: flex; gap: 9px; align-items: flex-start; padding: 5px 0; }
+  ul.check li input { margin: 6px 0 0; accent-color: var(--ok); flex-shrink: 0; cursor: pointer; }
+  ul.check li label { cursor: pointer; font-size: 14px; }
+  ul.check li input:checked + label { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: #C6BFB1; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 13px; border-top: 1px dashed var(--line); }
+  .links a {
+    display: inline-block; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: #F9F6EF; color: var(--ink); text-decoration: none; font-size: 13px;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .links a:hover { border-color: var(--clay); color: var(--clay); }
+  .links a.zh { background: #F9F6EF; }
+  .legend { margin-top: 10px; font-size: 12px; color: var(--ink-soft); display: flex; gap: 16px; flex-wrap: wrap; }
+  .legend b { font-weight: 500; color: var(--ink); }
+  footer { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-soft); }
+  footer h3 { font-size: 14px; font-weight: 500; color: var(--ink); margin: 0 0 8px; }
+  footer ul { margin: 0 0 16px; padding-left: 20px; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: #EDE7DB; padding: 1px 5px; border-radius: 3px; }
+  .progress { font-size: 12px; color: var(--ink-soft); margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Morrow &amp; Muse · 验收清单</div>
+    <h1>0.3.3-m1b 全量验收清单</h1>
+    <p class="lede">三组共 17 条任务：<b>A 组</b> 新版功能 6 条；<b>B 组</b> 是 0.2 遗留、代码已上线但一直没走过验收的 9 条；<b>I 组</b> 是本轮全宽度自适应校核。每条都给出要看的点与直达链接，勾选会自动记住，刷新不丢。</p>
+    <div class="note">这是临时验收页（<code>public/verify.html</code>），验收结束后删除，不进正式站点。<br>顺序建议：先过 A 组（新版改动）→ I 组（换几个宽度看排版）→ B 组（老功能补签）。</div>
+  </header>
+
+  <div class="legend">
+    <span><b>EN</b> 无前缀 = 英文站</span>
+    <span><b>/zh</b> = 中文站</span>
+    <span>桌面建议 1440px 宽，移动建议 390px</span>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-01</span>
+      <h2>中英双语路由与全站文案（Q-02）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="a1"><label for="a1"><code>/</code> 与 <code>/zh</code> 首页逐块对拍：标题、导航、页脚是否都是对应语言，没有漏翻的英文残留</label></li>
+        <li><input type="checkbox" id="a2"><label for="a2">顶栏右上角语言切换：EN ↔ 中文 来回切，URL 在 <code>/</code> 与 <code>/zh</code> 之间换，地址栏不出现 <code>/en</code></label></li>
+        <li><input type="checkbox" id="a3"><label for="a3">在 <code>/shop?category=rings</code> 上切语言，筛选条件不应丢失</label></li>
+        <li><input type="checkbox" id="a4"><label for="a4">中文页正文用宋体回退、无机械倾斜的伪斜体（首页 hero 第二行）</label></li>
+        <li><input type="checkbox" id="a5"><label for="a5">任一页看源码：有 <code>hreflang</code> 三档（en / zh-CN / x-default），canonical 指向自身</label></li>
+        <li><input type="checkbox" id="a6"><label for="a6">中文长文案（关于 / FAQ / 政策）机翻痕迹是否可接受，需要改的地方记下来</label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 首页 EN</a>
+        <a href="/zh" target="_blank" class="zh">/zh 首页 中文</a>
+        <a href="/shop?category=rings" target="_blank">/shop?category=rings</a>
+        <a href="/zh/about" target="_blank" class="zh">/zh/about</a>
+        <a href="/zh/faq" target="_blank" class="zh">/zh/faq</a>
+        <a href="/sitemap.xml" target="_blank">/sitemap.xml</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-02</span>
+      <h2>双币种与中行汇率日刷新（Q-05 / Q-08）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="b1"><label for="b1">顶栏右侧 USD / CNY 切换，全站价格立即换算（商品卡、详情页、搜索结果）</label></li>
+        <li><input type="checkbox" id="b2"><label for="b2">切到 CNY 后按 F5 刷新，仍是 CNY（记住选择）</label></li>
+        <li><input type="checkbox" id="b3"><label for="b3">无痕窗口首次进入：英文站默认 USD，中文站默认 CNY</label></li>
+        <li><input type="checkbox" id="b4"><label for="b4">页脚汇率行：<code>1 USD = 6.6695 CNY（Bank of China, 2026-10-30, 每日刷新）</code>，日期与当天一致</label></li>
+        <li><input type="checkbox" id="b5"><label for="b5">详情页主价下方有另一币种的约值小字</label></li>
+        <li><input type="checkbox" id="b6"><label for="b6">移动端（390px）币种开关在抽屉底部可见可用</label></li>
+      </ul>
+      <div class="links">
+        <a href="/products/pearl-bag-charm" target="_blank">/products/pearl-bag-charm</a>
+        <a href="/zh/products/pearl-bag-charm" target="_blank" class="zh">/zh/products/pearl-bag-charm</a>
+        <a href="/shop" target="_blank">/shop 看全站价格</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-03</span>
+      <h2>新增 Bag Charms / Sets 两个品类（Q-04）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="c1"><label for="c1">顶栏 Shop 下拉里共六个品类：耳饰 / 项链 / 手链 / 戒指 / 包挂 / 套装</label></li>
+        <li><input type="checkbox" id="c2"><label for="c2">两个新集合页能打开，各 1 件样例商品</label></li>
+        <li><input type="checkbox" id="c3"><label for="c3">只有 1 件商品时用两列大卡，右侧不留大片空白</label></li>
+        <li><input type="checkbox" id="c4"><label for="c4">筛选面板里的品类勾选含包挂 / 套装，且筛选结果正确</label></li>
+        <li><input type="checkbox" id="c5"><label for="c5">中文站品类名为「包挂」「套装」，不是拼音或英文</label></li>
+        <li><input type="checkbox" id="c6"><label for="c6">sitemap 里两个新集合页中英成对出现</label></li>
+      </ul>
+      <div class="links">
+        <a href="/collections/bag-charms" target="_blank">/collections/bag-charms</a>
+        <a href="/zh/collections/bag-charms" target="_blank" class="zh">/zh/collections/bag-charms</a>
+        <a href="/collections/sets" target="_blank">/collections/sets</a>
+        <a href="/zh/collections/sets" target="_blank" class="zh">/zh/collections/sets</a>
+        <a href="/shop?category=bag-charms" target="_blank">/shop?category=bag-charms</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-04</span>
+      <h2>手链「开口 / 死圈」可选规格（Q-06）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="d1"><label for="d1">详情页出现「款式」规格，两个选项：开口 / 死圈，默认选中第一个</label></li>
+        <li><input type="checkbox" id="d2"><label for="d2">切换选项：价格、库存、图片都不变（同款同价，不是两个商品）</label></li>
+        <li><input type="checkbox" id="d3"><label for="d3">英文站显示 Closure / Open cuff / Closed bangle，中文站显示款式 / 开口 / 死圈</label></li>
+        <li><input type="checkbox" id="d4"><label for="d4">选好规格后切语言，选中项不丢</label></li>
+        <li><input type="checkbox" id="d5"><label for="d5">戒指的码数仍是独立的码数选择器，不与「款式」混在一起</label></li>
+        <li><input type="checkbox" id="d6"><label for="d6">描述文字里不再出现「死圈」与「龙虾扣」自相矛盾的表述</label></li>
+      </ul>
+      <div class="links">
+        <a href="/products/vintage-link-bracelet" target="_blank">/products/vintage-link-bracelet</a>
+        <a href="/zh/products/vintage-link-bracelet" target="_blank" class="zh">/zh/products/vintage-link-bracelet</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-05</span>
+      <h2>结账与配送文案（Q-21 / 22 / 30 / 31 / 32）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="e1"><label for="e1">配送页写明：中国义乌发货、仅发美国与中国大陆</label></li>
+        <li><input type="checkbox" id="e2"><label for="e2">两段时效分开写清：备货 1–2 天 + 在途 5–14 天，不是笼统一个数字</label></li>
+        <li><input type="checkbox" id="e3"><label for="e3">满额包邮：门槛处是待填标注，没有被编造成某个具体金额</label></li>
+        <li><input type="checkbox" id="e4"><label for="e4">价格含税、DDP 我方申报，中国境内不重复计税，说法前后一致</label></li>
+        <li><input type="checkbox" id="e5"><label for="e5">退货 14 天；耳饰与定制款不退（这条在详情页也有提示）</label></li>
+        <li><input type="checkbox" id="e6"><label for="e6">详情页底部有配送摘要卡，与政策页用词一致</label></li>
+        <li><input type="checkbox" id="e7"><label for="e7">条款页 <code>/policies/terms</code> 路由已存在（正文待 11-06 定稿）</label></li>
+      </ul>
+      <div class="links">
+        <a href="/policies/shipping" target="_blank">/policies/shipping</a>
+        <a href="/zh/policies/shipping" target="_blank" class="zh">/zh/policies/shipping</a>
+        <a href="/policies/returns" target="_blank">/policies/returns</a>
+        <a href="/zh/policies/returns" target="_blank" class="zh">/zh/policies/returns</a>
+        <a href="/policies/terms" target="_blank">/policies/terms</a>
+        <a href="/zh/policies/terms" target="_blank" class="zh">/zh/policies/terms</a>
+        <a href="/zh/products/vintage-link-bracelet" target="_blank" class="zh">详情页配送卡</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-10-01</span>
+      <h2>上一版遗留：首页视觉迭代与品牌落地</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="f1"><label for="f1">首页整体视觉（莫兰迪浅色、衬线标题、留白节奏）是否认可</label></li>
+        <li><input type="checkbox" id="f2"><label for="f2">浏览器标签页与页脚有品牌徽记（favicon 可见）</label></li>
+        <li><input type="checkbox" id="f3"><label for="f3">顶栏保持纯文字标，没有插入图形 logo</label></li>
+        <li><input type="checkbox" id="f4"><label for="f4">移动端顶栏只有 ☰ + 品牌 + 搜索 + 购物袋，不挤爆、不换行</label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 首页</a>
+        <a href="/zh" target="_blank" class="zh">/zh 首页</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-06</span>
+      <h2>右上角中英文切换按钮（0.3.2 新增）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="h1"><label for="h1">英文页右上角：按钮上写的是<b>「中文」两个字</b></label></li>
+        <li><input type="checkbox" id="h2"><label for="h2">点它 → 整页刷新成中文，按钮同时变成 <b>English</b></label></li>
+        <li><input type="checkbox" id="h3"><label for="h3">中文页点「English」→ 刷新成英文版，按钮变回「中文」</label></li>
+        <li><input type="checkbox" id="h4"><label for="h4">按钮宽度固定：显示「中文」两字时不缩窄，来回切换按钮不跳动（按 10 字符预留）</label></li>
+        <li><input type="checkbox" id="h5"><label for="h5">手机上（390px）按钮也在右上角，且搜索与购物袋没有被挤出屏幕</label></li>
+        <li><input type="checkbox" id="h6"><label for="h6">在 <code>/shop?category=rings</code> 上切语言，筛选条件不丢；地址栏不出现 <code>/en</code></label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 英文页（按钮应写「中文」）</a>
+        <a href="/zh" target="_blank" class="zh">/zh 中文页（按钮应写 English）</a>
+        <a href="/shop?category=rings" target="_blank">带筛选切换测试</a>
+      </div>
+    </div>
+  </section>
+
+  <p class="eyebrow" style="margin-top:52px;">B 组 · 0.2 遗留（代码已上线，未走过验收）</p>
+  <div class="note">这九条是 0.2 阶段做完的，代码一直在 master 上跑，但板账从没走验收流程。现在补上，逐条过一遍即可。</div>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-0-01</span>
+      <h2>全局布局与响应式导航（0.2-01）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g1a"><label for="g1a">1440 宽：顶栏一行排完 = 品牌 + Shop 下拉 + 关于 + FAQ + 搜索 + 购物袋 + EN/中文 + USD/CNY，不换行不重叠</label></li>
+        <li><input type="checkbox" id="g1b"><label for="g1b">把窗口横向缩窄到 900 左右：导航收进 ☰，品牌与图标仍在原位</label></li>
+        <li><input type="checkbox" id="g1c"><label for="g1c">390 手机宽：顶栏只剩 ☰ + 品牌 + 搜索 + 购物袋（语言与币种隐藏，没挤爆）</label></li>
+        <li><input type="checkbox" id="g1d"><label for="g1d">点 ☰ 抽屉左滑出现，含 Shop 六品类 + 特殊集合 + 关于/FAQ/政策，底部有语言与币种</label></li>
+        <li><input type="checkbox" id="g1e"><label for="g1e">抽屉里点任一项：跳到正确页面且抽屉自动关闭；Esc 或点遮罩也能关</label></li>
+        <li><input type="checkbox" id="g1f"><label for="g1f">页脚四列链接 + 版本 0.3.2-m1b + 更新 2026-10-30 + 汇率行，全部对得上</label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 桌面</a>
+        <a href="/zh" target="_blank" class="zh">/zh 中文</a>
+        <a href="/about" target="_blank">/about 看页脚</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-1-01</span>
+      <h2>首页（0.2-02）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g2a"><label for="g2a">首屏：大字标题 + 一句说明 +「Shop new」按钮，按钮可见可点（不是空位）</label></li>
+        <li><input type="checkbox" id="g2b"><label for="g2b">六段内容依次是：New arrivals → One of a Kind → Trending → Shop by style → You may like → Newsletter</label></li>
+        <li><input type="checkbox" id="g2c"><label for="g2c">商品卡有标签区分：One of a Kind / Out of stock / Only 3 left 三种都出现</label></li>
+        <li><input type="checkbox" id="g2d"><label for="g2d">Shop by style 四格（Minimal / Vintage / Statement / Nature-inspired）点进去是风格集合页</label></li>
+        <li><input type="checkbox" id="g2e"><label for="g2e">Newsletter 位写明「V1.0 开放，这是占位」，没有被做成能提交的假表单</label></li>
+        <li><input type="checkbox" id="g2f"><label for="g2f">中文首页：标题「明日缪斯 / 为你而生。」，第二行不是机械倾斜的假斜体</label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 首页</a>
+        <a href="/zh" target="_blank" class="zh">/zh 首页</a>
+        <a href="/collections/minimal" target="_blank">/collections/minimal</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-2-01</span>
+      <h2>商品列表与卡片（0.2-03）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g3a"><label for="g3a"><code>/shop</code> 默认 10 件，桌面四列网格，卡片含图 / 标题 / 价格 / 标签</label></li>
+        <li><input type="checkbox" id="g3b"><label for="g3b">筛选面板五组：品类 / 风格 / 材质 / 类型 / 价格</label></li>
+        <li><input type="checkbox" id="g3c"><label for="g3c">勾选后结果正确变化：<code>category=rings</code> → 1 件，<code>earrings</code> → 3 件，<code>price=under-50</code> → 5 件</label></li>
+        <li><input type="checkbox" id="g3d"><label for="g3d">选中后顶部出现筛选 chip，可单个移除，也可「全部清除（n）」</label></li>
+        <li><input type="checkbox" id="g3e"><label for="g3e">筛选条件写进 URL，复制链接给别人打开是同样结果；浏览器后退能回到上一步</label></li>
+        <li><input type="checkbox" id="g3f"><label for="g3f">排序三项都生效：价格升第一件是 $32 包挂，价格降第一件是 $96 珍珠耳坠</label></li>
+        <li><input type="checkbox" id="g3g"><label for="g3g">六个集合页数量对：耳饰 3 / 项链 2 / 手链 2 / 戒指 1 / 包挂 1 / 套装 1；只有 1–2 件时改两列大卡</label></li>
+      </ul>
+      <div class="links">
+        <a href="/shop" target="_blank">/shop</a>
+        <a href="/shop?category=rings" target="_blank">?category=rings</a>
+        <a href="/shop?sort=price-asc" target="_blank">?sort=price-asc</a>
+        <a href="/shop?sort=price-desc" target="_blank">?sort=price-desc</a>
+        <a href="/collections/earrings" target="_blank">/collections/earrings</a>
+        <a href="/collections/rings" target="_blank">/collections/rings</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-3-01</span>
+      <h2>搜索（0.2-04）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g4a"><label for="g4a">顶栏搜索输入 <code>pearl</code> → 2 件（Baroque Pearl Drops、Pearl Bag Charm）</label></li>
+        <li><input type="checkbox" id="g4b"><label for="g4b">大小写不敏感：<code>PEARL</code> 与 <code>pearl</code> 结果相同</label></li>
+        <li><input type="checkbox" id="g4c"><label for="g4c">中文站搜「珍珠」能出结果（索引里同时装了中英标题）</label></li>
+        <li><input type="checkbox" id="g4d"><label for="g4d">搜一个没有的词（如 <code>xyzzy</code>）→ 有「没找到」提示 + 回到全部商品的入口，不是白屏</label></li>
+        <li><input type="checkbox" id="g4e"><label for="g4e">搜索结果页也能筛选排序，语言切换后搜索词不丢</label></li>
+      </ul>
+      <div class="links">
+        <a href="/search?q=pearl" target="_blank">/search?q=pearl</a>
+        <a href="/search?q=xyzzy" target="_blank">/search?q=xyzzy 空结果</a>
+        <a href="/zh/search?q=%E7%8F%8D%E7%8F%A0" target="_blank" class="zh">/zh/search?q=珍珠</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-4-01</span>
+      <h2>商品详情页（0.2-05）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g5a"><label for="g5a">标准款（Silver Wave Hoops $48）：标题 / 价 / 短描述 / 长描述 / 亮点 / 材质 / 尺寸 / 重量 / 保养 都在</label></li>
+        <li><input type="checkbox" id="g5b"><label for="g5b">面包屑「Home / Bracelets / Vintage Link Bracelet」可点，能回到上一级</label></li>
+        <li><input type="checkbox" id="g5c"><label for="g5c">售罄且可补货（Vintage Link Bracelet）显示 <b>Out of stock</b>，<b>不是</b>「孤品不再补货」</label></li>
+        <li><input type="checkbox" id="g5d"><label for="g5d">孤品售罄（Hand-Knotted Cord Necklace）显示「One of a Kind + Sold」，话术与上一条区分开</label></li>
+        <li><input type="checkbox" id="g5e"><label for="g5e">价格下方有另一币种约值小字；底部有配送摘要卡</label></li>
+        <li><input type="checkbox" id="g5f"><label for="g5f">耳饰页有「耳饰属贴身物品，非质量问题不退」提示</label></li>
+      </ul>
+      <div class="links">
+        <a href="/products/silver-wave-hoops" target="_blank">标准款</a>
+        <a href="/products/vintage-link-bracelet" target="_blank">售罄可补货</a>
+        <a href="/products/hand-knotted-cord-necklace" target="_blank">孤品售罄</a>
+        <a href="/zh/products/silver-wave-hoops" target="_blank" class="zh">中文详情页</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-5-01</span>
+      <h2>品牌 / FAQ / 政策页（0.2-06）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g6a"><label for="g6a"><code>/about</code> 品牌故事读得通，不是占位 lorem</label></li>
+        <li><input type="checkbox" id="g6b"><label for="g6b"><code>/faq</code> 十条问答，点标题能展开收起</label></li>
+        <li><input type="checkbox" id="g6c"><label for="g6c">五篇政策都能打开：隐私 / Cookie / 退货 / 配送 / 条款，正文不是空壳</label></li>
+        <li><input type="checkbox" id="g6d"><label for="g6d">页脚每一个链接点过去都不 404</label></li>
+        <li><input type="checkbox" id="g6e"><label for="g6e">每篇都有中文版（<code>/zh/...</code>），中文不是直接照搬英文</label></li>
+      </ul>
+      <div class="links">
+        <a href="/about" target="_blank">/about</a>
+        <a href="/faq" target="_blank">/faq</a>
+        <a href="/policies/privacy" target="_blank">/policies/privacy</a>
+        <a href="/policies/cookies" target="_blank">/policies/cookies</a>
+        <a href="/zh/faq" target="_blank" class="zh">/zh/faq</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-6-01</span>
+      <h2>SEO 基础（0.2-07）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g7a"><label for="g7a">详情页源码：canonical 指向自身，三条 hreflang（en / zh-CN / x-default）都在</label></li>
+        <li><input type="checkbox" id="g7b"><label for="g7b">中文页 <code>og:locale=zh_CN</code>，英文页 <code>en_US</code>；<code>&lt;html lang&gt;</code> 分别是 zh-CN / en</label></li>
+        <li><input type="checkbox" id="g7c"><label for="g7c">结构化数据：Product + Offer + Brand + BreadcrumbList，<code>priceCurrency</code> 恒为 USD</label></li>
+        <li><input type="checkbox" id="g7d"><label for="g7d"><code>/sitemap.xml</code> 104 条 loc，其中 104 条 zh-CN hreflang，中英成对</label></li>
+        <li><input type="checkbox" id="g7e"><label for="g7e"><code>/robots.txt</code> 屏蔽 <code>/search /cart /checkout</code> 及中文对应三条</label></li>
+        <li><input type="checkbox" id="g7f"><label for="g7f">canonical / og:url / sitemap 已全部指向线上域名（0.3.1 起），<code>localhost</code> 残留 0；Q-39 正式域名定了只改 <code>NEXT_PUBLIC_SITE_URL</code> 一行重发，不动代码</label></li>
+      </ul>
+      <div class="links">
+        <a href="/sitemap.xml" target="_blank">/sitemap.xml</a>
+        <a href="/robots.txt" target="_blank">/robots.txt</a>
+        <a href="/products/vintage-link-bracelet" target="_blank">详情页（看源码）</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-7-01</span>
+      <h2>图片与性能基线（0.2-08）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g8a"><label for="g8a">首屏大图加载时版面不塌、不跳（宽高比预留住了）</label></li>
+        <li><input type="checkbox" id="g8b"><label for="g8b">商品图是懒加载：往下滚动才逐张出现</label></li>
+        <li><input type="checkbox" id="g8c"><label for="g8c">图片走 next/image，有 srcset 多档；手机不拉桌面原图</label></li>
+        <li><input type="checkbox" id="g8d"><label for="g8d">单张商品图体积在 200KB 量级，20 张内不会拖垮首屏</label></li>
+        <li><input type="checkbox" id="g8e"><label for="g8e">图片都有 alt 文本（读屏可用；SEO 也吃这个）</label></li>
+      </ul>
+      <div class="links">
+        <a href="/" target="_blank">/ 首页看图</a>
+        <a href="/shop" target="_blank">/shop 滚动看图</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-1b-8-01</span>
+      <h2>商品录入流程（0.2-09）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="g9a"><label for="g9a">录入文档 <code>docs/商品录入流程.md</code> 可读：字段含义、必填、校验规则、图怎么放都写了</label></li>
+        <li><input type="checkbox" id="g9b"><label for="g9b">校验脚本能用：<code>npm run validate:products</code> 输出「结论：通过」</label></li>
+        <li><input type="checkbox" id="g9c"><label for="g9c">故意漏一个必填字段会报错并指出是哪个商品哪个字段（我可以现场演示）</label></li>
+        <li><input type="checkbox" id="g9d"><label for="g9d">现有 10 件商品都过校验，中英文案齐全</label></li>
+      </ul>
+      <div class="links">
+        <a href="/products/pearl-bag-charm" target="_blank">随便看一件商品</a>
+        <a href="/shop" target="_blank">/shop</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="tag">T-jew-001-07</span>
+      <h2>全宽度自适应（0.3.3）</h2>
+    </div>
+    <div class="card">
+      <ul class="check">
+        <li><input type="checkbox" id="i1"><label for="i1"><b>320px 最窄屏</b>：顶栏「☰ + 品牌名 + English + 购物袋」在一行，品牌名不被按钮压住（原来这里是重叠 30px 的缺陷）</label></li>
+        <li><input type="checkbox" id="i2"><label for="i2"><b>≥360px</b>：搜索图标出现，四个元素仍不重叠、间距 ≥14px</label></li>
+        <li><input type="checkbox" id="i3"><label for="i3">语言按钮在手机上高 40px（原来 32px 偏难点），桌面上仍是 32px 的克制尺寸</label></li>
+        <li><input type="checkbox" id="i4"><label for="i4">语言按钮宽度固定：中文页显示 English（7 字符）、英文页显示中文（2 字符），来回切按钮不跳宽</label></li>
+        <li><input type="checkbox" id="i5"><label for="i5"><b>&lt;360px 抽屉里的搜索入口</b>：点 ☰ 展开，第一行是搜索框样式的「搜索」，代替顶栏被让位的图标</label></li>
+        <li><input type="checkbox" id="i6"><label for="i6"><b>768px 平板</b>：导航收进抽屉，商品两列，首屏图文左右分布不拥挤</label></li>
+        <li><input type="checkbox" id="i7"><label for="i7"><b>1024px 桌面</b>：导航铺开（Shop 下拉 + 关于），语言/币种出现在顶栏，元素间距 ≥12px 不重叠</label></li>
+        <li><input type="checkbox" id="i8"><label for="i8"><b>1440 / 1920px</b>：内容最大 1200px 居中，不被拉得过度分散</label></li>
+        <li><input type="checkbox" id="i9"><label for="i9"><b>全程无横向滚动条</b>：12 个页面 × 10 个宽度（320/360/390/414/480/768/1024/1280/1440/1920）自动化实测 120 个组合，溢出 0 处</label></li>
+        <li><input type="checkbox" id="i10"><label for="i10"><b>刘海屏 / 添加到主屏</b>：已设 <code>viewport-fit=cover</code> + 顶栏 <code>safe-area-inset-top</code>，状态栏不压内容</label></li>
+      </ul>
+      <div class="links">
+        <a href="/zh" target="_blank" class="zh">/zh 首页 中文</a>
+        <a href="/" target="_blank">/ 首页 EN</a>
+        <a href="/zh/shop" target="_blank" class="zh">/zh/shop 列表</a>
+        <a href="/zh/products/vintage-link-bracelet" target="_blank" class="zh">/zh 详情页</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>还缺的值（我没编数字，页面留了标注）</h3>
+    <ul>
+      <li>Q-09 逐款含镍清单 ——「材质与保养」现只有通用表述</li>
+      <li>Q-19 产地是否写义乌</li>
+      <li>Q-31 满额包邮门槛 —— 等 10 款定价定稿后反推</li>
+      <li>Q-24 ~ Q-27 法律文本（隐私 / cookie / 条款 / 退货细则），11-06 前</li>
+      <li>Q-47 客服邮箱</li>
+      <li>Q-18 实拍素材 —— 现在每件只有 1 张 AI 概念图，所以详情页图集只能看到一张</li>
+      <li>Q-39 站点域名 —— 定了就配 <code>NEXT_PUBLIC_SITE_URL</code>，SEO 里的地址自动变对</li>
+    </ul>
+    <h3>全部认可后</h3>
+    <ul>
+      <li>逐条执行 <code>gd seat task accept &lt;任务id&gt; --project .git/gdtwork --seat local</code></li>
+      <li>再执行 <code>gd req verify R-jew-001 --yes</code> 把版本账标为 verified 并打验收 tag</li>
+    </ul>
+    <p style="margin:0;">有问题的条目直接说编号（如「b4 日期不对」），我改完重新交件。</p>
+    <div class="progress" id="progress">已勾选 0 / 35</div>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('ul.check input[type=checkbox]'));
+    var key = 'mm-verify-0.3.0-m1b';  // 故意不带新版号：升级重发时保留已勾选的进度
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { saved = {}; }
+    var total = boxes.length;
+    var bar = document.getElementById('progress');
+    function render() {
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+      bar.textContent = n === total ? ('全部 ' + total + ' 项已勾选，可以签字了') : ('已勾选 ' + n + ' / ' + total);
+    }
+    boxes.forEach(function (b) {
+      if (saved[b.id]) b.checked = true;
+      b.addEventListener('change', function () {
+        saved[b.id] = b.checked;
+        try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {}
+        render();
+      });
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

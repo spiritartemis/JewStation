@@ -41,7 +41,7 @@ export function LocaleSwitcher({
       hrefLang={target === "zh" ? "zh-CN" : "en"}
       aria-label={m.language.switchTo}
       title={m.language.switchTo}
-      className={`inline-flex h-8 w-[64px] shrink-0 items-center justify-center rounded-full border border-line px-sp1 text-[11px] leading-none text-ink transition-colors duration-fade whitespace-nowrap hover:border-accent hover:text-accent lg:w-[76px] ${className}`}
+      className={`inline-flex h-10 w-[64px] shrink-0 items-center justify-center rounded-full border border-line px-sp1 text-[11px] leading-none text-ink transition-colors duration-fade whitespace-nowrap hover:border-accent hover:text-accent sm:h-9 lg:h-8 lg:w-[76px] ${className}`}
     >
       {LOCALE_SWITCH_LABELS[target]}
     </a>

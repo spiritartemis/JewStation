@@ -35,7 +35,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return (
     <header
-      className={`sticky top-0 z-40 bg-bg/90 backdrop-blur transition-[border-color] duration-fade ${
+      className={`sticky top-0 z-40 bg-bg/90 pt-[env(safe-area-inset-top)] backdrop-blur transition-[border-color] duration-fade ${
         scrolled ? "border-b border-line" : "border-b border-transparent"
       }`}
     >
@@ -51,9 +51,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         >
           {/* 顶栏保持纯文字标：加徽记后 390px 宽即使只在桌面显示也会挤压
               搜索/购物车，且 20px 下徽记细节糊成一团。图形识别交给 favicon 与页脚落款。
-              0.3.2 起右上角常驻语言按钮，390px 要腾 64px 出来：字标在窄屏降到 12px/0.06em，
-              并留 truncate 兜底 —— 宁可缩字也不能把搜索与购物袋挤出视口 */}
-          <span className="min-w-0 truncate font-serif text-[12px] uppercase tracking-[0.06em] sm:text-h2 sm:tracking-[0.16em] lg:tracking-[0.2em]">
+              0.3.3 起右上角常驻语言按钮，字标按宽度分三档收缩（字号靠 10/12/16 三级，
+              **不用 truncate** —— 品牌名被省略号截断比缩字号更难看）：
+              <380px 10px（"MORROW & MUSE" ≈ 92px）· 380–639px 12px · ≥sm 恢复 h2 16px */}
+          <span className="whitespace-nowrap font-serif text-[12px] uppercase tracking-[0.08em] max-[379px]:text-[10px] max-[379px]:tracking-[0.05em] sm:text-h2 sm:tracking-[0.16em] lg:tracking-[0.2em]">
             {SITE.brandName}
           </span>
         </Link>
@@ -106,14 +107,16 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           ))}
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-sp2 lg:ml-0">
-          {/* 0.3.2：语言切换改成右上角单按钮，移动端也常显（手机上点一下就能换语言） */}
+        <div className="ml-auto flex shrink-0 items-center gap-sp1 sm:gap-sp2 lg:ml-0">
+          {/* 0.3.2：语言切换改成右上角单按钮，移动端也常显（手机上点一下就能换语言）
+              0.3.3：<360px 时搜索图标让位（省 52px）—— 抽屉里保留搜索入口，
+              这样 320px 宽也能给品牌名和语言按钮留出安全间距，不至于互相压字 */}
           <LocaleSwitcher current={locale} />
           <CurrencySwitcher className="hidden lg:flex" />
           <Link
             href={lp("/search")}
             aria-label={m.nav.search}
-            className="flex h-11 w-11 shrink-0 items-center justify-center text-ink"
+            className="hidden h-11 w-11 shrink-0 items-center justify-center text-ink min-[360px]:flex"
           >
             <SearchIcon className="h-5 w-5" />
           </Link>

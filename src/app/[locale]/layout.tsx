@@ -63,6 +63,11 @@ export async function generateMetadata({ params }: Omit<LayoutProps, "children">
 export const viewport: Viewport = {
   themeColor: "#F4F1EB",
   colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+  // 允许双指缩放（不设 maximumScale，避免无障碍问题）；
+  // cover：刘海屏横向/添加到主屏时铺满，顶栏再用 env(safe-area-inset-*) 让出安全区
+  viewportFit: "cover",
 };
 
 export default async function LocaleLayout({ children, params }: LayoutProps) {
