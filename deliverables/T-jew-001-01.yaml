@@ -6,10 +6,10 @@ req: R-jew-001
 task: T-jew-001-01
 seat: local
 agent: local
-execution_seq: 1
+execution_seq: 2
 completed: 2026-10-30
 deliverables:
   - path: src/i18n/messages.ts
     kind: file
-    checksum: sha256:bf1e4d82acd641c27d65a581a6d741702d7fb1253481c1ed88356f4856bffff8
-    desc: 界面词条（中英）
+    checksum: sha256:65b983b867669614beff2bcc8b018f601590fdadad161caf54150a5fa6444dfd
+    desc: 界面词条（中英）· 0.3.2 补 language.switchTo

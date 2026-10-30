@@ -19,3 +19,4 @@
 {"seq":19,"at":"2026-10-30T11:22:20Z","actor":"local","kind":"deliver","task":"T-jew-001-06","state":"1 件","req":"R-jew-001"}
 {"seq":20,"at":"2026-10-30T11:22:28Z","actor":"local","kind":"deliver","task":"T-jew-001-06","state":"1 件","req":"R-jew-001"}
 {"seq":21,"at":"2026-10-30T11:22:31Z","actor":"local","kind":"deliver","task":"T-jew-001-06","state":"1 件","req":"R-jew-001"}
+{"seq":22,"at":"2026-10-30T11:47:28Z","actor":"local","kind":"claim","task":"T-jew-001-07","state":"ready → in_progress","req":"R-jew-001"}
