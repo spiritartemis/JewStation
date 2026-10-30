@@ -9,7 +9,7 @@ tasks:
   - id: T-jew-001-01
     title: 中英双语路由与全站文案（Q-02）：/zh 子站 + 语言切换 + hreflang + 双语 sitemap
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-30
     input: |
       （待总控补充输入）
@@ -18,7 +18,6 @@ tasks:
         kind: file
         checksum: sha256:bf1e4d82acd641c27d65a581a6d741702d7fb1253481c1ed88356f4856bffff8
         at: 2026-10-30T09:46:43.274Z
-    claim: {"session":"pid-57581","pid":57581,"host":"Mona.local","since":"2026-10-30T09:19:16.425Z","heartbeat":"2026-10-30T09:19:16.425Z"}
   - id: T-jew-001-02
     title: 双币种展示与中行汇率日刷新（Q-05/Q-08）：USD 基准 + CNY 换算 + 0 点刷新
     executor: local
