@@ -6,10 +6,10 @@ req: R-jew-001
 task: T-jew-001-06
 seat: local
 agent: local
-execution_seq: 1
+execution_seq: 2
 completed: 2026-10-30
 deliverables:
-  - path: src/components/i18n/LocaleSwitcher.tsx
+  - path: src/components/layout/SiteHeader.tsx
     kind: file
-    checksum: sha256:c716279341c1231c091ab633f0ce51f7f29af6512aa71a9605a5a6a193a704e9
-    desc: 右上角单按钮语言切换（显示目标语言 + 固定宽度）
+    checksum: sha256:2e383aa8cd87dd815c24c749eded5b8feaf4109ea72cb8a08e589db92d7c576b
+    desc: 顶栏右上角常驻按钮 + 窄屏字标让位
