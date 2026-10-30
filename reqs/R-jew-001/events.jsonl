@@ -3,3 +3,4 @@
 {"seq":3,"at":"2026-10-30T09:19:23Z","actor":"local","kind":"claim","task":"T-jew-001-03","to":"local","state":"working","text":"会话 pid-57834 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
 {"seq":4,"at":"2026-10-30T09:19:26Z","actor":"local","kind":"claim","task":"T-jew-001-04","to":"local","state":"working","text":"会话 pid-57954 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
 {"seq":5,"at":"2026-10-30T09:19:30Z","actor":"local","kind":"claim","task":"T-jew-001-05","to":"local","state":"working","text":"会话 pid-58072 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
+{"seq":6,"at":"2026-10-30T09:46:25Z","actor":"local","kind":"handoff","task":"T-jew-001-01","done":["0.3.0-m1b · Q-02 中英双语：英文无前缀 + /zh 子站（middleware 内部重写，无 301）、每页 en/zh-CN/x-default 三档 hreflang、双语 sitemap、语言切换（保留 query）、全站界面词条与 About/FAQ/政策长文中英双份"],"remain":["中文稿为机翻初稿，待站长逐段审"],"req":"R-jew-001"}
