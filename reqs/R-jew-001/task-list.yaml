@@ -69,7 +69,7 @@ tasks:
   - id: T-jew-001-06
     title: 右上角中英文切换按钮（0.3.2）：单按钮 · 显示目标语言 · 固定宽度 10 字符
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-30
     input: |
       页面右上角常驻一枚中英文切换按钮（移动端也显示）。
