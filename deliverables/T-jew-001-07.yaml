@@ -1,0 +1,15 @@
+# 交货单（席位分支：件与交货单同分支；**件清单 + 校验和**）
+# 席位：local · 交付链与验收见 entry/workflow/seatflow.md §3.4 / §8
+# v5 schema：blueprint/schemas/deliverables.schema.json（checksum 必填；> 50MB 件走 external 外部引用）
+schema_version: 5
+req: R-jew-001
+task: T-jew-001-07
+seat: local
+agent: local
+execution_seq: 1
+completed: 2026-10-30
+deliverables:
+  - path: src/components/layout/SiteHeader.tsx
+    kind: file
+    checksum: sha256:928bc8b659741f45413c723d7a105c11c5164da8f0e764e6a8d87b740132b4ef
+    desc: 品牌字标三档收缩 + 窄屏搜索让位 + safe-area 顶栏

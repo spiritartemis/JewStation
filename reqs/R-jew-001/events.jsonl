@@ -21,3 +21,4 @@
 {"seq":21,"at":"2026-10-30T11:22:31Z","actor":"local","kind":"deliver","task":"T-jew-001-06","state":"1 件","req":"R-jew-001"}
 {"seq":22,"at":"2026-10-30T11:47:28Z","actor":"local","kind":"claim","task":"T-jew-001-07","state":"ready → in_progress","req":"R-jew-001"}
 {"seq":23,"at":"2026-10-30T11:55:41Z","actor":"local","kind":"handoff","task":"T-jew-001-07","done":["全宽度自适应：12 页 × 10 宽度（320–1920）共 120 组合自动化实测横向溢出 0；顶栏 <380px 品牌字标三档收缩不再被语言按钮压住（原重叠 30px）；<360px 搜索让位给抽屉入口；语言按钮移动端 40px 触摸高度；viewport-fit=cover + safe-area 适配刘海屏（0.3.3-m1b 已上线）"],"req":"R-jew-001"}
+{"seq":24,"at":"2026-10-30T11:55:52Z","actor":"local","kind":"deliver","task":"T-jew-001-07","state":"1 件","req":"R-jew-001"}

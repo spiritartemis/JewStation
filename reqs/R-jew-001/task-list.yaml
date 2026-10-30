@@ -98,3 +98,8 @@ tasks:
       （站长口头需求）页面自适应调整：确认 320 / 360 / 390 / 768 / 1024 / 1440 / 1920
       各宽度下排版正常；<380px 品牌字标已被语言按钮压住，需修正；并补齐刘海屏安全区、
       语言按钮触摸高度、抽屉内搜索入口等小屏适配细节。
+    artifacts:
+      - path: src/components/layout/SiteHeader.tsx
+        kind: file
+        checksum: sha256:928bc8b659741f45413c723d7a105c11c5164da8f0e764e6a8d87b740132b4ef
+        at: 2026-10-30T11:55:52.121Z
