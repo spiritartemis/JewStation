@@ -26,7 +26,7 @@ tasks:
     input: |
       （待总控补充输入）
     artifacts:
-      - path: src/app/page.tsx
+      - path: src/app/[locale]/page.tsx
         kind: file
         checksum: sha256:14ffbb5edaeb764dcb831098c1763248175801b1b605120cddd879bcc5583ab6
         at: 2026-10-28T13:43:32Z

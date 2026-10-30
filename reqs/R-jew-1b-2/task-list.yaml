@@ -26,7 +26,7 @@ tasks:
     input: |
       （待总控补充输入）
     artifacts:
-      - path: src/app/shop/page.tsx
+      - path: src/app/[locale]/shop/page.tsx
         kind: file
         checksum: sha256:6df52aafd3eb9b00f53d0ab5884085c293d132873a21ef74a9b5c56cb0995fbf
         at: 2026-10-28T13:47:52Z
@@ -34,7 +34,7 @@ tasks:
         kind: file
         checksum: sha256:82c14c879bfd354a5982d8a60245115d6abc44ce8e5755d30c4b74f37410e6b4
         at: 2026-10-28T13:47:52Z
-      - path: src/app/collections/[slug]/page.tsx
+      - path: src/app/[locale]/collections/[slug]/page.tsx
         kind: file
         checksum: sha256:893bb4fe3d00ca6fe42a711cc614bc7c0b58fa1bcb5d2636c1a9a88173873c66
         at: 2026-10-28T13:47:52Z

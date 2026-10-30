@@ -30,7 +30,7 @@ tasks:
         kind: file
         checksum: sha256:379775072c49266ae980395ffbd287f25f125b448ed911ed99843c89e06d5d2a
         at: 2026-10-28T13:59:07Z
-      - path: src/app/search/page.tsx
+      - path: src/app/[locale]/search/page.tsx
         kind: file
         checksum: sha256:2e6ff99c3bd975d9583748b373c744dc5ee14922227c88b3547b1a26ba2b0639
         at: 2026-10-28T13:59:07Z

@@ -38,13 +38,13 @@ tasks:
         at: 2026-10-29T14:44:21Z
         source: commit
         source_commit: a7b426b
-      - path: src/app/layout.tsx
+      - path: src/app/[locale]/layout.tsx
         kind: file
         checksum: sha256:93709c1a1422991427fd8b70b19076a1c38357bd174c3a0491aa8dbf55af390a
         at: 2026-10-29T14:44:21Z
         source: commit
         source_commit: a7b426b
-      - path: src/app/page.tsx
+      - path: src/app/[locale]/page.tsx
         kind: file
         checksum: sha256:1ae6c967c267ca21deb6f6a437b48381e26779f3acce16088047a7986ec1c09e
         at: 2026-10-29T14:44:21Z
@@ -80,7 +80,7 @@ tasks:
         at: 2026-10-29T14:44:21Z
         source: commit
         source_commit: a7b426b
-      - path: src/content/site-content.ts
+      - path: src/i18n/content.ts
         kind: file
         checksum: sha256:6290d34fe971114f9f9dfd84a094d07726ab7b40b2a3439949609487652155d3
         at: 2026-10-29T14:44:21Z
