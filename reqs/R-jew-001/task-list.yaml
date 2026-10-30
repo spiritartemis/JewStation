@@ -16,10 +16,12 @@ tasks:
     claim: {"session":"pid-57581","pid":57581,"host":"Mona.local","since":"2026-10-30T09:19:16.425Z","heartbeat":"2026-10-30T09:19:16.425Z"}
   - id: T-jew-001-02
     title: 双币种展示与中行汇率日刷新（Q-05/Q-08）：USD 基准 + CNY 换算 + 0 点刷新
-    status: ready
+    executor: local
+    status: in_progress
     created: 2026-10-30
     input: |
       （待总控补充输入）
+    claim: {"session":"pid-57701","pid":57701,"host":"Mona.local","since":"2026-10-30T09:19:19.937Z","heartbeat":"2026-10-30T09:19:19.937Z"}
   - id: T-jew-001-03
     title: 新增 Bag Charms / Sets 两个品类（Q-04）：字典 + 导航 + 样例商品
     status: ready
