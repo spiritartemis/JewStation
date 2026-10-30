@@ -85,3 +85,7 @@ tasks:
         kind: file
         checksum: sha256:2e383aa8cd87dd815c24c749eded5b8feaf4109ea72cb8a08e589db92d7c576b
         at: 2026-10-30T11:22:28.464Z
+      - path: src/i18n/config.ts
+        kind: file
+        checksum: sha256:a1b71b00345d892477e04d3b7d591104289c799b452e4f04a1fd6a31a55369be
+        at: 2026-10-30T11:22:31.458Z
