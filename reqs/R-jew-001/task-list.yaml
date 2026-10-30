@@ -92,7 +92,7 @@ tasks:
   - id: T-jew-001-07
     title: 全宽度自适应校核与修正（0.3.3）：320–1920 无溢出、顶栏窄屏不压字、抽屉补搜索入口
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-30
     input: |
       （站长口头需求）页面自适应调整：确认 320 / 360 / 390 / 768 / 1024 / 1440 / 1920
