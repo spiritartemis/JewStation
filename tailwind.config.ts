@@ -38,6 +38,8 @@ const config: Config = {
         sandWeak: "#F0E8D8",
         mauve: "#8B7595",
         mauveWeak: "#EAE2ED",
+        /** 品牌铜：仅供品牌资产（徽记月缘/散点、字标「&」），不用于 UI 语义 */
+        copper: "#B68E64",
       },
       backgroundImage: {
         // Hero 底：暖纸莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）

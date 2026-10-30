@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FOOTER_GROUPS, SITE } from "@/lib/site";
+import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 
 /**
  * 全站页脚（01 §3.3）：四组链接 + 订阅入口占位 + 版本与更新时间。
@@ -9,6 +10,20 @@ export function SiteFooter() {
   return (
     <footer className="mt-sp6 border-t border-line bg-bg">
       <div className="shell py-sp6">
+        {/* 品牌落款：徽记 + 字标 + Slogan。页脚是整页唯一以大尺度露出品牌的地方，
+            刻意不给链接 —— 这是「落款」，不是导航入口 */}
+        <div className="mb-sp6 flex items-center gap-sp3 border-b border-line pb-sp5 md:gap-sp4">
+          {/* 这套徽记按 256px 绘制：56–64px 是它「月缘铜带 + 四角星 + 散点」还能同时成立的区间，
+              再小细节会互相挤压糊成一团（40px 左右最难看），所以宁可占大一点 */}
+          <BrandMark className="h-16 w-16 shrink-0 text-ink md:h-20 md:w-20" />
+          <div>
+            <p className="font-serif text-h2 uppercase tracking-[0.18em] text-ink">
+              <BrandWordmark />
+            </p>
+            <p className="mt-sp1 text-aux uppercase tracking-[0.22em] text-muted">{SITE.tagline}</p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-sp6 md:grid-cols-4">
           {FOOTER_GROUPS.map((group) => (
             <div key={group.title}>
@@ -53,7 +68,7 @@ export function SiteFooter() {
 
         <div className="mt-sp6 flex flex-col gap-sp2 border-t border-line pt-sp5 text-aux text-muted md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE.brandName}. {SITE.tagline}.
+            © {new Date().getFullYear()} {SITE.brandName}. {SITE.tagline}
           </p>
           {/* 版本号与更新时间：每次发布必须同步变更（见 src/lib/site.ts 顶部约定） */}
           <p>

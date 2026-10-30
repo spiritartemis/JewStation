@@ -28,6 +28,10 @@
   --c-mauve: #8b7595;
   --c-mauve-weak: #eae2ed;
 
+  /* 品牌铜：只在品牌资产里用（星月徽记的月缘与散点、字标的「&」），
+     不参与 UI 语义色 —— 它比 clay 更暖更金，混进按钮/标签会破坏五色相的克制 */
+  --c-copper: #b68e64;
+
   --hero-fade: linear-gradient(155deg, #f6f3ed 0%, #efeae1 48%, #e4ded3 100%);
 
   --sp-1: 4px;

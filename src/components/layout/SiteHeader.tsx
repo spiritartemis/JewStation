@@ -36,9 +36,14 @@ export function SiteHeader() {
 
         <Link
           href="/"
-          className="flex-1 text-center font-serif text-h2 uppercase tracking-[0.2em] text-ink md:flex-none md:text-left"
+          aria-label={`${SITE.brandName} — home`}
+          className="flex min-w-0 flex-1 items-center justify-center gap-sp2 text-ink md:flex-none md:justify-start"
         >
-          {SITE.brandName}
+          {/* 顶栏保持纯文字标：加徽记后 390px 宽即使只在桌面显示也会挤压
+              搜索/购物车，且 20px 下徽记细节糊成一团。图形识别交给 favicon 与页脚落款 */}
+          <span className="font-serif text-h2 uppercase tracking-[0.16em] md:tracking-[0.2em]">
+            {SITE.brandName}
+          </span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:flex md:flex-1 md:items-center md:gap-sp5">
@@ -59,18 +64,18 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center md:ml-0">
+        <div className="ml-auto flex shrink-0 items-center md:ml-0">
           <Link
             href="/search"
             aria-label="Search"
-            className="flex h-11 w-11 items-center justify-center text-ink"
+            className="flex h-11 w-11 shrink-0 items-center justify-center text-ink"
           >
             <SearchIcon className="h-5 w-5" />
           </Link>
           <Link
             href="/cart"
             aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart, empty"}
-            className="relative flex h-11 w-11 items-center justify-center text-ink"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center text-ink"
           >
             <BagIcon className="h-5 w-5" />
             {cartCount > 0 ? (
