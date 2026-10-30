@@ -107,3 +107,7 @@ tasks:
         kind: file
         checksum: sha256:5d50ffc196346acfc06778d905ebeda7576a0bab300d30c4952e26b01da4f380
         at: 2026-10-30T11:56:04.076Z
+      - path: src/components/i18n/LocaleSwitcher.tsx
+        kind: file
+        checksum: sha256:bc94afc85dec44c88b0f846c37d563d4ad8710a8aefa62b15d785028d32e22eb
+        at: 2026-10-30T11:56:07.303Z

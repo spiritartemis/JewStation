@@ -6,10 +6,10 @@ req: R-jew-001
 task: T-jew-001-07
 seat: local
 agent: local
-execution_seq: 2
+execution_seq: 3
 completed: 2026-10-30
 deliverables:
-  - path: src/components/layout/MobileNavDrawer.tsx
+  - path: src/components/i18n/LocaleSwitcher.tsx
     kind: file
-    checksum: sha256:5d50ffc196346acfc06778d905ebeda7576a0bab300d30c4952e26b01da4f380
-    desc: 抽屉新增搜索入口（承接 <360px 让位的顶栏图标）
+    checksum: sha256:bc94afc85dec44c88b0f846c37d563d4ad8710a8aefa62b15d785028d32e22eb
+    desc: 语言按钮移动端 40px 触摸高度（宽度仍固定）
