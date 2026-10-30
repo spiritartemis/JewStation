@@ -103,3 +103,7 @@ tasks:
         kind: file
         checksum: sha256:928bc8b659741f45413c723d7a105c11c5164da8f0e764e6a8d87b740132b4ef
         at: 2026-10-30T11:55:52.121Z
+      - path: src/components/layout/MobileNavDrawer.tsx
+        kind: file
+        checksum: sha256:5d50ffc196346acfc06778d905ebeda7576a0bab300d30c4952e26b01da4f380
+        at: 2026-10-30T11:56:04.076Z

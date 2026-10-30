@@ -6,10 +6,10 @@ req: R-jew-001
 task: T-jew-001-07
 seat: local
 agent: local
-execution_seq: 1
+execution_seq: 2
 completed: 2026-10-30
 deliverables:
-  - path: src/components/layout/SiteHeader.tsx
+  - path: src/components/layout/MobileNavDrawer.tsx
     kind: file
-    checksum: sha256:928bc8b659741f45413c723d7a105c11c5164da8f0e764e6a8d87b740132b4ef
-    desc: 品牌字标三档收缩 + 窄屏搜索让位 + safe-area 顶栏
+    checksum: sha256:5d50ffc196346acfc06778d905ebeda7576a0bab300d30c4952e26b01da4f380
+    desc: 抽屉新增搜索入口（承接 <360px 让位的顶栏图标）
