@@ -3,36 +3,37 @@
 @tailwind utilities;
 
 :root {
-  /* 莫兰迪色系 · 暖纸浅色版（低饱和 + 灰调，面向 20–25 岁）：色板明细见 docs/视觉规范-莫兰迪色板.md */
-  --c-bg: #f4f1eb;
-  --c-surface: #fbfaf7;
-  --c-band: #ece7df;
-  --c-text: #2c2d2a;
-  --c-text-muted: #6f6c65;
-  --c-line: #dcd6cb;
-  --c-accent: #4a6450;
-  --c-accent-weak: #dfe8e1;
-  --c-on-accent: #ffffff;
-  --c-sold: #67645d;
-  --c-warn: #b5794f;
+  /* 莫兰迪色系 · 深色版（低饱和 + 灰调，暖褐黑底）：色板明细见 docs/视觉规范-莫兰迪色板.md
+     2026-10-30 第四次调色：按站长要求由暖纸浅色版改回深色莫兰迪 */
+  --c-bg: #232120;
+  --c-surface: #2b2a28;
+  --c-band: #1b1a19;
+  --c-text: #ede9e2;
+  --c-text-muted: #a9a29a;
+  --c-line: #3a3735;
+  --c-accent: #8fa891;
+  --c-accent-weak: #2e3a32;
+  --c-on-accent: #1e1d1c;
+  --c-sold: #8a857c;
+  --c-warn: #ce9a6c;
 
-  /* 莫兰迪五色相 · 浅色版（块面 Weak 为浅调，主色为同色系深调，用于描边/文字） */
-  --c-mist: #566f82;
-  --c-mist-weak: #e3eaef;
-  --c-sage: #587152;
-  --c-sage-weak: #e5ece0;
-  --c-clay: #91624e;
-  --c-clay-weak: #f1e3db;
-  --c-sand: #7c6942;
-  --c-sand-weak: #f0e8d8;
-  --c-mauve: #77628a;
-  --c-mauve-weak: #eae2ed;
+  /* 莫兰迪五色相 · 深底版（块面 Weak 为同色系深调，主色为亮调，用于描边/文字） */
+  --c-mist: #8fa6b8;
+  --c-mist-weak: #2a333b;
+  --c-sage: #93ac8c;
+  --c-sage-weak: #2c362a;
+  --c-clay: #c08a70;
+  --c-clay-weak: #3a2c26;
+  --c-sand: #b9a277;
+  --c-sand-weak: #38332a;
+  --c-mauve: #a794bc;
+  --c-mauve-weak: #332c3a;
 
   /* 品牌铜：只在品牌资产里用（星月徽记的月缘与散点、字标的「&」），
      不参与 UI 语义色 —— 它比 clay 更暖更金，混进按钮/标签会破坏五色相的克制 */
-  --c-copper: #b68e64;
+  --c-copper: #c9a277;
 
-  --hero-fade: linear-gradient(155deg, #f6f3ed 0%, #efeae1 48%, #e4ded3 100%);
+  --hero-fade: linear-gradient(155deg, #2c2927 0%, #232120 48%, #1a1918 100%);
 
   --sp-1: 4px;
   --sp-2: 8px;

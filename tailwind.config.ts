@@ -2,48 +2,52 @@ import type { Config } from "tailwindcss";
 
 /**
  * Token 来源：docs/spec/05-低保真结构与视觉规范.md §3
- * 色系：莫兰迪（低饱和 + 灰调），**浅色版 / 暖纸调**（light Morandi），色板明细见 docs/视觉规范-莫兰迪色板.md
+ * 色系：莫兰迪（低饱和 + 灰调），**深色版 / 暖褐黑调**（dark Morandi），色板明细见 docs/视觉规范-莫兰迪色板.md
  * 强调色为暂定值，待站长提供 Logo/视觉参考后校准（Q-14）。
  *
- * 对比度：ink #2C2D2A 在 bg #F4F1EB 上 ≈ 12:1；muted #6F6C65 ≈ 4.7:1（正文级）；
- * accent #4A6450 上放 onAccent #FFFFFF ≈ 5.2:1。浅色版不再需要「深底亮字」那套反色规则。
+ * 2026-10-30 第四次调色：按站长要求由暖纸浅色版改回**深色莫兰迪**。
+ * 底色取暖褐黑 #232120（不是纯黑，保留莫兰迪的灰调），强调色取雾鼠尾草绿 #8FA891
+ * —— 深底上强调色必须比浅底那档更亮才立得住，否则整块沉进背景。
+ *
+ * 对比度（深底）：ink #EDE9E2 在 bg #232120 上 ≈ 11:1；muted #A9A29A ≈ 6:1（正文级）；
+ * accent #8FA891 上放 onAccent #1E1D1C 深字 ≈ 6:1（深底不可用白字，白字仅 ≈ 2.3:1）。
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // 中性基底（暖纸调：米白 + 灰褐，莫兰迪画作的底子色）
-        bg: "#F4F1EB",
-        surface: "#FBFAF7",
-        band: "#ECE7DF",
-        ink: "#2C2D2A",
-        muted: "#6F6C65",
-        line: "#DCD6CB",
-        // 主强调：莫兰迪鼠尾草绿·深调（Q-14 2026-10-30：浅底 + 更深强调色）—— 对底 5.77:1
-        accent: "#4A6450",
-        accentWeak: "#DFE8E1",
-        /** 强调色表面上的文字色（深绿强调 + 白字，≈ 5.2:1） */
-        onAccent: "#FFFFFF",
-        sold: "#67645D",
-        warn: "#B5794F",
-        // 莫兰迪五色相·深调版（块面用浅调 Weak，文字/描边用深主色；六色对底均 ≥4.5:1）
-        mist: "#566F82",
-        mistWeak: "#E3EAEF",
-        sage: "#587152",
-        sageWeak: "#E5ECE0",
-        clay: "#91624E",
-        clayWeak: "#F1E3DB",
-        sand: "#7C6942",
-        sandWeak: "#F0E8D8",
-        mauve: "#77628A",
-        mauveWeak: "#EAE2ED",
+        // 中性基底（暖褐黑：莫兰迪画作的深底子色，不是纯黑）
+        bg: "#232120",
+        surface: "#2B2A28",
+        band: "#1B1A19",
+        ink: "#EDE9E2",
+        muted: "#A9A29A",
+        line: "#3A3735",
+        // 主强调：莫兰迪鼠尾草绿·亮调（深底版）—— 深字压在其上 ≈ 6:1
+        accent: "#8FA891",
+        accentWeak: "#2E3A32",
+        /** 强调色表面上的文字色（亮绿强调 + 深字，≈ 6:1） */
+        onAccent: "#1E1D1C",
+        sold: "#8A857C",
+        warn: "#CE9A6C",
+        // 莫兰迪五色相·深底版（块面用深调 Weak，文字/描边用亮调主色）
+        mist: "#8FA6B8",
+        mistWeak: "#2A333B",
+        sage: "#93AC8C",
+        sageWeak: "#2C362A",
+        clay: "#C08A70",
+        clayWeak: "#3A2C26",
+        sand: "#B9A277",
+        sandWeak: "#38332A",
+        mauve: "#A794BC",
+        mauveWeak: "#332C3A",
         /** 品牌铜：仅供品牌资产（徽记月缘/散点、字标「&」），不用于 UI 语义 */
-        copper: "#B68E64",
+        copper: "#C9A277",
       },
       backgroundImage: {
-        // Hero 底：暖纸莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
-        hero: "linear-gradient(155deg, #F6F3ED 0%, #EFEAE1 48%, #E4DED3 100%)",
+        // Hero 底：深色莫兰迪渐变（图未加载 / 图片缺失时的兜底视觉）
+        hero: "linear-gradient(155deg, #2C2927 0%, #232120 48%, #1A1918 100%)",
       },
       fontFamily: {
         // 中文页（Q-02）：Cormorant / Inter 都没有汉字，回退里必须显式给宋/黑，

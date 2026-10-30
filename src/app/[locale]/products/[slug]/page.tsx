@@ -3,10 +3,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ProductOptions } from "@/components/product/ProductOptions";
+import { ProductOptions, ProductOptionNote } from "@/components/product/ProductOptions";
 import { JsonLdScript } from "@/components/JsonLd";
 import { getProductBySlug, getProductsByCollection } from "@/lib/products";
-import { isSoldOut, localizeProduct, lowStockLabel, soldLabel } from "@/lib/types";
+import {
+  isSoldOut,
+  localizeProduct,
+  lowStockLabel,
+  soldLabel,
+  specGroupsOf,
+} from "@/lib/types";
+import { ProductSpecProvider } from "@/components/product/ProductSpecContext";
+import { ProductFactList } from "@/components/product/ProductFactList";
 import { tagLabel } from "@/lib/tags";
 import { buildMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
@@ -32,6 +40,8 @@ export default async function ProductPage({ params }: PageProps) {
 
   // 文案本地化：中文取 i18n.zh 覆盖，缺字段回退英文底稿
   const product = localizeProduct(found, locale);
+  // 规格组：显式的 options（开口/死圈）+ 由 sizeOptions 提升的尺码组，合并成一份给选择器与事实行共用
+  const specGroups = specGroupsOf(product, locale);
 
   const sold = isSoldOut(product);
   const isOneOfAKind = product.productType === "one_of_a_kind";
@@ -47,13 +57,6 @@ export default async function ProductPage({ params }: PageProps) {
     { name: tagLabel(product.category, locale), path: `/collections/${product.category}` },
     { name: product.title, path: `/products/${product.slug}` },
   ];
-
-  // 尺寸可能只有其中一项；全部缺失时明确写 Not specified，不 misleading 地留 —
-  const sizeParts = [
-    product.dimensions.length,
-    product.dimensions.width,
-    product.dimensions.diameter,
-  ].filter(Boolean);
 
   return (
     <article className="pb-sp6">
@@ -89,8 +92,10 @@ export default async function ProductPage({ params }: PageProps) {
       <div className="md:grid md:grid-cols-2 md:gap-sp6 md:px-sp4 md:pt-sp5">
         <ProductGallery images={product.images} title={product.title} locale={locale} />
 
-        <div className="shell pt-sp5 md:px-0">
-          {isOneOfAKind ? (
+        {/* 规格选中态在「选择器」与「事实行」两处共享，故由 Provider 包住整列 */}
+        <ProductSpecProvider options={specGroups}>
+          <div className="shell pt-sp5 md:px-0">
+            {isOneOfAKind ? (
             <span className="inline-block rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
               {m.product.oneOfAKindBadge}
             </span>
@@ -121,31 +126,26 @@ export default async function ProductPage({ params }: PageProps) {
             <p className="mt-sp3 max-w-[52ch] text-body text-muted">{product.description}</p>
           ) : null}
 
-          {/* 可选规格（Q-06）：同一款的不同做法，不是一个新商品 */}
-          {product.options?.length ? (
-            <ProductOptions options={product.options} locale={locale} />
-          ) : null}
+          {/* 可选规格（Q-06）：同一款的不同做法，不是一个新商品
+              只有一种做法时不渲染芯片，做法直接写在下方「开合方式」行 */}
+          <ProductOptions locale={locale} />
+          <ProductOptionNote locale={locale} />
 
-          {/* 事实区块：默认收起，过敏与手工说明常显（05 §2.3） */}
-          <div className="mt-sp5 divide-y divide-line border-y border-line">
-            <FactRow label={m.product.material} value={product.materials.join(", ")} />
-            <FactRow
-              label={m.product.size}
-              value={
-                sizeParts.length
-                  ? `${sizeParts.join(" × ")} ${product.dimensions.unit}`
-                  : m.common.notSpecified
-              }
-            />
-            <FactRow label={m.product.weight} value={`${product.weight.value} ${product.weight.unit}`} />
-            {product.closureType ? (
-              <FactRow label={m.product.closure} value={product.closureType} />
-            ) : null}
-            {product.sizeOptions?.length ? (
-              <FactRow label={m.product.sizes} value={product.sizeOptions.join(" / ")} />
-            ) : null}
-            <FactRow label={m.product.care} value={product.careInstructions} />
-          </div>
+          {/* 事实区块：默认收起，过敏与手工说明常显（05 §2.3）
+              「尺寸」跟随所选尺码、「开合方式」跟随所选做法，故整块交给客户端组件 */}
+          <ProductFactList
+            product={product}
+            locale={locale}
+            labels={{
+              material: m.product.material,
+              size: m.product.size,
+              weight: m.product.weight,
+              closure: m.product.closure,
+              sizes: m.product.sizes,
+              care: m.product.care,
+              notSpecified: m.common.notSpecified,
+            }}
+          />
 
           <div className="mt-sp4 space-y-sp3">
             <p className="text-aux text-warn">⚠ {product.allergyNotice}</p>
@@ -202,11 +202,12 @@ export default async function ProductPage({ params }: PageProps) {
             </div>
           </div>
 
-          <p className="mt-sp4 text-aux text-muted">
-            {m.product.categoryLabel}: {tagLabel(product.category, locale)} ·{" "}
-            {m.product.styleLabel}: {product.tags.style.map((s) => tagLabel(s, locale)).join(", ")}
-          </p>
-        </div>
+            <p className="mt-sp4 text-aux text-muted">
+              {m.product.categoryLabel}: {tagLabel(product.category, locale)} ·{" "}
+              {m.product.styleLabel}: {product.tags.style.map((s) => tagLabel(s, locale)).join(", ")}
+            </p>
+          </div>
+        </ProductSpecProvider>
       </div>
 
       <section className="mt-sp6">
@@ -223,18 +224,6 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
       </section>
     </article>
-  );
-}
-
-function FactRow({ label, value }: { label: string; value: string }) {
-  return (
-    <details className="group">
-      <summary className="flex min-h-[44px] cursor-pointer items-center justify-between text-body text-ink">
-        {label}
-        <span className="text-muted">+</span>
-      </summary>
-      <p className="pb-sp3 text-body text-muted">{value}</p>
-    </details>
   );
 }
 

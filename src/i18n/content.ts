@@ -15,7 +15,6 @@ export type Hero = {
   eyebrow: string;
   headline: string;
   headlineAccent: string;
-  subline: string;
   ctaLabel: string;
   ctaHref: string;
   imageUrl: string;
@@ -30,14 +29,14 @@ export type SiteContent = {
   policies: Doc[];
 };
 
-const IMAGE_URL = "/images/hero-home-light.jpg";
+/** 深色莫兰迪版改用深色石板主图（hero-home.jpg）；浅色版用的 hero-home-light.jpg 保留备查 */
+const IMAGE_URL = "/images/hero-home.jpg";
 
 const en: SiteContent = {
   hero: {
     eyebrow: "Morrow & Muse",
     headline: "Made for your",
     headlineAccent: "becoming.",
-    subline: "Small-batch, handmade pieces for the person you're becoming.",
     ctaLabel: "Shop new",
     ctaHref: "/collections/new",
     imageUrl: IMAGE_URL,
@@ -254,7 +253,6 @@ const zh: SiteContent = {
     eyebrow: "Morrow & Muse · 明日缪斯",
     headline: "为你",
     headlineAccent: "而生。",
-    subline: "小批量手作，为正在成为的你。",
     ctaLabel: "看新品",
     ctaHref: "/collections/new",
     imageUrl: IMAGE_URL,

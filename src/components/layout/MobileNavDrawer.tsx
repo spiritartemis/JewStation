@@ -58,7 +58,8 @@ export function MobileNavDrawer({ locale }: { locale: Locale }) {
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-ink/30 fade-in"
+            // 遮罩用中性黑：深色版 ink 是浅色字色，不能拿来当遮罩
+            className="absolute inset-0 bg-black/55 fade-in"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />

@@ -86,11 +86,11 @@ export function ProductCard({
           <>
             {/* 薄雾：只压掉一点亮度，让墨色标签浮起来 */}
             <span aria-hidden className="absolute inset-0 bg-bg/30" />
-            {/* 标签居中：浅底 + 去色图之上，墨色胶囊才有足够对比（白字 4.6:1 以上）。
+            {/* 标签居中：胶囊底固定中性黑（深色版 ink 是浅字色，不能当胶囊底），白字压在其上 ≈ 12:1。
                 feature 大卡上标签要跟着放大，否则在 580px 宽的图里像一颗小痣 */}
             <span className="absolute inset-0 flex items-center justify-center">
               <span
-                className={`rounded-btn border border-white/25 bg-ink/85 uppercase tracking-[0.2em] text-white ${
+                className={`rounded-btn border border-white/25 bg-black/80 uppercase tracking-[0.2em] text-white ${
                   feature ? "px-sp4 py-sp2 text-body" : "px-sp3 py-sp1 text-aux"
                 }`}
               >

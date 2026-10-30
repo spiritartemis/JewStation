@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { localePath, type Locale } from "@/i18n/config";
@@ -20,6 +20,8 @@ import { CurrencySwitcher } from "@/components/currency/CurrencySwitcher";
  */
 export function SiteHeader({ locale }: { locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
+  const shopRef = useRef<HTMLDivElement>(null);
   const m = getMessages(locale);
   const lp = (href: string) => localePath(locale, href);
 
@@ -29,6 +31,26 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Shop 下拉：点击菜单外任意处 / 按 Esc / 选中某项后收起（2026-10-30）
+  // 原先用原生 <details>：无 JS 也能展开，但浏览器只在点 summary 时切换，
+  // 点面板外不会收起 —— 菜单会一直挂在页面上挡住内容。改成受控状态后
+  // 这一条交互才成立（代价是依赖 JS，本站本就是客户端渲染，可接受）。
+  useEffect(() => {
+    if (!shopOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (shopRef.current && !shopRef.current.contains(e.target as Node)) setShopOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShopOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [shopOpen]);
 
   // 购物袋数量：m-1c 接入真实状态；本线恒为 0，故不渲染角标
   const cartCount = 0;
@@ -60,41 +82,52 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:flex lg:flex-1 lg:items-center lg:gap-sp4">
-          {/* Shop 下拉：六个品类 + 特殊集合。用原生 details，无 JS 也能展开 */}
-          <details className="group relative">
-            <summary className="flex cursor-pointer list-none items-center gap-sp1 py-sp2 text-body text-ink hover:text-accent [&::-webkit-details-marker]:hidden">
+          {/* Shop 下拉：六个品类 + 特殊集合。受控展开，点面板外 / Esc / 选中项后收起 */}
+          <div className="relative" ref={shopRef}>
+            <button
+              type="button"
+              aria-expanded={shopOpen}
+              aria-haspopup="true"
+              onClick={() => setShopOpen((v) => !v)}
+              className="flex items-center gap-sp1 py-sp2 text-body text-ink hover:text-accent"
+            >
               {m.nav.shop}
               <span
                 aria-hidden="true"
-                className="text-aux text-muted transition-transform duration-fade group-open:rotate-180"
+                className={`text-aux text-muted transition-transform duration-fade ${
+                  shopOpen ? "rotate-180" : ""
+                }`}
               >
                 ⌄
               </span>
-            </summary>
-            <div className="absolute left-0 top-full z-50 mt-sp1 w-[420px] rounded-card border border-line bg-bg p-sp4">
-              <div className="grid grid-cols-2 gap-sp4">
-                {shopMenuNav(locale).map((group) => (
-                  <div key={group.title}>
-                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-                      {group.title}
-                    </p>
-                    <ul className="mt-sp2 space-y-sp1">
-                      {group.items.map((item) => (
-                        <li key={item.href}>
-                          <Link
-                            href={lp(item.href)}
-                            className="block py-sp1 text-body text-ink hover:text-accent"
-                          >
-                            {item.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            </button>
+            {shopOpen ? (
+              <div className="absolute left-0 top-full z-50 mt-sp1 w-[420px] rounded-card border border-line bg-bg p-sp4">
+                <div className="grid grid-cols-2 gap-sp4">
+                  {shopMenuNav(locale).map((group) => (
+                    <div key={group.title}>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
+                        {group.title}
+                      </p>
+                      <ul className="mt-sp2 space-y-sp1">
+                        {group.items.map((item) => (
+                          <li key={item.href}>
+                            <Link
+                              href={lp(item.href)}
+                              onClick={() => setShopOpen(false)}
+                              className="block py-sp1 text-body text-ink hover:text-accent"
+                            >
+                              {item.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </details>
+            ) : null}
+          </div>
 
           {desktopNav(locale).map((item) => (
             <Link

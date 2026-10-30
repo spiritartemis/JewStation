@@ -64,8 +64,9 @@ export function StyleGrid({ locale }: { locale: Locale }) {
                   />
                 </>
               ) : null}
-              {/* 标签做成半透明墨色胶囊：不依赖图片明暗，任何配图上都读得清 */}
-              <span className="relative rounded-btn bg-ink/55 px-sp2 py-sp1 font-serif text-body text-white backdrop-blur-[2px]">
+              {/* 标签做成半透明胶囊：底色固定中性黑（深色版 ink 是浅字色，不能当胶囊底），
+                  不依赖图片明暗，任何配图上都读得清 */}
+              <span className="relative rounded-btn bg-black/55 px-sp2 py-sp1 font-serif text-body text-white backdrop-blur-[2px]">
                 {tagLabel(s.slug, locale)}
               </span>
             </Link>

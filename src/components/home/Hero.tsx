@@ -39,12 +39,13 @@ export function Hero({ locale }: { locale: Locale }) {
             {hero.imagePendingNote}
           </span>
         )}
-        {/* 底部提亮：大字压在图上，用页面底色把下 60% 拉回米白，让文字落在干净面上（05 §1 图片优先） */}
+        {/* 底部压暗：大字压在图上，用页面底色把下 60% 拉回深色，让浅色文字落在干净面上（05 §1 图片优先）
+            深色版 bg 本就是深底，同一层渐变即完成压暗（浅色版时它是提亮） */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-bg via-bg/60 to-transparent"
         />
-        {/* 左侧横向提亮：文字栏固定压左边，左侧加一层纸白雾，换任何主图都能读（不遮首饰一侧） */}
+        {/* 左侧横向压暗：文字栏固定压左边，左侧加一层深雾，换任何主图都能读（不遮首饰一侧） */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-bg/90 via-bg/35 to-transparent lg:w-3/5"
@@ -76,13 +77,6 @@ export function Hero({ locale }: { locale: Locale }) {
               {hero.headlineAccent}
             </span>
           </h1>
-
-          <p
-            className="mt-sp4 max-w-[34ch] text-body text-muted fade-in"
-            style={{ animationDelay: "80ms" }}
-          >
-            {hero.subline}
-          </p>
 
           <Link
             href={localePath(locale, hero.ctaHref)}

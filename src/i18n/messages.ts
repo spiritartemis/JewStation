@@ -129,7 +129,8 @@ const en = {
     size: "Size",
     weight: "Weight",
     closure: "Closure",
-    sizes: "Sizes",
+    /** 与上方 Size（实测尺寸）区分：这里是「有哪些码数可选」 */
+    sizes: "Available sizes",
     care: "Care",
     dimensionUnit: "mm",
     addToCart: "Add to cart",
@@ -318,7 +319,8 @@ const zh: Messages = {
     size: "尺寸",
     weight: "重量",
     closure: "开合方式",
-    sizes: "可选尺寸",
+    /** 与上方「尺寸」区分：这里是「有哪些码数可选」 */
+    sizes: "可选尺码",
     care: "保养",
     dimensionUnit: "mm",
     addToCart: "加入购物袋",

@@ -50,6 +50,9 @@ export type ProductOptionValue = {
   label: string;
   /** 中文稿（Q-02），缺省回退英文 */
   labelZh?: string;
+  /** 该规格的说明（英文）：如开口款可微调、死圈需按手围选。选中后在「开合方式」行显示 */
+  note?: string;
+  noteZh?: string;
 };
 
 export type ProductOption = {
@@ -168,6 +171,71 @@ export function localizeProduct(p: Product, locale: Locale = DEFAULT_LOCALE): Pr
   };
 }
 
+/**
+ * 材质名中译（2026-10-30）
+ *
+ * 材质是**结构化事实**，不是品牌文案，所以走系统词典而不是商品的 i18n.zh 覆盖：
+ * 同一材质在十个商品里必须同一个译法，写进商品各自的 i18n 必然会出现
+ * 「925 银 / 925 纯银 / 纯银」三种说法。词典未命中时原样返回英文，
+ * 保证新增材质不会在中文页变成空白。
+ */
+const MATERIAL_LABELS_ZH: Record<string, string> = {
+  "sterling silver 925": "925 纯银",
+  "sterling silver": "纯银",
+  "925 silver": "925 纯银",
+  "freshwater pearl": "淡水珍珠",
+  pearl: "珍珠",
+  brass: "黄铜",
+  "gold vermeil": "厚金包银",
+  "gold plated": "镀金",
+  "14k gold": "14K 金",
+  "natural stone": "天然石材",
+  stone: "石材",
+  ceramic: "陶瓷",
+  "textile / cord": "织绳",
+  "textile/cord": "织绳",
+  cord: "织绳",
+  textile: "织物",
+  resin: "树脂",
+  enamel: "珐琅",
+  "stainless steel": "不锈钢",
+  copper: "铜",
+};
+
+/** 材质列表按语言渲染 */
+export function localizeMaterials(materials: string[], locale: Locale = DEFAULT_LOCALE): string[] {
+  if (locale === DEFAULT_LOCALE) return materials;
+  return materials.map((raw) => MATERIAL_LABELS_ZH[raw.trim().toLowerCase()] ?? raw);
+}
+
+/** 计量单位中译（尺寸值里自带 mm / g，中文页统一换成汉字） */
+const UNIT_LABELS_ZH: Record<string, string> = { mm: "毫米", cm: "厘米", g: "克", kg: "千克" };
+
+export function localizeUnit(unit: string, locale: Locale = DEFAULT_LOCALE): string {
+  return locale === "zh" ? (UNIT_LABELS_ZH[unit.toLowerCase()] ?? unit) : unit;
+}
+
+/**
+ * 尺寸文案（2026-10-30 修正）
+ *
+ * 数据里 length/width 自带单位（"32mm"），页面原先再拼一次 unit，
+ * 结果渲染成「32mm × 4mm mm」—— 尾部多出两个 m。这里先把值里的单位剥掉，
+ * 再统一补一次本地化单位，中英文各只出现一次。
+ */
+export function formatDimension(d: Dimension, locale: Locale = DEFAULT_LOCALE): string {
+  const parts = [d.length, d.width, d.diameter]
+    .filter((v): v is string => Boolean(v))
+    .map((v) => v.replace(/\s*(mm|cm)\s*$/i, "").trim())
+    .filter(Boolean);
+  if (!parts.length) return "";
+  return `${parts.join(" × ")} ${localizeUnit(d.unit, locale)}`;
+}
+
+/** 重量文案：数值 + 本地化单位 */
+export function formatWeight(w: Weight, locale: Locale = DEFAULT_LOCALE): string {
+  return `${w.value} ${localizeUnit(w.unit, locale)}`;
+}
+
 /** 规格名/值取语言版本 */
 export function optionName(opt: ProductOption, locale: Locale = DEFAULT_LOCALE): string {
   return locale === "zh" ? (opt.nameZh ?? opt.name) : opt.name;
@@ -178,6 +246,61 @@ export function optionValueLabel(
   locale: Locale = DEFAULT_LOCALE,
 ): string {
   return locale === "zh" ? (value.labelZh ?? value.label) : value.label;
+}
+
+/** 规格值的说明文案（选中后在事实行展示），缺则为空 */
+export function optionValueNote(
+  value: ProductOptionValue,
+  locale: Locale = DEFAULT_LOCALE,
+): string {
+  return locale === "zh" ? (value.noteZh ?? value.note ?? "") : (value.note ?? "");
+}
+
+/**
+ * 商品的可选规格组（2026-10-30）
+ *
+ * 数据里有两种来源：显式的 `options`（手链开口/死圈这类带说明的做法）与
+ * 隐式的 `sizeOptions`（戒指的固定码数清单）。戒指原先只有码数清单、没有选择器，
+ * 用户没法「先选尺码再看尺寸」，所以这里把 sizeOptions 提升成 Size 规格组，
+ * 与显式 options 合并成一份，供选择器与事实行共用。
+ */
+export function specGroupsOf(p: Product, locale: Locale = DEFAULT_LOCALE): ProductOption[] {
+  const groups: ProductOption[] = [...(p.options ?? [])];
+  const hasSizeGroup = groups.some((g) => g.name.toLowerCase() === "size");
+  if (!hasSizeGroup && p.sizeOptions?.length) {
+    groups.push({
+      name: "Size",
+      nameZh: "尺寸",
+      values: p.sizeOptions.map((s) => ({ label: s, labelZh: s })),
+    });
+  }
+  return groups;
+}
+
+/**
+ * 尺寸组选中值对应的内径文案
+ *
+ * 戒指码数在数据里就是内径毫米数（16/17/18），选中哪一项，事实行的尺寸就跟着变
+ * —— 原先尺寸行只显示固定的 dimensions，选了 18 码上面仍写 17mm。
+ */
+export function selectedSizeText(
+  p: Product,
+  groups: ProductOption[],
+  selected: Record<string, number>,
+  locale: Locale = DEFAULT_LOCALE,
+): string | null {
+  const sizeGroup = groups.find((g) => g.name.toLowerCase() === "size");
+  if (!sizeGroup) return null;
+  const index = selected[sizeGroup.name] ?? 0;
+  const value = sizeGroup.values[index];
+  if (!value) return null;
+  const label = optionValueLabel(value, locale);
+  const mm = label.replace(/[^\d.]/g, "");
+  return mm
+    ? locale === "zh"
+      ? `${label} 码 · 内径 ${mm} 毫米`
+      : `Size ${label} · ${mm} mm inner diameter`
+    : label;
 }
 
 /** 结构化数据用：始终输出基准币种（USD）的金额字符串 */

@@ -94,6 +94,9 @@ export function searchProducts(query: string): Product[] {
   if (terms.length === 0) return [];
 
   return getAllProducts().filter((p) => {
+    // 词级匹配（2026-10-30 修正）：原先整串 includes 会让 "ring" 命中 "earrings"，
+    // 搜戒指却跳出耳环。英文按「词」匹配（相等或前缀），中文没有词边界仍按子串。
+    const isAscii = (s: string) => /^[\x20-\x7e]+$/.test(s);
     // 检索索引同时装英文底稿与中文名（Q-02）：中文页搜「耳环」「纯银」也要有结果，
     // 而 slug/英文名是稳定标识，两套都留在 haystack 里，切语言不会让搜索行为突变。
     const labelOf = (slug: string) => [tagLabel(slug, "en"), tagLabel(slug, "zh")];
@@ -116,9 +119,19 @@ export function searchProducts(query: string): Product[] {
       .join(" ")
       .toLowerCase();
 
+    // 英文词袋：只取 ASCII 连续段，"earrings" 是一个整体词，不会被 "ring" 前缀命中
+    const words = haystack.match(/[a-z0-9]+/g) ?? [];
+
     return terms.every((term) => {
       const candidates = [term, ...(SEARCH_ALIASES[term] ?? [])];
-      return candidates.some((c) => haystack.includes(c));
+      return candidates.some((c) => {
+        if (isAscii(c) && !c.includes("_")) {
+          // 前缀匹配保留复数与变形：ring → rings / ring；但绝不跨词命中 earrings。
+          // 系统值（one_of_a_kind）带下划线，是整串标识，仍走子串匹配
+          return words.some((w) => w === c || w.startsWith(c));
+        }
+        return haystack.includes(c);
+      });
     });
   });
 }
@@ -130,6 +143,12 @@ export type ProductFilters = {
   types?: string[];
   priceMin?: number;
   priceMax?: number;
+  /**
+   * 多个价格档（2026-10-30）：**任一档命中即可**，档与档之间是并集。
+   * 原先折成一个 min/max，同时勾「$50 以下」+「$100 以上」会算出 min=100/max=50 的无解区间，
+   * 结果是 0 件 —— 用户勾得越多反而越少，与直觉相反。
+   */
+  priceRanges?: { min?: number; max?: number }[];
   sort?: "newest" | "price-asc" | "price-desc";
 };
 
@@ -143,8 +162,18 @@ export function getFilteredProducts(filters: ProductFilters, source?: Product[])
     if (filters.materials?.length && !p.tags.material.some((m) => filters.materials!.includes(m)))
       return false;
     if (filters.types?.length && !filters.types.includes(p.productType)) return false;
-    if (typeof filters.priceMin === "number" && p.price < filters.priceMin) return false;
-    if (typeof filters.priceMax === "number" && p.price > filters.priceMax) return false;
+
+    if (filters.priceRanges?.length) {
+      const inAny = filters.priceRanges.some(
+        (r) =>
+          (typeof r.min !== "number" || p.price >= r.min) &&
+          (typeof r.max !== "number" || p.price <= r.max),
+      );
+      if (!inAny) return false;
+    } else {
+      if (typeof filters.priceMin === "number" && p.price < filters.priceMin) return false;
+      if (typeof filters.priceMax === "number" && p.price > filters.priceMax) return false;
+    }
     return true;
   });
 

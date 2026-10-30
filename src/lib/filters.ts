@@ -68,6 +68,8 @@ export function toProductFilters(p: ListParams): ProductFilters {
     styles: splitList(p.style),
     materials: splitList(p.material),
     types: splitList(p.type),
+    // 多档按并集处理（buckets 逐个保留区间），空档则不带任何价格条件 = 全部商品
+    priceRanges: buckets.map((b) => ({ min: b.min, max: b.max })),
     priceMin: mins.length ? Math.min(...mins) : undefined,
     priceMax: maxs.length ? Math.max(...maxs) : undefined,
     sort,

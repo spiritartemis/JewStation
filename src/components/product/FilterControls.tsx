@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   PRICE_BUCKETS,
@@ -39,7 +39,24 @@ export function FilterControls({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  /**
+   * 乐观选中态（2026-10-30）
+   *
+   * 勾选框原先的 checked 直接读服务端 params：点一下要等服务端把新页面送回来，
+   * 勾选框才打勾 —— 在部署平台上这一来一回常常要一两秒，手感像"卡住了"。
+   * 这里先本地记下"用户刚刚勾了什么"，勾选框立刻响应；服务端数据回来后清空。
+   */
+  const [optimistic, setOptimistic] = useState<Partial<Record<GroupKey, string[]>> | null>(null);
   const m = getMessages(locale);
+
+  // params 已是新一轮服务端结果，本地乐观值作废
+  useEffect(() => {
+    setOptimistic(null);
+  }, [params.category, params.style, params.material, params.type, params.price]);
+
+  const selectedOf = (key: GroupKey): string[] =>
+    optimistic?.[key] ?? splitList(params[key]);
 
   const activeCount = countActiveFilters(params);
 
@@ -76,23 +93,49 @@ export function FilterControls({
 
   const go = (next: ListParams) => {
     // 同一套 URL 口径，可分享可回退；replace 避免筛选塞满历史栈
-    router.replace(`${basePath}${buildQueryString(next)}`, { scroll: false });
+    startTransition(() => {
+      router.replace(`${basePath}${buildQueryString(next)}`, { scroll: false });
+    });
   };
 
   const onToggle = (key: GroupKey, value: string) => {
-    const current = splitList(params[key]);
+    // 以乐观值为基准，连点多个维度也不会互相覆盖
+    const current = selectedOf(key);
     const next = toggleValue(current, value);
-    go({ ...params, [key]: next.length ? next.join(",") : undefined });
+    const merged = { ...(optimistic ?? {}) } as Partial<Record<GroupKey, string[]>>;
+    merged[key] = next;
+
+    const patch: ListParams = { ...params };
+    (Object.keys(merged) as GroupKey[]).forEach((k) => {
+      const v = merged[k];
+      patch[k] = v && v.length ? v.join(",") : undefined;
+    });
+
+    setOptimistic(merged);
+    go(patch);
   };
 
   const clearAll = () => {
-    go({ sort: params.sort });
+    const patch: ListParams = { sort: params.sort };
+    (["category", "style", "material", "type", "price"] as GroupKey[]).forEach((k) => {
+      patch[k] = undefined;
+    });
+    // 立刻把所有勾选框清空（含价格档），服务端回来前右侧仍是旧列表，
+    // 但不会再出现"取消了一半、另一半还勾着"的错位
+    setOptimistic({
+      category: [],
+      style: [],
+      material: [],
+      type: [],
+      price: [],
+    });
+    go(patch);
   };
 
   const groups = (compact = false) => (
     <div className={compact ? "space-y-sp5" : "space-y-sp6"}>
       {GROUPS.map((group) => {
-        const selected = splitList(params[group.key]);
+        const selected = selectedOf(group.key);
         return (
           <fieldset key={group.key}>
             <legend className="text-aux uppercase tracking-[0.16em] text-muted">
@@ -129,6 +172,7 @@ export function FilterControls({
           onClick={() => setOpen(true)}
           className="h-11 rounded-btn border border-line px-sp4 text-body text-ink"
           aria-expanded={open}
+          aria-busy={isPending}
         >
           {m.list.filter} {activeCount > 0 ? `(${activeCount})` : ""}
         </button>
@@ -156,7 +200,8 @@ export function FilterControls({
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-ink/30 fade-in"
+            // 遮罩用中性黑而非 ink：深色版里 ink 是浅色字色，拿它当遮罩会把底提亮
+            className="absolute inset-0 bg-black/55 fade-in"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />

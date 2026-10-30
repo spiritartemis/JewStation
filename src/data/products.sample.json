@@ -66,7 +66,8 @@
           ],
           "allergyNotice": "不含镍的 925 纯银，适合大多数敏感耳。",
           "careInstructions": "避开水和香水；不戴时放进随附绒袋。",
-          "handmadeVariation": "每对都是手工弯制，波纹深浅略有差异属正常。"
+          "handmadeVariation": "每对都是手工弯制，波纹深浅略有差异属正常。",
+          "closureType": "耳扣"
         }
       }
     },
@@ -323,11 +324,15 @@
           "values": [
             {
               "label": "Open cuff",
-              "labelZh": "开口"
+              "labelZh": "开口",
+              "note": "slightly adjustable, fits most wrists",
+              "noteZh": "可微调，多数手腕都能戴"
             },
             {
               "label": "Closed bangle",
-              "labelZh": "死圈"
+              "labelZh": "死圈",
+              "note": "fixed circumference, choose by wrist size",
+              "noteZh": "周长固定，按手围选择"
             }
           ]
         }
