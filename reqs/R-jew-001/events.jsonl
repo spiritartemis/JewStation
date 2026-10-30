@@ -10,3 +10,4 @@
 {"seq":10,"at":"2026-10-30T09:47:15Z","actor":"local","kind":"deliver","task":"T-jew-001-03","state":"1 件","req":"R-jew-001"}
 {"seq":11,"at":"2026-10-30T09:47:19Z","actor":"local","kind":"deliver","task":"T-jew-001-04","state":"1 件","req":"R-jew-001"}
 {"seq":12,"at":"2026-10-30T09:47:22Z","actor":"local","kind":"deliver","task":"T-jew-001-05","state":"1 件","req":"R-jew-001"}
+{"seq":13,"at":"2026-10-30T09:47:33Z","actor":"local","kind":"handoff","task":"T-jew-001-02","done":["已完成：商品仍只存美元价，人民币为展示换算；汇率取中国银行美元现汇卖出价（每 100 美元除以 100），缓存 TTL = 距下一个北京时间 0 点秒数（每天 0 点刷新）；取不到回退固定值并在页脚标注；新增 /api/fx/refresh（token 鉴权）供部署侧定时触发；顶栏/抽屉/页脚均有币种切换"],"req":"R-jew-001"}
