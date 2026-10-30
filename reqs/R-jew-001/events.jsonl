@@ -2,3 +2,4 @@
 {"seq":2,"at":"2026-10-30T09:19:20Z","actor":"local","kind":"claim","task":"T-jew-001-02","to":"local","state":"working","text":"会话 pid-57701 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
 {"seq":3,"at":"2026-10-30T09:19:23Z","actor":"local","kind":"claim","task":"T-jew-001-03","to":"local","state":"working","text":"会话 pid-57834 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
 {"seq":4,"at":"2026-10-30T09:19:26Z","actor":"local","kind":"claim","task":"T-jew-001-04","to":"local","state":"working","text":"会话 pid-57954 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
+{"seq":5,"at":"2026-10-30T09:19:30Z","actor":"local","kind":"claim","task":"T-jew-001-05","to":"local","state":"working","text":"会话 pid-58072 认领（租约 15 分钟 · ready → in_progress）","req":"R-jew-001"}
