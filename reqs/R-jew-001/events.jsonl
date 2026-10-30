@@ -8,3 +8,4 @@
 {"seq":8,"at":"2026-10-30T09:47:02Z","actor":"local","kind":"handoff","task":"T-jew-001-01","done":["已完成：中英双语路由（英文无前缀 + /zh）、hreflang 三档、双语 sitemap、语言切换、全站词条与长文双语；中文稿待站长审"],"req":"R-jew-001"}
 {"seq":9,"at":"2026-10-30T09:47:12Z","actor":"local","kind":"deliver","task":"T-jew-001-02","state":"1 件","req":"R-jew-001"}
 {"seq":10,"at":"2026-10-30T09:47:15Z","actor":"local","kind":"deliver","task":"T-jew-001-03","state":"1 件","req":"R-jew-001"}
+{"seq":11,"at":"2026-10-30T09:47:19Z","actor":"local","kind":"deliver","task":"T-jew-001-04","state":"1 件","req":"R-jew-001"}
