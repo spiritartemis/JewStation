@@ -1,6 +1,6 @@
 {
   "name": "jewstation",
-  "version": "0.3.0-m1b",
+  "version": "0.3.1-m1b",
   "private": true,
   "scripts": {
     "dev": "next dev",
