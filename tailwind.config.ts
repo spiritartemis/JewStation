@@ -6,7 +6,7 @@ import type { Config } from "tailwindcss";
  * 强调色为暂定值，待站长提供 Logo/视觉参考后校准（Q-14）。
  *
  * 对比度：ink #2C2D2A 在 bg #F4F1EB 上 ≈ 12:1；muted #6F6C65 ≈ 4.7:1（正文级）；
- * accent #56745F 上放 onAccent #FFFFFF ≈ 5.2:1。浅色版不再需要「深底亮字」那套反色规则。
+ * accent #4A6450 上放 onAccent #FFFFFF ≈ 5.2:1。浅色版不再需要「深底亮字」那套反色规则。
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
@@ -20,23 +20,23 @@ const config: Config = {
         ink: "#2C2D2A",
         muted: "#6F6C65",
         line: "#DCD6CB",
-        // 主强调：莫兰迪深鼠尾草绿（CTA、选中态、角标）—— 在浅底上够沉，压得住米白
-        accent: "#56745F",
+        // 主强调：莫兰迪鼠尾草绿·深调（Q-14 2026-10-30：浅底 + 更深强调色）—— 对底 5.77:1
+        accent: "#4A6450",
         accentWeak: "#DFE8E1",
         /** 强调色表面上的文字色（深绿强调 + 白字，≈ 5.2:1） */
         onAccent: "#FFFFFF",
         sold: "#67645D",
         warn: "#B5794F",
-        // 莫兰迪五色相（浅色版：块面用浅调 Weak，描边/文字用同色系深调主色）
-        mist: "#6B8497",
+        // 莫兰迪五色相·深调版（块面用浅调 Weak，文字/描边用深主色；六色对底均 ≥4.5:1）
+        mist: "#566F82",
         mistWeak: "#E3EAEF",
-        sage: "#6F8A6D",
+        sage: "#587152",
         sageWeak: "#E5ECE0",
-        clay: "#A9765F",
+        clay: "#91624E",
         clayWeak: "#F1E3DB",
-        sand: "#9A8659",
+        sand: "#7C6942",
         sandWeak: "#F0E8D8",
-        mauve: "#8B7595",
+        mauve: "#77628A",
         mauveWeak: "#EAE2ED",
         /** 品牌铜：仅供品牌资产（徽记月缘/散点、字标「&」），不用于 UI 语义 */
         copper: "#B68E64",

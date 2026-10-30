@@ -10,22 +10,22 @@
   --c-text: #2c2d2a;
   --c-text-muted: #6f6c65;
   --c-line: #dcd6cb;
-  --c-accent: #56745f;
+  --c-accent: #4a6450;
   --c-accent-weak: #dfe8e1;
   --c-on-accent: #ffffff;
   --c-sold: #67645d;
   --c-warn: #b5794f;
 
   /* 莫兰迪五色相 · 浅色版（块面 Weak 为浅调，主色为同色系深调，用于描边/文字） */
-  --c-mist: #6b8497;
+  --c-mist: #566f82;
   --c-mist-weak: #e3eaef;
-  --c-sage: #6f8a6d;
+  --c-sage: #587152;
   --c-sage-weak: #e5ece0;
-  --c-clay: #a9765f;
+  --c-clay: #91624e;
   --c-clay-weak: #f1e3db;
-  --c-sand: #9a8659;
+  --c-sand: #7c6942;
   --c-sand-weak: #f0e8d8;
-  --c-mauve: #8b7595;
+  --c-mauve: #77628a;
   --c-mauve-weak: #eae2ed;
 
   /* 品牌铜：只在品牌资产里用（星月徽记的月缘与散点、字标的「&」），
