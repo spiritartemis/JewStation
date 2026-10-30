@@ -1,0 +1,9 @@
+# 席位阶段态（席位分支；**阶段变化才提交**——无心跳、无百分比）
+# 规范见 entry/workflow/seatflow.md §3.3 / §5
+schema_version: 1
+seat: local
+stage: delivered
+task: T-jew-001-01
+req: R-jew-001
+since: 2026-10-30T09:46:43Z
+note: 已交付 T-jew-001-01（execution_seq=1）
