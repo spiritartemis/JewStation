@@ -15,9 +15,15 @@ export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "en";
 
-/** 语言切换器上的显示名：用各自语言写，避免用户在中文界面看到 "Chinese" */
-export const LOCALE_LABELS: Record<Locale, string> = {
-  en: "EN",
+/**
+ * 语言切换按钮上的文字（0.3.2）：
+ * 按钮显示的是**要切去的那个语言**，不是当前语言 ——
+ *   中文页显示「English」，点了变英文；英文页显示「中文」，点了变中文。
+ * 这样按钮本身就是一句可执行的指令，不需要额外的「切换语言」标签。
+ * 长度约束：最长 "English" = 7 字符，按钮按 10 字符预留固定宽度，换语言不跳动。
+ */
+export const LOCALE_SWITCH_LABELS: Record<Locale, string> = {
+  en: "English",
   zh: "中文",
 };
 

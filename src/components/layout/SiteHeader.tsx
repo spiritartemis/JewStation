@@ -50,8 +50,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           className="flex min-w-0 flex-1 items-center justify-center gap-sp2 text-ink lg:flex-none lg:justify-start"
         >
           {/* 顶栏保持纯文字标：加徽记后 390px 宽即使只在桌面显示也会挤压
-              搜索/购物车，且 20px 下徽记细节糊成一团。图形识别交给 favicon 与页脚落款 */}
-          <span className="font-serif text-h2 uppercase tracking-[0.16em] lg:tracking-[0.2em]">
+              搜索/购物车，且 20px 下徽记细节糊成一团。图形识别交给 favicon 与页脚落款。
+              0.3.2 起右上角常驻语言按钮，390px 要腾 64px 出来：字标在窄屏降到 12px/0.06em，
+              并留 truncate 兜底 —— 宁可缩字也不能把搜索与购物袋挤出视口 */}
+          <span className="min-w-0 truncate font-serif text-[12px] uppercase tracking-[0.06em] sm:text-h2 sm:tracking-[0.16em] lg:tracking-[0.2em]">
             {SITE.brandName}
           </span>
         </Link>
@@ -105,7 +107,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-sp2 lg:ml-0">
-          <LocaleSwitcher current={locale} className="hidden lg:flex" />
+          {/* 0.3.2：语言切换改成右上角单按钮，移动端也常显（手机上点一下就能换语言） */}
+          <LocaleSwitcher current={locale} />
           <CurrencySwitcher className="hidden lg:flex" />
           <Link
             href={lp("/search")}

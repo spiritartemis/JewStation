@@ -176,6 +176,8 @@ const en = {
   language: {
     switchAria: "Language",
     label: "Language",
+    /** 单按钮切换器的读屏文案：用**当前页面语言**写，指向要切去的语言 */
+    switchTo: "Switch to Chinese",
   },
   policy: {
     draftNotice: "Draft — pending business/legal review. Not for publication until approved.",
@@ -362,6 +364,8 @@ const zh: Messages = {
   language: {
     switchAria: "语言",
     label: "语言",
+    /** 单按钮切换器的读屏文案：用**当前页面语言**写，指向要切去的语言 */
+    switchTo: "切换到英文",
   },
   policy: {
     draftNotice: "初稿 —— 待业务/法务复核。未通过前不得对外发布。",
