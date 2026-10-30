@@ -1,6 +1,6 @@
 # 需求索引 — 本项目需求单一事实源（总控维护）
 # 需求级信息（title / summary / analysis / status / revision）一律在此；reqs/<id>/ 下只有 task-list.yaml
-next_req_no: 1
+next_req_no: 2
 requirements:
   - id: R-jew-1a-0
     title: 站点地图与导航确认
@@ -502,5 +502,17 @@ requirements:
     revision: 1
     task_count: 1
     task_done: 0
+    analysis: |
+      （待讨论产出）
+  - id: R-jew-001
+    title: 0.3 · 双语双币与六品类落地
+    status: ready
+    initiator: 用户
+    created: 2026-10-30
+    revision: 1
+    task_count: 0
+    task_done: 0
+    summary: |
+      Q-02 中英双语路由与全站文案、Q-05/Q-08 双币种与中行汇率、Q-04 Bag Charms/Sets、Q-06 手链开口死圈规格、Q-21/22/30/31/32 结账配送文案
     analysis: |
       （待讨论产出）
