@@ -64,4 +64,9 @@ tasks:
     created: 2026-10-30
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/i18n/content.ts
+        kind: file
+        checksum: sha256:c62974a3d3ebf067e5820ffd7ad2c443aedebf6ce2ca3c832c6dde1e30dd3823
+        at: 2026-10-30T09:47:22.229Z
     claim: {"session":"pid-58072","pid":58072,"host":"Mona.local","since":"2026-10-30T09:19:29.983Z","heartbeat":"2026-10-30T09:19:29.983Z"}

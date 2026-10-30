@@ -3,7 +3,7 @@
 schema_version: 1
 seat: local
 stage: delivered
-task: T-jew-001-04
+task: T-jew-001-05
 req: R-jew-001
-since: 2026-10-30T09:47:18Z
-note: 已交付 T-jew-001-04（execution_seq=1）
+since: 2026-10-30T09:47:22Z
+note: 已交付 T-jew-001-05（execution_seq=1）
