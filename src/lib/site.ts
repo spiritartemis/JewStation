@@ -22,9 +22,9 @@ export const SITE = {
   displayCurrencies: ["USD", "CNY"] as const,
   supportEmail: "hello@example.com",
   /** 站点版本（随每次发布递增） */
-  version: "0.3.5-m1b",
+  version: "0.3.6-m1b",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-10-31 09:25",
+  updatedAt: "2026-10-31 22:20",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];
