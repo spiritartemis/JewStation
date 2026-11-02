@@ -28,6 +28,8 @@ export type ListParams = {
   type?: string;
   price?: string;
   sort?: string;
+  /** 列表内搜索词（列表页头部搜索框）：与筛选叠加，不跳转到 /search */
+  q?: string;
 };
 
 /** "a,b" | ["a","b"] → ["a","b"] */
@@ -48,6 +50,7 @@ export function parseListParams(sp: Record<string, string | string[] | undefined
     type: sp.type as string | undefined,
     price: sp.price as string | undefined,
     sort: sp.sort as string | undefined,
+    q: typeof sp.q === "string" ? sp.q : undefined,
   };
 }
 
@@ -86,6 +89,8 @@ export function buildQueryString(p: ListParams): string {
     if (value) usp.set(key, value);
   }
   if (p.sort && p.sort !== "newest") usp.set("sort", p.sort);
+  // 搜索词排在最后：分享出去的 URL 里「筛选在前、关键词在后」，读起来更顺
+  if (p.q) usp.set("q", p.q);
   const qs = usp.toString();
   return qs ? `?${qs}` : "";
 }

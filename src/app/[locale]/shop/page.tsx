@@ -3,9 +3,10 @@ import Link from "next/link";
 import { FilterControls } from "@/components/product/FilterControls";
 import { ActiveFilters } from "@/components/product/ActiveFilters";
 import { SortSelect } from "@/components/product/SortSelect";
+import { ListSearch } from "@/components/product/ListSearch";
 import { ProductGrid, ProductGridEmpty } from "@/components/product/ProductGrid";
 import { parseListParams, toProductFilters, countActiveFilters } from "@/lib/filters";
-import { getAllProducts, getFilteredProducts } from "@/lib/products";
+import { getAllProducts, getFilteredProducts, searchProducts } from "@/lib/products";
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -49,9 +50,13 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
   const sp = await searchParams;
   const listParams = parseListParams(sp);
   const filters = toProductFilters(listParams);
-  const products = getFilteredProducts(filters);
+  // 列表内搜索与筛选叠加：先按词收窄，再套筛选条件（两者都可直达 URL）
+  const keyword = listParams.q?.trim() ?? "";
+  const products = getFilteredProducts(filters, keyword ? searchProducts(keyword) : undefined);
   const total = getAllProducts().length;
   const activeCount = countActiveFilters(listParams);
+  /** 有关键词也算「已收窄」：计数要写成「10 件中 3 件」，空态也要给出清除入口 */
+  const narrowed = activeCount > 0 || keyword.length > 0;
 
   return (
     <div className="pb-sp6">
@@ -61,13 +66,17 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
             <h1 className="font-serif text-h1 text-ink">{m.list.allProducts}</h1>
             {/* 无筛选时不再写"共 10 件，当前显示 10 件"：同一句话里重复两遍数字 */}
             <p className="mt-sp2 text-aux text-muted">
-              {activeCount > 0
-                ? m.list.countOf(products.length, total)
-                : m.list.countOnly(total)}
+              {narrowed ? m.list.countOf(products.length, total) : m.list.countOnly(total)}
             </p>
           </div>
-          {/* 桌面端排序：移动端的排序在吸顶筛选条里（SortSelect 同一实现） */}
-          <div className="hidden shrink-0 lg:block">
+          {/* 桌面端：列表内搜索 + 排序（移动端的排序在吸顶筛选条里，搜索走顶栏入口） */}
+          <div className="hidden shrink-0 items-center gap-sp3 lg:flex">
+            <ListSearch
+              params={listParams}
+              basePath={basePath}
+              locale={locale}
+              className="w-[248px]"
+            />
             <SortSelect params={listParams} basePath={basePath} locale={locale} />
           </div>
         </div>
@@ -92,8 +101,9 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
           ) : (
             <ProductGridEmpty
               locale={locale}
+              message={keyword ? m.list.noMatchQuery(keyword) : undefined}
               onClear={
-                activeCount > 0 ? (
+                narrowed ? (
                   <Link
                     href={basePath}
                     className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"

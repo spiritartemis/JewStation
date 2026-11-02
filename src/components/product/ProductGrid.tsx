@@ -44,14 +44,17 @@ export function ProductGrid({ products, locale }: { products: Product[]; locale:
 export function ProductGridEmpty({
   locale,
   onClear,
+  message,
 }: {
   locale: Locale;
   onClear?: React.ReactNode;
+  /** 覆盖默认空态文案：例如带关键词时说「没有找到与 xx 匹配的商品」 */
+  message?: string;
 }) {
   const m = getMessages(locale);
   return (
     <div className="py-sp6 text-center">
-      <p className="text-body text-muted">{m.list.noMatch}</p>
+      <p className="text-body text-muted">{message ?? m.list.noMatch}</p>
       {onClear ? <div className="mt-sp4 flex justify-center">{onClear}</div> : null}
     </div>
   );

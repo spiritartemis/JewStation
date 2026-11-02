@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FilterControls } from "@/components/product/FilterControls";
 import { ActiveFilters } from "@/components/product/ActiveFilters";
 import { SortSelect } from "@/components/product/SortSelect";
+import { ListSearch } from "@/components/product/ListSearch";
 import { ProductGrid, ProductGridEmpty } from "@/components/product/ProductGrid";
 import {
   parseListParams,
@@ -11,7 +12,7 @@ import {
   countActiveFilters,
   type ListParams,
 } from "@/lib/filters";
-import { getFilteredProducts, getProductsByCollection } from "@/lib/products";
+import { getFilteredProducts, getProductsByCollection, searchProducts } from "@/lib/products";
 import { tagLabel, isKnownCollection } from "@/lib/tags";
 import { JsonLdScript } from "@/components/JsonLd";
 import { buildMetadata } from "@/lib/seo";
@@ -47,8 +48,16 @@ export default async function CollectionPage({ params, searchParams }: PageProps
   const basePath = localePath(locale, `/collections/${slug}`);
 
   // 先取集合，再在集合内应用筛选（B-2.3 可叠加）
-  const products = getFilteredProducts(filters, getProductsByCollection(slug));
+  const collection = getProductsByCollection(slug);
+  // 列表内搜索：搜索词仍按全站口径命中，但结果只保留本集合内的商品
+  const keyword = listParams.q?.trim() ?? "";
+  const hits = keyword ? searchProducts(keyword) : null;
+  const scoped = hits
+    ? collection.filter((p) => hits.some((h) => h.slug === p.slug))
+    : collection;
+  const products = getFilteredProducts(filters, scoped);
   const activeCount = countActiveFilters(listParams);
+  const narrowed = activeCount > 0 || keyword.length > 0;
   const title = titleOf(slug, locale);
 
   return (
@@ -68,7 +77,13 @@ export default async function CollectionPage({ params, searchParams }: PageProps
             <h1 className="font-serif text-h1 text-ink">{title}</h1>
             <p className="mt-sp2 text-aux text-muted">{m.list.countOnly(products.length)}</p>
           </div>
-          <div className="hidden shrink-0 lg:block">
+          <div className="hidden shrink-0 items-center gap-sp3 lg:flex">
+            <ListSearch
+              params={listParams}
+              basePath={basePath}
+              locale={locale}
+              className="w-[248px]"
+            />
             <SortSelect params={listParams} basePath={basePath} locale={locale} />
           </div>
         </div>
@@ -91,8 +106,9 @@ export default async function CollectionPage({ params, searchParams }: PageProps
           ) : (
             <ProductGridEmpty
               locale={locale}
+              message={keyword ? m.list.noMatchQuery(keyword) : undefined}
               onClear={
-                activeCount > 0 ? (
+                narrowed ? (
                   <Link
                     href={basePath}
                     className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"
