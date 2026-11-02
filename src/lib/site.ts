@@ -24,7 +24,7 @@ export const SITE = {
   /** 站点版本（随每次发布递增） */
   version: "0.3.7-m1b",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-11-02 14:45",
+  updatedAt: "2026-11-02 16:30",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];
