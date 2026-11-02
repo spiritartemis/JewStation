@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:preview": "NEXT_DIST_DIR=.next-preview next build && git checkout -- next-env.d.ts tsconfig.json",
     "start": "next start",
+    "start:preview": "NEXT_DIST_DIR=.next-preview next start -p 3100 -H 0.0.0.0",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "validate:products": "node scripts/validate-products.mjs --sample"
