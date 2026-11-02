@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
+import { ContactLink } from "@/components/layout/ContactLink";
 import { FxNote } from "@/components/currency/CurrencySwitcher";
 import { localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -38,12 +39,22 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               <ul className="mt-sp3 space-y-sp2">
                 {group.items.map((item) => (
                   <li key={`${group.title}-${item.label}`}>
-                    <Link
-                      href={lp(item.href.replace("{email}", SITE.supportEmail))}
-                      className="text-body text-ink hover:text-accent"
-                    >
-                      {item.label}
-                    </Link>
+                    {/* 联系我们不是站内页：裸 mailto 在没配邮件客户端的设备上会"点了没反应"，
+                        统一走 ContactLink 弹窗（邮箱未确认时给出说明与替代路径） */}
+                    {item.href.startsWith("mailto:") ? (
+                      <ContactLink
+                        locale={locale}
+                        email={SITE.supportEmail}
+                        label={item.label}
+                      />
+                    ) : (
+                      <Link
+                        href={lp(item.href)}
+                        className="text-body text-ink hover:text-accent"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -20,11 +20,20 @@ export const SITE = {
   baseCurrency: "USD",
   /** 展示币种（Q-08 双币种）：切换器按这个顺序轮 */
   displayCurrencies: ["USD", "CNY"] as const,
-  supportEmail: "hello@example.com",
+  /**
+   * 客服邮箱（Q-47 待站长给值）
+   *
+   * null = 尚未确认。此前填的是 `hello@example.com` 这类占位地址：
+   * 点「联系我们」虽然会唤起邮件客户端，但发出去的邮件没人收，
+   * 也有的设备根本没配邮件客户端，点了就是"没反应"。
+   * 现在改成 null，页脚那个入口不再拼 mailto，而是弹出说明；
+   * 一旦这里填上真实邮箱，弹窗自动变成「可复制邮箱 + 用邮件应用打开」，无需改代码。
+   */
+  supportEmail: null as string | null,
   /** 站点版本（随每次发布递增） */
-  version: "0.3.8-m1b",
+  version: "0.3.9-m1b",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-11-02 17:30",
+  updatedAt: "2026-11-02 17:55",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];

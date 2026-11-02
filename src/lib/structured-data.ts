@@ -40,7 +40,8 @@ export function organizationJsonLd(): JsonLd {
     "@type": "Organization",
     name: SITE.brandName,
     url: absoluteUrl("/"),
-    email: SITE.supportEmail,
+    // 邮箱未确认时不写进结构化数据：给搜索引擎一个假地址，比不给更糟
+    ...(SITE.supportEmail ? { email: SITE.supportEmail } : {}),
   };
 }
 

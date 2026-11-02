@@ -79,6 +79,24 @@ const en = {
     versionLabel: "Version",
     updatedLabel: "Updated",
   },
+  /**
+   * 页脚「联系我们」弹窗（2026-11-02）
+   * 邮箱未确认（SITE.supportEmail === null）时走 unavailable* 那套文案，
+   * 确认后自动切到邮箱可复制的那套 —— 两套都要有，不能只写一套。
+   */
+  contact: {
+    title: "Contact us",
+    intro: "Email is the fastest way to reach us — we reply within two business days.",
+    emailLabel: "Support email",
+    copy: "Copy email",
+    copied: "Copied",
+    openMail: "Open in mail app",
+    unavailableTitle: "Our email isn't published yet",
+    unavailableBody:
+      "The support inbox is still being set up, so there's no address to write to right now. Sizing, materials, shipping and returns are all covered in the FAQ. Once the inbox is confirmed, the address will appear here, ready to copy.",
+    readFaq: "Read the FAQ",
+    close: "Close",
+  },
   home: {
     sections: {
       newArrivals: "New arrivals",
@@ -274,6 +292,19 @@ const zh: Messages = {
     newsletterNote: "订阅功能随 V1.0 上线，此处为占位。",
     versionLabel: "版本",
     updatedLabel: "更新",
+  },
+  contact: {
+    title: "联系我们",
+    intro: "邮件是联系我们的最快方式，我们会在两个工作日内回复。",
+    emailLabel: "客服邮箱",
+    copy: "复制邮箱",
+    copied: "已复制",
+    openMail: "用邮件应用打开",
+    unavailableTitle: "客服邮箱还没定下来",
+    unavailableBody:
+      "收信地址仍在配置中，现在还没有可写的邮箱。尺码、材质、配送、退换这些常见问题，在常见问题里基本都能找到答案。等地址确认后，这里会直接显示可复制的邮箱。",
+    readFaq: "先看常见问题",
+    close: "关闭",
   },
   home: {
     sections: {
