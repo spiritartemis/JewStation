@@ -96,7 +96,11 @@ export function searchProducts(query: string): Product[] {
   return getAllProducts().filter((p) => {
     // 词级匹配（2026-10-30 修正）：原先整串 includes 会让 "ring" 命中 "earrings"，
     // 搜戒指却跳出耳环。英文按「词」匹配（相等或前缀），中文没有词边界仍按子串。
-    const isAscii = (s: string) => /^[\x20-\x7e]+$/.test(s);
+    //
+    // 2026-11-02 再修：带分隔符的词（one-of-a-kind / one of a kind）不能走词级匹配 ——
+    // 词袋里只有 one / of / a / kind 这样的单字，"one-of-a-kind".startsWith("one") 恒false，
+    // 结果同义词表里最长的那两条永远命中不了。只有「纯字母数字」才按词匹配。
+    const isWord = (s: string) => /^[a-z0-9]+$/i.test(s);
     // 检索索引同时装英文底稿与中文名（Q-02）：中文页搜「耳环」「纯银」也要有结果，
     // 而 slug/英文名是稳定标识，两套都留在 haystack 里，切语言不会让搜索行为突变。
     const labelOf = (slug: string) => [tagLabel(slug, "en"), tagLabel(slug, "zh")];
@@ -125,11 +129,11 @@ export function searchProducts(query: string): Product[] {
     return terms.every((term) => {
       const candidates = [term, ...(SEARCH_ALIASES[term] ?? [])];
       return candidates.some((c) => {
-        if (isAscii(c) && !c.includes("_")) {
+        if (isWord(c)) {
           // 前缀匹配保留复数与变形：ring → rings / ring；但绝不跨词命中 earrings。
-          // 系统值（one_of_a_kind）带下划线，是整串标识，仍走子串匹配
           return words.some((w) => w === c || w.startsWith(c));
         }
+        // 含空格 / 连字符 / 下划线的整体标识（one-of-a-kind、one_of_a_kind）走子串
         return haystack.includes(c);
       });
     });

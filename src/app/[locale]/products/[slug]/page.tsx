@@ -5,7 +5,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductOptions, ProductOptionNote } from "@/components/product/ProductOptions";
 import { JsonLdScript } from "@/components/JsonLd";
-import { getProductBySlug, getProductsByCollection } from "@/lib/products";
+import { getAllProducts, getProductBySlug, getProductsByCollection } from "@/lib/products";
 import {
   isSoldOut,
   localizeProduct,
@@ -47,10 +47,23 @@ export default async function ProductPage({ params }: PageProps) {
   const isOneOfAKind = product.productType === "one_of_a_kind";
   const low = lowStockLabel(product, locale);
 
-  // 相似风格留位：m-1d 用标签相似度填充，此处先按同品类回退（03 §7 兜底）
-  const similar = getProductsByCollection(product.category)
-    .filter((p) => p.slug !== product.slug)
-    .slice(0, 4);
+  // 相似风格（m-1d 会用标签相似度正式实现）
+  // 2026-11-02：原先只按同品类取，戒指只有一个款时列表被自己过滤空 ——
+  // 页面上仍然渲染标题与说明，下面却一片空白。改成三级兜底：
+  // 同品类 → 同风格 → 全站除自己，保证有商品就一定填得满。
+  const similar = (() => {
+    const all = getAllProducts();
+    const sameCategory = getProductsByCollection(product.category).filter(
+      (p) => p.slug !== product.slug,
+    );
+    if (sameCategory.length) return sameCategory.slice(0, 4);
+    const sameStyle = all.filter(
+      (p) =>
+        p.slug !== product.slug && p.tags.style.some((s) => product.tags.style.includes(s)),
+    );
+    if (sameStyle.length) return sameStyle.slice(0, 4);
+    return all.filter((p) => p.slug !== product.slug).slice(0, 4);
+  })();
 
   const crumbs = [
     { name: m.common.home, path: "/" },
@@ -96,12 +109,12 @@ export default async function ProductPage({ params }: PageProps) {
         <ProductSpecProvider options={specGroups}>
           <div className="shell pt-sp5 md:px-0">
             {isOneOfAKind ? (
-            <span className="inline-block rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
-              {m.product.oneOfAKindBadge}
-            </span>
-          ) : null}
+              <span className="inline-block rounded-btn bg-accent px-sp2 py-sp1 text-[10px] uppercase tracking-[0.12em] text-onAccent">
+                {m.product.oneOfAKindBadge}
+              </span>
+            ) : null}
 
-          <h1 className="mt-sp2 font-serif text-h1 text-ink">{product.title}</h1>
+            <h1 className="mt-sp2 font-serif text-h1 text-ink">{product.title}</h1>
 
           <div className="mt-sp2 flex flex-wrap items-baseline gap-sp3">
             <Price
@@ -210,19 +223,33 @@ export default async function ProductPage({ params }: PageProps) {
         </ProductSpecProvider>
       </div>
 
-      <section className="mt-sp6">
-        <div className="shell">
-          <h2 className="text-h2 text-ink">{m.product.similar}</h2>
-          <p className="mt-sp1 text-aux text-muted">{m.product.similarNote}</p>
-        </div>
-        <div className="mt-sp3 flex gap-sp4 overflow-x-auto px-sp4 pb-sp2">
-          {similar.map((p) => (
-            <div key={p.slug} className="w-[46%] shrink-0 sm:w-[220px]">
-              <ProductCard product={p} locale={locale} />
-            </div>
-          ))}
-        </div>
-      </section>
+      {similar.length ? (
+        <section className="mt-sp6">
+          {/* 标题与卡片放进同一个 .shell：原先卡片用 px-sp4 贴着屏幕边，
+              标题却落在 1200px 栏里，1440 宽下两者差 84px，看着像两个区块 */}
+          <div className="shell">
+            <h2 className="text-h2 text-ink">{m.product.similar}</h2>
+            <p className="mt-sp1 text-aux text-muted">{m.product.similarNote}</p>
+
+            {similar.length <= 2 ? (
+              // 1–2 件时用大卡两列，否则横滑条右侧会空掉大半屏
+              <div className="mt-sp4 grid gap-sp5 sm:grid-cols-2">
+                {similar.map((p) => (
+                  <ProductCard key={p.slug} product={p} locale={locale} size="feature" />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-sp4 flex gap-sp4 overflow-x-auto pb-sp2">
+                {similar.map((p) => (
+                  <div key={p.slug} className="w-[46%] shrink-0 sm:w-[220px]">
+                    <ProductCard product={p} locale={locale} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ) : null}
     </article>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   PRICE_BUCKETS,
@@ -43,12 +44,17 @@ export function ActiveFilters({
   locale: Locale;
 }) {
   const router = useRouter();
+  // 与筛选侧栏同一口径：导航放进 transition，点掉一个筛选项时按钮立刻有反馈，
+  // 不出现「点了没反应 → 一秒后整页跳一下」
+  const [, startTransition] = useTransition();
   const m = getMessages(locale);
   const count = countActiveFilters(params);
   if (count === 0) return null;
 
   const go = (next: ListParams) =>
-    router.replace(`${basePath}${buildQueryString(next)}`, { scroll: false });
+    startTransition(() => {
+      router.replace(`${basePath}${buildQueryString(next)}`, { scroll: false });
+    });
 
   const remove = (key: (typeof KEYS)[number], value: string) => {
     const rest = splitList(params[key]).filter((v) => v !== value);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   PRICE_BUCKETS,
@@ -48,12 +48,35 @@ export function FilterControls({
    * 这里先本地记下"用户刚刚勾了什么"，勾选框立刻响应；服务端数据回来后清空。
    */
   const [optimistic, setOptimistic] = useState<Partial<Record<GroupKey, string[]>> | null>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const m = getMessages(locale);
 
   // params 已是新一轮服务端结果，本地乐观值作废
   useEffect(() => {
     setOptimistic(null);
   }, [params.category, params.style, params.material, params.type, params.price]);
+
+  /**
+   * 抽屉打开时的全套行为（2026-11-02）
+   *
+   * 移动端筛选抽屉原先只能点遮罩或关闭按钮：Esc 关不掉、背后页面还能滚、
+   * 打开后焦点仍留在触发按钮上（读屏用户以为没变化）。
+   * 这里补上 Esc、滚动锁与初始焦点，与 MobileNavDrawer 的口径保持一致。
+   */
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    closeRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   const selectedOf = (key: GroupKey): string[] =>
     optimistic?.[key] ?? splitList(params[key]);
@@ -165,8 +188,10 @@ export function FilterControls({
 
   return (
     <>
-      {/* 移动端：吸顶筛选条 + 排序 */}
-      <div className="sticky top-14 z-30 flex items-center justify-between gap-sp3 border-b border-line bg-bg/95 px-sp4 py-sp2 backdrop-blur lg:hidden">
+      {/* 移动端：吸顶筛选条 + 排序
+          top 偏移要带 safe-area：顶栏是 h-14 再加 pt-[env(safe-area-inset-top)]，
+          只写 top-14 时刘海机型上筛选条会滑进顶栏底下 */}
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-30 flex items-center justify-between gap-sp3 border-b border-line bg-bg/95 px-sp4 py-sp2 backdrop-blur lg:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -216,6 +241,7 @@ export function FilterControls({
                 {m.list.filters}
               </span>
               <button
+                ref={closeRef}
                 type="button"
                 aria-label={m.list.closeFilters}
                 onClick={() => setOpen(false)}

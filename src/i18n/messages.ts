@@ -20,6 +20,8 @@ const en = {
     pending: "Pending owner decision",
   },
   nav: {
+    /** 主导航的读屏名。写死 "Primary" 会在中文页蹦出一个英文标签 */
+    primary: "Primary",
     shop: "Shop",
     oneOfAKind: "One of a Kind",
     about: "About",
@@ -210,6 +212,8 @@ const zh: Messages = {
     pending: "待站长确认",
   },
   nav: {
+    /** 主导航的读屏名 */
+    primary: "主导航",
     shop: "选购",
     oneOfAKind: "孤品",
     about: "关于我们",

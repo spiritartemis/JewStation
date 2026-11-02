@@ -29,7 +29,7 @@ const config: Config = {
         accentWeak: "#2E3A32",
         /** 强调色表面上的文字色（亮绿强调 + 深字，≈ 6:1） */
         onAccent: "#1E1D1C",
-        sold: "#8A857C",
+        sold: "#979188",
         warn: "#CE9A6C",
         // 莫兰迪五色相·深底版（块面用深调 Weak，文字/描边用亮调主色）
         mist: "#8FA6B8",

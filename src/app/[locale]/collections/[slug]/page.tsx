@@ -76,7 +76,8 @@ export default async function CollectionPage({ params, searchParams }: PageProps
 
       <ActiveFilters params={listParams} basePath={basePath} locale={locale} />
 
-      <div className="lg:mt-sp5 lg:flex lg:gap-sp6 lg:px-sp4">
+      {/* 与商品列表页同一口径：两栏容器落在 .shell 内，标题与网格才会左对齐 */}
+      <div className="shell lg:mt-sp5 lg:flex lg:gap-sp6">
         <FilterControls
           params={listParams}
           resultCount={products.length}

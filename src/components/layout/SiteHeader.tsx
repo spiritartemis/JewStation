@@ -81,7 +81,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden lg:flex lg:flex-1 lg:items-center lg:gap-sp4">
+        <nav aria-label={m.nav.primary} className="hidden lg:flex lg:flex-1 lg:items-center lg:gap-sp4">
           {/* Shop 下拉：六个品类 + 特殊集合。受控展开，点面板外 / Esc / 选中项后收起 */}
           <div className="relative" ref={shopRef}>
             <button

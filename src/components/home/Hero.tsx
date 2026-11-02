@@ -11,8 +11,9 @@ import { localePath, type Locale } from "@/i18n/config";
  * 动效只允许淡入 + 极小位移，整体控制在 200ms 内（05 §3.4）。
  *
  * 文案读内容源（B-2.8，中英双语见 src/i18n/content.ts）。主图属站长素材（Q-16）：
- * 当前指向 public/images/hero-home-light.jpg，为 **AI 生成的概念占位图**，
- * 上线前需替换为实拍场景图（换 public/images 下的文件即可，无需改本组件）。
+ * 当前指向 public/images/hero-home.jpg —— 深色石板面（0.3.4 深色版启用），
+ * 上线前需替换为实拍场景图（换 public/images 下的文件即可，无需改本组件；
+ * 换图时记得同步 content.ts 里的 imageAlt，alt 必须描述画面里真实的东西）。
  */
 export function Hero({ locale }: { locale: Locale }) {
   const hero = getContent(locale).hero;
@@ -55,7 +56,7 @@ export function Hero({ locale }: { locale: Locale }) {
       <div className="shell pointer-events-none absolute inset-x-0 bottom-sp5 lg:bottom-sp6">
         <div className="max-w-[46ch]">
           {/* 眉标：细引线 + 全大写小字，交代品牌身份。
-              浅色版压在照片中段偏亮的纸面上，用 ink/70 而非 muted，保证叠在窗影上也读得清 */}
+              压在深色石板主图上，用 ink/70 而不是 muted，保证叠在石纹与阴影上也读得清 */}
           <p className="flex items-center gap-sp3 text-aux uppercase tracking-[0.22em] text-ink/70 fade-in">
             <span aria-hidden className="h-px w-8 shrink-0 bg-ink/35 lg:w-12" />
             {hero.eyebrow}

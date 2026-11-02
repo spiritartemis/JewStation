@@ -51,7 +51,9 @@ function SuggestionChips({ locale }: { locale: Locale }) {
         {SUGGESTION_TAGS.map((t) => (
           <Link
             key={t.slug}
-            href={`${localePath(locale, "/search")}?q=${encodeURIComponent(t.label)}`}
+            // 建议词的**显示文字**与**实际查询词**必须是同一个：中文页显示「耳环」却去搜
+            // "Earrings"，用户看不出发生了什么，分享出去的地址也和页面文字对不上。
+            href={`${localePath(locale, "/search")}?q=${encodeURIComponent(tagLabel(t.slug, locale))}`}
             className="inline-flex h-9 items-center rounded-btn border border-line bg-surface px-sp3 text-aux text-ink hover:border-accent"
           >
             {tagLabel(t.slug, locale)}
@@ -103,7 +105,13 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
         ) : results.length > 0 ? (
           <>
             <div className="mb-sp4 flex flex-wrap items-baseline justify-between gap-sp2">
-              <p className="text-aux text-muted">{m.search.resultsFor(results.length, query)}</p>
+              {/* 有结果时页面原先没有 h1（只有一句统计文案），读屏与 SEO 都缺页面主题 */}
+              <h1 className="text-body text-ink">
+                {locale === "zh" ? "搜索结果" : "Search results"}
+                <span className="ml-sp2 text-aux text-muted">
+                  {m.search.resultsFor(results.length, query)}
+                </span>
+              </h1>
               <Link href={searchHref} className="text-aux text-muted underline hover:text-accent">
                 {m.search.clearSearch}
               </Link>

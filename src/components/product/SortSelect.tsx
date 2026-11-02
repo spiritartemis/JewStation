@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { SORT_OPTIONS, buildQueryString, type ListParams } from "@/lib/filters";
 import { getMessages } from "@/i18n/messages";
@@ -21,13 +22,16 @@ export function SortSelect({
   locale: Locale;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const m = getMessages(locale);
   const value = params.sort ?? "newest";
 
   const onChange = (next: string) => {
     // newest 是默认值，不回写 URL，保持链接干净
     const sort = next === "newest" ? undefined : next;
-    router.replace(`${basePath}${buildQueryString({ ...params, sort })}`, { scroll: false });
+    startTransition(() => {
+      router.replace(`${basePath}${buildQueryString({ ...params, sort })}`, { scroll: false });
+    });
   };
 
   return (
@@ -36,6 +40,7 @@ export function SortSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        aria-busy={isPending}
         className="h-11 rounded-btn border border-line bg-surface px-sp3 text-body text-ink"
       >
         {SORT_OPTIONS.map((o) => (

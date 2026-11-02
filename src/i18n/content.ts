@@ -40,8 +40,10 @@ const en: SiteContent = {
     ctaLabel: "Shop new",
     ctaHref: "/collections/new",
     imageUrl: IMAGE_URL,
+    // alt 必须描述**当前这张图**：0.3.4 换成深色石板主图后，旧 alt 还写着
+    // "warm off-white plaster surface"，读屏用户与搜索引擎拿到的都是错的画面。
     imageAlt:
-      "Two polished silver huggie hoops, a fine silver chain with a small round pendant and a single baroque pearl stud, resting on a warm off-white plaster surface in soft window light.",
+      "Two polished silver hoops, a fine silver chain with a baroque pearl, a single pearl stud and a slim gold ring, arranged on a dark slate surface in low side light.",
     imagePendingNote: "Hero photo pending",
   },
   about: {
@@ -257,7 +259,7 @@ const zh: SiteContent = {
     ctaHref: "/collections/new",
     imageUrl: IMAGE_URL,
     imageAlt:
-      "两枚抛光的银色耳扣、一条带小圆坠的细银链、一颗巴洛克珍珠耳钉，摆在暖白石膏面上，窗光柔和。",
+      "两枚抛光银耳圈、一条缀巴洛克珍珠的细银链、一枚珍珠耳钉与一枚细金戒指，摆在深色石板面上，侧光柔和。",
     imagePendingNote: "主图待补",
   },
   about: {

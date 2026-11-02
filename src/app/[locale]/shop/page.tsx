@@ -59,7 +59,12 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
         <div className="flex items-end justify-between gap-sp4">
           <div>
             <h1 className="font-serif text-h1 text-ink">{m.list.allProducts}</h1>
-            <p className="mt-sp2 text-aux text-muted">{m.list.countOf(products.length, total)}</p>
+            {/* 无筛选时不再写"共 10 件，当前显示 10 件"：同一句话里重复两遍数字 */}
+            <p className="mt-sp2 text-aux text-muted">
+              {activeCount > 0
+                ? m.list.countOf(products.length, total)
+                : m.list.countOnly(total)}
+            </p>
           </div>
           {/* 桌面端排序：移动端的排序在吸顶筛选条里（SortSelect 同一实现） */}
           <div className="hidden shrink-0 lg:block">
@@ -71,7 +76,9 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
       {/* 已选筛选显性化：可单独移除，不必重开抽屉 */}
       <ActiveFilters params={listParams} basePath={basePath} locale={locale} />
 
-      <div className="lg:mt-sp5 lg:flex lg:gap-sp6 lg:px-sp4">
+      {/* 两栏容器回到 .shell：标题在 1200px 栏里，网格也必须对齐，
+          否则宽屏下筛选栏贴边、网格铺满全屏，和标题各说各的 */}
+      <div className="shell lg:mt-sp5 lg:flex lg:gap-sp6">
         <FilterControls
           params={listParams}
           resultCount={products.length}

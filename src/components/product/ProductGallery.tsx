@@ -35,6 +35,9 @@ export function ProductGallery({
 
   const sorted = [...images].sort((a, b) => a.order - b.order);
   const current = sorted[Math.min(index, sorted.length - 1)];
+  // 只有首图是 LCP：给切换后的图也加 priority 会让每次点缩略图都插一条 preload，
+  // 首屏之外的那几张反而挤占带宽
+  const isFirstShown = index === 0;
 
   return (
     <div>
@@ -46,7 +49,8 @@ export function ProductGallery({
           width={current.width}
           height={current.height}
           sizes="(max-width: 768px) 100vw, 600px"
-          priority
+          priority={isFirstShown}
+          loading={isFirstShown ? undefined : "lazy"}
           className="h-auto w-full object-cover"
         />
       </div>

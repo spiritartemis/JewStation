@@ -51,13 +51,10 @@ export function parseListParams(sp: Record<string, string | string[] | undefined
   };
 }
 
-/** URL 参数 → ProductFilters（价格桶转成 min/max） */
+/** URL 参数 → ProductFilters（价格桶转成区间数组） */
 export function toProductFilters(p: ListParams): ProductFilters {
   const priceIds = splitList(p.price);
   const buckets = PRICE_BUCKETS.filter((b) => priceIds.includes(b.id));
-
-  const mins = buckets.map((b) => b.min).filter((n): n is number => typeof n === "number");
-  const maxs = buckets.map((b) => b.max).filter((n): n is number => typeof n === "number");
 
   const sort = (["newest", "price-asc", "price-desc"] as SortKey[]).includes(p.sort as SortKey)
     ? (p.sort as SortKey)
@@ -68,10 +65,10 @@ export function toProductFilters(p: ListParams): ProductFilters {
     styles: splitList(p.style),
     materials: splitList(p.material),
     types: splitList(p.type),
-    // 多档按并集处理（buckets 逐个保留区间），空档则不带任何价格条件 = 全部商品
+    // 多档按并集处理（buckets 逐个保留区间），空档则不带任何价格条件 = 全部商品。
+    // 不再同时输出 priceMin/priceMax —— 两份口径并存时，后来者很容易把并集逻辑改回区间，
+    // 又变回「勾得越多结果越少」。
     priceRanges: buckets.map((b) => ({ min: b.min, max: b.max })),
-    priceMin: mins.length ? Math.min(...mins) : undefined,
-    priceMax: maxs.length ? Math.max(...maxs) : undefined,
     sort,
   };
 }

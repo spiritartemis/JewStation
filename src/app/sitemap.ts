@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/seo";
-import { getAllProducts } from "@/lib/products";
+import { getAllProducts, getProductsByCollection } from "@/lib/products";
 import { CATEGORY_TAGS, STYLE_TAGS, MATERIAL_TAGS } from "@/lib/tags";
 import { LOCALES, localePath } from "@/i18n/config";
 
@@ -44,15 +44,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/policies/terms",
   ].flatMap((path) => entries(path, now, path === "/" ? 1 : 0.6));
 
-  const collectionSlugs = [
-    ...CATEGORY_TAGS.map((t) => t.slug),
-    ...STYLE_TAGS.map((t) => t.slug),
-    ...MATERIAL_TAGS.map((t) => t.slug),
-    // 两个特殊集合原先漏了：新品与手工作品是首页直接链过去的落地页
-    "new",
-    "one-of-a-kind",
-    "restockable",
-  ];
+  // 只收录**有商品**的集合页：标签字典里 8 个风格、16 种材质大部分暂时是空集合，
+  // 把空页提交给搜索引擎等于主动制造「低质薄页」，对收录只有坏处。
+  // 去重是为了防将来某个风格 slug 与品类 slug 撞名（03 §6.6 允许同源）。
+  const collectionSlugs = Array.from(
+    new Set([
+      ...CATEGORY_TAGS.map((t) => t.slug),
+      ...STYLE_TAGS.map((t) => t.slug),
+      ...MATERIAL_TAGS.map((t) => t.slug),
+      // 两个特殊集合原先漏了：新品与手工作品是首页直接链过去的落地页
+      "new",
+      "one-of-a-kind",
+      "restockable",
+    ]),
+  ).filter((slug) => getProductsByCollection(slug).length > 0);
 
   const collections = collectionSlugs.flatMap((slug) =>
     entries(`/collections/${slug}`, now, 0.5),

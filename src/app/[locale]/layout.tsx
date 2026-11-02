@@ -41,10 +41,15 @@ type LayoutProps = {
   params: Promise<{ locale: string }>;
 };
 
+/** 站点级描述：用品牌与业务口径，不拿首页某个区块的说明句顶替 */
+const SITE_DESCRIPTION: Record<string, string> = {
+  en: "Small-batch handmade jewellery for the person you're becoming. One-of-a-kind pieces, made once — photographed as the exact one you'll receive.",
+  zh: "小批量手作首饰，为正在成为的你。孤品只做一件，拍下的就是你收到的那一件。",
+};
+
 export async function generateMetadata({ params }: Omit<LayoutProps, "children">): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
-  const m = getMessages(locale);
 
   return {
     title: {
@@ -54,15 +59,20 @@ export async function generateMetadata({ params }: Omit<LayoutProps, "children">
           : `${SITE.brandName} — ${SITE.tagline}`,
       template: `%s | ${locale === "zh" ? SITE.brandNameZh : SITE.brandName}`,
     },
-    description: m.home.sections.oneOfAKindNote,
+    description: SITE_DESCRIPTION[locale] ?? SITE_DESCRIPTION.en,
     applicationName: SITE.brandName,
   };
 }
 
-/** 浅色纸感底（Q-14 / Q-17）：不做深色模式，也不让浏览器自作主张反色 */
+/**
+ * 深色莫兰迪（Q-14 / Q-17，2026-10-30 定稿）：底色 #232120。
+ * themeColor 必须跟着底色走 —— 它决定移动端浏览器地址栏 / 状态栏的底色，
+ * 还停在浅色 #F4F1EB 时，深色页面顶部会顶出一条白带。
+ * colorScheme 同步声明 dark，让原生控件（滚动条、表单、日期选择器）也用深色。
+ */
 export const viewport: Viewport = {
-  themeColor: "#F4F1EB",
-  colorScheme: "light",
+  themeColor: "#232120",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
   // 允许双指缩放（不设 maximumScale，避免无障碍问题）；

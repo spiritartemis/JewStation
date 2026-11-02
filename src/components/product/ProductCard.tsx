@@ -42,13 +42,17 @@ export function ProductCard({
   return (
     <Link
       href={localePath(locale, `/products/${product.slug}`)}
-      className={`block ${isOneOfAKind ? "rounded-card border border-accentWeak" : ""} ${
+      // 孤品的 1px 描边：深色版里 accentWeak 本身就很暗，贴着 bg 几乎看不出边界，
+      // 改成半透明强调色，既保留克制又在深底上成立
+      className={`block ${isOneOfAKind ? "rounded-card border border-accent/40" : ""} ${
         isOneOfAKind ? "p-sp2" : ""
       }`}
     >
       <div
+        // 统一按比例裁切：商品原图有 1024×1178 与 1024×1196 两种比例，用 h-auto 会让
+        // 同一行卡片底部参差、下一行跟着错位。固定 4:5（大卡 3:4）+ object-cover 才能对齐。
         className={`relative overflow-hidden rounded-img bg-accentWeak ${
-          feature ? "aspect-[3/4]" : ""
+          feature ? "aspect-[3/4]" : "aspect-[4/5]"
         }`}
       >
         {primary ? (
@@ -65,8 +69,8 @@ export function ProductCard({
             }
             priority={priority}
             loading={priority ? undefined : "lazy"}
-            className={`w-full object-cover ${feature ? "h-full" : "h-auto"} ${
-              // 售罄：图片本身去色，比铺半透明蒙版更干净；浅底上蒙版几乎等于没盖
+            className={`h-full w-full object-cover ${
+              // 售罄：图片本身去色，比铺半透明蒙版更干净；深底上蒙版几乎等于没盖
               sold ? "grayscale" : ""
             }`}
           />
