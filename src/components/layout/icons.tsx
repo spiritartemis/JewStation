@@ -40,3 +40,18 @@ export function BagIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+/** 返回（2026-11-03）：商品详情页左上角的返回入口 */
+export function ArrowLeftIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M19 12H5M11 6l-6 6 6 6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

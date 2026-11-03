@@ -144,6 +144,7 @@ const en = {
     },
   },
   product: {
+    back: "Back",
     oneOfAKindBadge: "One of a Kind",
     sold: "Sold",
     outOfStock: "Out of stock",
@@ -353,6 +354,7 @@ const zh: Messages = {
     },
   },
   product: {
+    back: "返回",
     oneOfAKindBadge: "孤品",
     sold: "已售出",
     outOfStock: "暂时缺货",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { BackLink } from "@/components/product/BackLink";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductOptions, ProductOptionNote } from "@/components/product/ProductOptions";
 import { JsonLdScript } from "@/components/JsonLd";
@@ -82,8 +83,17 @@ export default async function ProductPage({ params }: PageProps) {
         ]}
       />
 
+      {/* 返回（2026-11-03）：走浏览器历史，才能连滚动位置一起回到刚才那一屏；
+          直接打开分享链接（站内无上一页）时退到品类列表，不会把人送出站外 */}
+      <div className="shell pt-sp4">
+        <BackLink
+          label={m.product.back}
+          fallbackHref={localePath(locale, `/collections/${product.category}`)}
+        />
+      </div>
+
       {/* 面包屑：给用户明确的位置感，也让搜索引擎拿到层级 */}
-      <nav aria-label={m.product.breadcrumb} className="shell pt-sp4">
+      <nav aria-label={m.product.breadcrumb} className="shell pt-sp2">
         <ol className="flex flex-wrap items-center gap-sp2 text-aux text-muted">
           {crumbs.map((c, i) => (
             <li key={c.path} className="flex items-center gap-sp2">
