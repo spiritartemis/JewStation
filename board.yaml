@@ -4,7 +4,7 @@ schema: 1
 board:
   id: jew                      # 编号命名空间：R-jew-001 / T-jew-001-01
   name: JewStation
-repo: /Users/whisper/ChatGpt/JewStation                    # 板实绑定：交付件路径基准（板根 ≠ 代码根时以本行为准）
+repo: C:/Users/inkse/JewStation                    # 板实绑定：交付件路径基准（板根 ≠ 代码根时以本行为准）
 executors:                       # core 极简名册（app 注册 producer / 席位后自动扩充）
   - id: local             # 缺省执行体：本机会话 / 人的手
   - id: owner             # 站长 / 业务方：资料提供 · 外部服务开户 · 政策与文案审核
