@@ -7,3 +7,4 @@
 {"seq":7,"at":"2026-10-27T16:00:50Z","actor":"local","kind":"deliver","task":"T-jew-1a-5-01","state":"1 件","req":"R-jew-1a-5","artifacts":[{"path":"docs/spec/08-技术与服务边界决策.md","checksum":"sha256:287dfb10b72688769c2de122850f002dd31910bb0bc6e54e7ca5dddfdabf6a1b"}]}
 {"seq":8,"at":"2026-11-05T10:27:51Z","actor":"local","kind":"handoff","task":"T-jew-1a-5-01","state":"in_progress → review","text":"--direct 越过工作单元闸门（未隔离）","done":["产出 docs/spec/08-技术与服务边界决策.md：Next.js + 文件态数据、托管选型与支付/邮件边界已定并落地"],"req":"R-jew-1a-5"}
 {"seq":9,"at":"2026-11-05T10:27:51Z","actor":"local","kind":"deliver","task":"T-jew-1a-5-01","state":"0 件（全部判重）","req":"R-jew-1a-5","artifacts":[],"deduped":1}
+{"seq":10,"at":"2026-11-05T10:27:54Z","actor":"local","kind":"review","task":"T-jew-1a-5-01","state":"pass","text":"交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过","req":"R-jew-1a-5","verdict":"pass"}
