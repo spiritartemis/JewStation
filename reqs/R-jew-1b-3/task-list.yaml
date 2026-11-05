@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-3-01
     title: 实现搜索（0.2-04）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1b-3
     input: |
@@ -46,4 +46,10 @@ tasks:
         checksum: sha256:d6d93ad5e14b137d927ad11508b8478f6084ded7b7915820566906e5a614fe95
         at: 2026-11-05T10:28:20Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:28:22Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-28T13:56:11.478Z","head":"a72caaa","base":"req/R-jew-1b-2","committed":true,"files":4}
