@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-6-01
     title: 加入 SEO 基础（0.2-07）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1b-6
     input: |
@@ -56,4 +56,10 @@ tasks:
         at: 2026-11-05T10:28:38Z
         source: commit
         source_commit: 389a52b
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:28:39Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-28T14:16:25.162Z","head":"389a52b","base":"req/R-jew-1b-5","committed":true,"files":4}
