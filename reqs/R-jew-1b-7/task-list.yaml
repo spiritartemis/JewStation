@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-7-01
     title: 加入图片与性能基线（0.2-08）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-7
     input: |
@@ -42,5 +42,14 @@ tasks:
         kind: file
         checksum: sha256:093000ac03474ad40bd5126700020628560b771c0154069ff840734cf6c65fb0
         at: 2026-10-28T14:20:57Z
-    claim: {"session":"v01night","pid":23951,"host":"Mona.local","since":"2026-10-28T14:17:10.753Z","heartbeat":"2026-10-28T14:17:29.014Z"}
+      - path: src/lib/image-loader.ts
+        kind: file
+        checksum: sha256:f755831f1e6465e801fbdcef50f5879dabc763191b989d17d205e0ae20e5c2ac
+        at: 2026-11-05T10:28:44Z
+        source: worktree
+      - path: scripts/build-images.mjs
+        kind: file
+        checksum: sha256:cc2eaa3850435fda2b7b5eff0cebcb21e28c401e5cbbc9657a8867c56b4ff4d9
+        at: 2026-11-05T10:28:44Z
+        source: worktree
     submitted: {"at":"2026-10-28T14:20:39.811Z","head":"2907070","base":"req/R-jew-1b-6","committed":true,"files":4}
