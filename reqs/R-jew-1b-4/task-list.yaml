@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-4-01
     title: 实现商品详情页（0.2-05）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1b-4
     input: |
@@ -42,4 +42,10 @@ tasks:
         checksum: sha256:61929af79f9a1502bd1226e9f8d73ab2748af2d9b1e2332da90d476113fba122
         at: 2026-11-05T10:28:26Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:28:28Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-28T14:04:52.706Z","head":"e37d574","base":"req/R-jew-1b-3","committed":true,"files":2}
