@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-8-01
     title: 建立商品录入流程并导入首批商品（0.2-09）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-8
     input: |
@@ -34,5 +34,18 @@ tasks:
         kind: file
         checksum: sha256:fb552b9e450cc34f347c447672a8e6509031416a2a888b0e51580c4e1bcb0adb
         at: 2026-10-28T14:23:07Z
-    claim: {"session":"v01night","pid":25571,"host":"Mona.local","since":"2026-10-28T14:21:23.356Z","heartbeat":"2026-10-28T14:21:40.602Z"}
+        superseded: true
+        superseded_at: 2026-11-05T10:28:50Z
+      - path: docs/商品录入流程.md
+        kind: file
+        checksum: sha256:37eeaf12818f4b6339d48b8b5e1299dde363edcdac95e1739fcf18fdc2b98647
+        at: 2026-11-05T10:28:50Z
+        source: commit
+        source_commit: 287b9cc
+      - path: src/data/products.sample.json
+        kind: file
+        checksum: sha256:b074533b114d70aa6a4f18cf2794e0cb288f78433114bbdec30bd30305590b6e
+        at: 2026-11-05T10:28:50Z
+        source: commit
+        source_commit: 287b9cc
     submitted: {"at":"2026-10-28T14:22:50.468Z","head":"287b9cc","base":"req/R-jew-1b-7","committed":true,"files":2}
