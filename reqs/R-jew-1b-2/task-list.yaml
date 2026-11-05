@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-2-01
     title: 实现商品列表与商品卡片（0.2-03）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-2
     input: |
@@ -30,6 +30,8 @@ tasks:
         kind: file
         checksum: sha256:6df52aafd3eb9b00f53d0ab5884085c293d132873a21ef74a9b5c56cb0995fbf
         at: 2026-10-28T13:47:52Z
+        superseded: true
+        superseded_at: 2026-11-05T10:28:14Z
       - path: src/components/product/FilterControls.tsx
         kind: file
         checksum: sha256:82c14c879bfd354a5982d8a60245115d6abc44ce8e5755d30c4b74f37410e6b4
@@ -38,5 +40,15 @@ tasks:
         kind: file
         checksum: sha256:893bb4fe3d00ca6fe42a711cc614bc7c0b58fa1bcb5d2636c1a9a88173873c66
         at: 2026-10-28T13:47:52Z
-    claim: {"session":"v01night","pid":13741,"host":"Mona.local","since":"2026-10-28T13:43:55.507Z","heartbeat":"2026-10-28T13:44:09.638Z"}
+      - path: src/app/[locale]/shop/page.tsx
+        kind: file
+        checksum: sha256:96a781da028a1f49bd00b4da120e1b135871e091d3ac7bf6cc9e0728271a3a19
+        at: 2026-11-05T10:28:14Z
+        source: worktree
+      - path: src/components/product/ProductCard.tsx
+        kind: file
+        checksum: sha256:0fbefc4786f941c2a21bee3c28ad30331ed1c1e50636ebdb49271e1c3bf576dd
+        at: 2026-11-05T10:28:14Z
+        source: commit
+        source_commit: 2a782bc
     submitted: {"at":"2026-10-28T13:47:29.414Z","head":"2a782bc","base":"req/R-jew-1b-1","committed":true,"files":5}
