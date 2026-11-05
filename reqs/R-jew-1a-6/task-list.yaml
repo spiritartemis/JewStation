@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1a-6-01
     title: 准备素材清单（0.1-09）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1a-6
     input: |
@@ -30,6 +30,12 @@ tasks:
         kind: file
         checksum: sha256:08ebad8bba10886a36d5e7b55ad9df108efeb5d0ef7f905185a2e374fbe96a25
         at: 2026-10-27T16:02:22Z
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:27:58Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-27T16:02:08.053Z","head":"0930aa1","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T16:02:15.414Z","base":"master","head":"0930aa1","cleanup":{"worktree":"kept","branch":"kept"}}
   - id: T-jew-1a-6-02

@@ -13,3 +13,4 @@
 {"seq":13,"at":"2026-10-27T16:04:17Z","actor":"owner","kind":"deliver","task":"T-jew-1a-6-02","state":"1 件","req":"R-jew-1a-6","artifacts":[{"path":"docs/spec/10-品牌与市场信息.md","checksum":"sha256:7c2be2dfc8fc35b75b5c90c0c901a7872eeb14b11ae2e605dfc4ed25a4e76ef8"}]}
 {"seq":14,"at":"2026-11-05T10:27:57Z","actor":"local","kind":"handoff","task":"T-jew-1a-6-01","state":"in_progress → review","text":"--direct 越过工作单元闸门（未隔离）","done":["产出 docs/spec/09-素材清单.md：Hero/商品/品牌素材需求清单，含尺寸与命名规范"],"req":"R-jew-1a-6"}
 {"seq":15,"at":"2026-11-05T10:27:57Z","actor":"local","kind":"deliver","task":"T-jew-1a-6-01","state":"0 件（全部判重）","req":"R-jew-1a-6","artifacts":[],"deduped":1}
+{"seq":16,"at":"2026-11-05T10:27:59Z","actor":"local","kind":"review","task":"T-jew-1a-6-01","state":"pass","text":"交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过","req":"R-jew-1a-6","verdict":"pass"}
