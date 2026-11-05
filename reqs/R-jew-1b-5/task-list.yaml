@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-5-01
     title: 实现品牌、FAQ、政策页面（0.2-06）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1b-5
     input: |
@@ -50,4 +50,10 @@ tasks:
         checksum: sha256:973f6ea57eb2aa5b17fba215564c8719556804ad9c72194e85891d285420368b
         at: 2026-11-05T10:28:31Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:28:33Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-28T14:12:00.621Z","head":"d35f59b","base":"req/R-jew-1b-4","committed":true,"files":4}

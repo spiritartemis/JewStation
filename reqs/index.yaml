@@ -184,12 +184,12 @@ requirements:
       （待讨论产出）
   - id: R-jew-1b-5
     title: 品牌 FAQ 与政策页面
-    status: in_progress
+    status: done
     initiator: 用户
     created: 2026-10-27
     revision: 1
     task_count: 1
-    task_done: 0
+    task_done: 1
     summary: |
       文案可维护、页内链接正确，上线前由业务方复核
     analysis: |
