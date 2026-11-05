@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1a-0-01
     title: 确认站点地图与导航（0.1-01）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1a-0
     input: |
@@ -30,5 +30,11 @@ tasks:
         kind: file
         checksum: sha256:04d8379786dfb95c6070bccbafaa2d1424bee82397209afe481bec0951c61b9a
         at: 2026-10-27T15:49:39Z
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:26:48Z
+      note: |
+        文档存在且有实质内容（6802 字节），导航与线上路由一致：选购/孤品/关于我们/常见问题
     submitted: {"at":"2026-10-27T15:48:59.971Z","head":"5f74e45","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:49:06.832Z","base":"master","head":"5f74e45","cleanup":{"worktree":"kept","branch":"kept"}}
