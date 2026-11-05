@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CurrencyProvider } from "@/components/currency/CurrencyProvider";
 import { ScrollReturnTracker } from "@/components/common/ScrollReturnTracker";
+import { SharecodeKeeper } from "@/components/common/SharecodeKeeper";
 import { SITE } from "@/lib/site";
 import { getUsdCnyRate } from "@/lib/currency";
 import { DEFAULT_LOCALE, HTML_LANG, LOCALES, isLocale } from "@/i18n/config";
@@ -105,6 +106,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           <SiteFooter locale={locale} />
           {/* 商品详情页的返回要回到原来那一屏（2026-11-03）：见组件内注释 */}
           <ScrollReturnTracker />
+          {/* 分享网关要求 URL 常带 ?sharecode=，站内跳转/刷新/复制都要保住它（2026-11-05） */}
+          <SharecodeKeeper />
         </CurrencyProvider>
       </body>
     </html>
