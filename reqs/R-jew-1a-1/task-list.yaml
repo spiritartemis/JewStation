@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1a-1-01
     title: 定义商品数据模型（0.1-02）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1a-1
     input: |
@@ -30,6 +30,12 @@ tasks:
         kind: file
         checksum: sha256:afdb6290b28c2ea59b034dbf776656ff50f5e2b99080244ab2ad3ae3b4d6e712
         at: 2026-10-27T15:51:24Z
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:27:18Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-27T15:51:11.467Z","head":"50e0678","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:57:27.938Z","base":"master","head":"5c8559a","cleanup":{"worktree":"kept","branch":"kept"}}
   - id: T-jew-1a-1-02
