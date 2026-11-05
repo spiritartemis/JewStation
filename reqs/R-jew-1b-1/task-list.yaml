@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-1-01
     title: 实现首页（0.2-02）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1b-1
     input: |
@@ -49,4 +49,10 @@ tasks:
         at: 2026-11-05T10:28:08Z
         source: commit
         source_commit: d4bf201
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:28:10Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-28T13:42:32.167Z","head":"d4bf201","base":"req/R-jew-1b-0","committed":true,"files":6}
