@@ -23,15 +23,40 @@ const nextConfig = {
     inlineCss: true,
   },
   images: {
+    /**
+     * 图片改走「构建期预生成 + 自定义 loader」（0.3.11）
+     *
+     * 默认 loader 会把每张图交给 `/_next/image` 在**请求时**转码。托管平台网关不缓存
+     * 它的产物，于是每张图对每个新访客都要转一次：线上实测首张 9.6s、热态 1.9s。
+     * 首页十几张图，这是首屏四秒里最重的一块。
+     *
+     * 现在 srcset 直接指向 public/images/opt/ 下构建前生成好的静态 WebP（scripts/build-images.mjs），
+     * 一次转码都不用做，浏览器还能按 30 天缓存。组件代码不需要改。
+     */
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     // 商品图先用本地 /public 下的实拍图；远程图域待素材托管方案确定后补（见 08 技术边界）
     remotePatterns: [],
     // 现代格式优先：AVIF 通常比同质量 JPEG 小 40–50%，WebP 作回落（B-2.10）
     formats: ["image/avif", "image/webp"],
-    // 只声明实际会用到的宽度：商品卡 240 / 详情 600 / 缩略图 64，减少无谓的变体生成
+    // 自定义 loader 下，这两组尺寸仍然决定 <Image> 生成的 srcset 名单，
+    // 必须与 scripts/build-images.mjs 的 WIDTHS 保持一致（否则会指到不存在的文件）
     imageSizes: [64, 96, 128, 240, 320],
     deviceSizes: [360, 414, 640, 768, 1024, 1280, 1600],
     // 优化后的图片 URL 带内容指纹，可长缓存；默认 60s 会让回访反复回源
     minimumCacheTTL: 2592000,
+  },
+  async headers() {
+    return [
+      {
+        /**
+         * 预生成的图片变体带内容指纹（名称含宽度档，源图换名才会变），可以放心 immutable。
+         * 默认 max-age=0 会让回访每张图都先发一次条件请求 —— 在这个平台上一次就是 2s。
+         */
+        source: "/images/opt/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
   },
 };
 

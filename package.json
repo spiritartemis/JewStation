@@ -1,16 +1,17 @@
 {
   "name": "jewstation",
-  "version": "0.3.11-m1b",
+  "version": "0.3.12-m1b",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:preview": "NEXT_DIST_DIR=.next-preview next build && git checkout -- next-env.d.ts tsconfig.json",
+    "build:preview": "node scripts/build-images.mjs && NEXT_DIST_DIR=.next-preview next build && git checkout -- next-env.d.ts tsconfig.json",
     "start": "next start",
     "start:preview": "NEXT_DIST_DIR=.next-preview next start -p 3100 -H 0.0.0.0",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "validate:products": "node scripts/validate-products.mjs --sample"
+    "validate:products": "node scripts/validate-products.mjs --sample",
+    "prebuild": "node scripts/build-images.mjs"
   },
   "dependencies": {
     "next": "15.5.28",
