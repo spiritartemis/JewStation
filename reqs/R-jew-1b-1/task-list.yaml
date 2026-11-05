@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-1-01
     title: 实现首页（0.2-02）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-1
     input: |
@@ -30,9 +30,23 @@ tasks:
         kind: file
         checksum: sha256:14ffbb5edaeb764dcb831098c1763248175801b1b605120cddd879bcc5583ab6
         at: 2026-10-28T13:43:32Z
+        superseded: true
+        superseded_at: 2026-11-05T10:28:08Z
       - path: src/components/home/Hero.tsx
         kind: file
         checksum: sha256:df3f41cd781a1c7c236db6aad1e8e9e780a1d1dddd8b57b4fae1b1d11daa1372
         at: 2026-10-28T13:43:32Z
-    claim: {"session":"v01night","pid":11816,"host":"Mona.local","since":"2026-10-28T13:38:45.941Z","heartbeat":"2026-10-28T13:39:01.260Z"}
+        superseded: true
+        superseded_at: 2026-11-05T10:28:08Z
+      - path: src/app/[locale]/page.tsx
+        kind: file
+        checksum: sha256:1f6a0230816b35cca2839dfcfddfc76eba1e8ae39e540b80a555177607e725c5
+        at: 2026-11-05T10:28:08Z
+        source: worktree
+      - path: src/components/home/Hero.tsx
+        kind: file
+        checksum: sha256:5d7028ae2d5c93c599ea09e04e9f312cb286d847e683fd5899460973d0178e54
+        at: 2026-11-05T10:28:08Z
+        source: commit
+        source_commit: d4bf201
     submitted: {"at":"2026-10-28T13:42:32.167Z","head":"d4bf201","base":"req/R-jew-1b-0","committed":true,"files":6}
