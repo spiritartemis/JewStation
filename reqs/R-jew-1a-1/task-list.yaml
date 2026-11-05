@@ -41,7 +41,7 @@ tasks:
   - id: T-jew-1a-1-02
     title: 建立标签字典和分类规则（0.1-03）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1a-1
     input: |
@@ -51,7 +51,11 @@ tasks:
         kind: file
         checksum: sha256:dbd484825469dea0872a1dbf4a13dfa2d6879b9dfdb66cc727de8f5c66f5de9f
         at: 2026-10-27T15:52:50Z
-    claim: {"session":"v01night","pid":86160,"host":"Mona.local","since":"2026-10-27T15:51:38.959Z","heartbeat":"2026-10-27T15:51:45.841Z"}
+      - path: src/data/tags.json
+        kind: file
+        checksum: sha256:b60eef912639e1a84c9e345cd53f8864ce228f079645bb0b35d84fb0f91da6a6
+        at: 2026-11-05T10:27:22Z
+        source: worktree
     submitted: {"at":"2026-10-27T15:52:36.336Z","head":"8443678","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:57:28.385Z","base":"master","head":"5c8559a","cleanup":{"worktree":"kept","branch":"kept"}}
   - id: T-jew-1a-1-03
