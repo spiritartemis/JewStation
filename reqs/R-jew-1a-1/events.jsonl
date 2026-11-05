@@ -25,3 +25,5 @@
 {"seq":25,"at":"2026-11-05T10:27:22Z","actor":"local","kind":"handoff","task":"T-jew-1a-1-02","state":"in_progress → review","text":"--direct 越过工作单元闸门（未隔离）","done":["产出 docs/spec/03-标签字典与分类规则.md 与 src/data/tags.json：六品类与风格/材质标签字典，仅允许从字典取值的规则已生效"],"req":"R-jew-1a-1"}
 {"seq":26,"at":"2026-11-05T10:27:22Z","actor":"local","kind":"deliver","task":"T-jew-1a-1-02","state":"1 件","req":"R-jew-1a-1","artifacts":[{"path":"src/data/tags.json","checksum":"sha256:b60eef912639e1a84c9e345cd53f8864ce228f079645bb0b35d84fb0f91da6a6"}],"deduped":1}
 {"seq":27,"at":"2026-11-05T10:27:25Z","actor":"local","kind":"review","task":"T-jew-1a-1-02","state":"pass","text":"交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过","req":"R-jew-1a-1","verdict":"pass"}
+{"seq":28,"at":"2026-11-05T10:27:28Z","actor":"local","kind":"handoff","task":"T-jew-1a-1-03","state":"in_progress → review","text":"--direct 越过工作单元闸门（未隔离）","done":["产出 docs/spec/06-商品内容模板与样例.md：双语标题/短文案/描述/卖点模板，10 款样例已按模板录入"],"req":"R-jew-1a-1"}
+{"seq":29,"at":"2026-11-05T10:27:28Z","actor":"local","kind":"deliver","task":"T-jew-1a-1-03","state":"0 件（全部判重）","req":"R-jew-1a-1","artifacts":[],"deduped":1}
