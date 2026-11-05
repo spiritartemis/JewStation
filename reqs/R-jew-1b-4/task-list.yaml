@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-4-01
     title: 实现商品详情页（0.2-05）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-4
     input: |
@@ -30,5 +30,16 @@ tasks:
         kind: file
         checksum: sha256:6f50fb74391862a1fb5faf08de966590c4b7625192bab04d0f47b589811f4866
         at: 2026-10-28T14:05:40Z
-    claim: {"session":"v01night","pid":18363,"host":"Mona.local","since":"2026-10-28T13:59:32.017Z","heartbeat":"2026-10-28T13:59:48.569Z"}
+        superseded: true
+        superseded_at: 2026-11-05T10:28:26Z
+      - path: src/app/[locale]/products/[slug]/page.tsx
+        kind: file
+        checksum: sha256:f8e4cc78514ca5953ecd61be37d543ed3f0b3b90e670a7e4bac487d35479ab1d
+        at: 2026-11-05T10:28:26Z
+        source: worktree
+      - path: src/components/product/BackLink.tsx
+        kind: file
+        checksum: sha256:61929af79f9a1502bd1226e9f8d73ab2748af2d9b1e2332da90d476113fba122
+        at: 2026-11-05T10:28:26Z
+        source: worktree
     submitted: {"at":"2026-10-28T14:04:52.706Z","head":"e37d574","base":"req/R-jew-1b-3","committed":true,"files":2}
