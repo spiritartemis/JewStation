@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1a-3-01
     title: 产出低保真页面结构和视觉规范（0.1-05）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1a-3
     input: |
@@ -30,6 +30,10 @@ tasks:
         kind: file
         checksum: sha256:fb480247430fb0e8389efc06a8645f9755dd640729923de6f5f7292459c3a532
         at: 2026-10-27T15:56:03Z
-    claim: {"session":"v01night","pid":89494,"host":"Mona.local","since":"2026-10-27T15:54:40.556Z","heartbeat":"2026-10-27T15:54:47.035Z"}
+      - path: docs/视觉规范-莫兰迪色板.md
+        kind: file
+        checksum: sha256:d049fcbe91d58d5468650e2fc73aff4063cf6ef16e23da0b0e461c8a66fd8c7a
+        at: 2026-11-05T10:27:39Z
+        source: worktree
     submitted: {"at":"2026-10-27T15:55:48.862Z","head":"9960e5d","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:55:55.915Z","base":"master","head":"9960e5d","cleanup":{"worktree":"kept","branch":"kept"}}
