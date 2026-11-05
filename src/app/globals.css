@@ -75,6 +75,18 @@ body {
   .fade-in {
     animation: fade-in 120ms ease-out both;
   }
+
+  /**
+   * 404 页的双语择一（0.3.11）
+   *
+   * 两套文案都服务端输出，靠 <html lang> 用 CSS 显示其一。
+   * 这样不用 headers() 也能让 404 说对语言 —— 而 headers() 会让整个 [locale] 段变成
+   * 动态渲染、响应退回 no-store、边缘不缓存（首屏 4s）。详见 [locale]/not-found.tsx。
+   */
+  html:not(:lang(zh)) .i18n-zh,
+  html:lang(zh) .i18n-en {
+    display: none !important;
+  }
 }
 
 @keyframes fade-in {

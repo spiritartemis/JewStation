@@ -11,25 +11,23 @@ import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
  * 内部结构是 `app/[locale]/...`，所以无前缀的请求在这里**内部重写**到 `/en/...`，
  * 浏览器地址栏不变、也不会多出一次 301。带前缀的请求直接放行。
  *
- * 附加（2026-11-02）：把判定好的语言写进 `x-locale` 请求头。
- * 404 页拿不到 params，只能靠这个头知道自己该用哪国语言（见 [locale]/not-found.tsx）。
+ * ⚠️ 这里**不要**往请求头里塞语言（曾经塞过 `x-locale`）。
+ * Next 一旦发现 middleware 改写了请求头，该请求的响应就会带
+ * `Cache-Control: private, no-cache, no-store`，边缘节点无法缓存 —— 线上首屏 4s 的元凶之一。
+ * 404 页要语言，改为「两套文案 + <html lang> 用 CSS 择一显示」，见 [locale]/not-found.tsx。
  */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const segment = pathname.split("/")[1] ?? "";
   const hasLocale = LOCALES.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
 
-  const headers = new Headers(request.headers);
-  headers.set("x-locale", hasLocale ? segment : DEFAULT_LOCALE);
-
-  if (hasLocale) return NextResponse.next({ request: { headers } });
+  if (hasLocale) return NextResponse.next();
 
   const url = request.nextUrl.clone();
   url.pathname = `/${DEFAULT_LOCALE}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.rewrite(url, { request: { headers } });
+  return NextResponse.rewrite(url);
 }
 
 export const config = {

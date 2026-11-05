@@ -11,6 +11,17 @@ const nextConfig = {
   reactStrictMode: true,
   cleanDistDir: false,
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  experimental: {
+    /**
+     * 把全站 CSS 内联进 HTML（0.3.11）
+     *
+     * 原来首屏要串两次往返：先取 HTML，解析出 `<link rel=stylesheet>` 再取 CSS。
+     * 托管平台的回源一次约 2s，两趟就是 4s —— 正是「首屏四秒」的观感来源。
+     * 内联后 CSS 随 HTML 一起到达，首屏只花一趟往返；代价是 HTML 大几 KB
+     * （gzip 后约 +4KB），换掉一整趟 RTT 很划算。
+     */
+    inlineCss: true,
+  },
   images: {
     // 商品图先用本地 /public 下的实拍图；远程图域待素材托管方案确定后补（见 08 技术边界）
     remotePatterns: [],
