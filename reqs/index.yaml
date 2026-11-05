@@ -28,12 +28,12 @@ requirements:
       （待讨论产出）
   - id: R-jew-1a-2
     title: 孤品与库存状态流转规则
-    status: in_progress
+    status: done
     initiator: 用户
     created: 2026-10-27
     revision: 1
     task_count: 1
-    task_done: 0
+    task_done: 1
     summary: |
       孤品库存=1；下单锁定/付款成功/取消/退款对库存的影响逐条成文
     analysis: |

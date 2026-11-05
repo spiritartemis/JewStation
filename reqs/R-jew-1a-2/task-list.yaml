@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1a-2-01
     title: 明确孤品与可补货商品状态流转（0.1-04）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     work_unit: req/R-jew-1a-2
     input: |
@@ -30,5 +30,11 @@ tasks:
         kind: file
         checksum: sha256:bdfeb5397ace8acf6ecb0bb4828e1dba8b69c9ec30100ba5977e53ea53a82d10
         at: 2026-10-27T15:54:22Z
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:27:35Z
+      note: |
+        交付物已核：文件存在并有实质内容；功能在线上 0.3.12-m1b 实测通过
     submitted: {"at":"2026-10-27T15:54:08.328Z","head":"4fc7636","base":"master","committed":true,"files":1}
     landed: {"at":"2026-10-27T15:54:15.538Z","base":"master","head":"4fc7636","cleanup":{"worktree":"kept","branch":"kept"}}
