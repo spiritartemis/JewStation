@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-10-01
     title: 首页视觉迭代：品牌落地 + 莫兰迪浅色版 + 图片重制（0.2-11~0.2-10）
     executor: local
-    status: review
+    status: done
     created: 2026-10-29
     work_unit: req/R-jew-1b-10
     input: |
@@ -98,5 +98,11 @@ tasks:
         at: 2026-10-29T14:44:21Z
         source: commit
         source_commit: a7b426b
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-05T10:29:38Z
+      note: |
+        品牌 Morrow & Muse 落地、浅底莫兰迪方案已在 0.2.13-m1b 上线，线上首页实测为浅底配色，与 Q-14 裁决一致
     submitted: {"at":"2026-10-29T14:43:50.159Z","head":"a7b426b","base":"master","committed":false,"files":0}
     landed: {"at":"2026-10-29T14:43:57.088Z","base":"master","head":"a7b426b","cleanup":{"worktree":"kept","branch":"kept"}}

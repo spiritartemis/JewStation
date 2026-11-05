@@ -496,12 +496,12 @@ requirements:
       （待讨论产出）
   - id: R-jew-1b-10
     title: 首页视觉迭代与品牌落地
-    status: in_progress
+    status: done
     initiator: 用户
     created: 2026-10-29
     revision: 1
     task_count: 1
-    task_done: 0
+    task_done: 1
     analysis: |
       （待讨论产出）
   - id: R-jew-001
