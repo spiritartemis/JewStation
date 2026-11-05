@@ -20,7 +20,7 @@ tasks:
   - id: T-jew-1b-3-01
     title: 实现搜索（0.2-04）
     executor: local
-    status: in_progress
+    status: review
     created: 2026-10-27
     work_unit: req/R-jew-1b-3
     input: |
@@ -34,5 +34,16 @@ tasks:
         kind: file
         checksum: sha256:2e6ff99c3bd975d9583748b373c744dc5ee14922227c88b3547b1a26ba2b0639
         at: 2026-10-28T13:59:07Z
-    claim: {"session":"v01night","pid":15399,"host":"Mona.local","since":"2026-10-28T13:48:15.014Z","heartbeat":"2026-10-28T13:48:29.667Z"}
+        superseded: true
+        superseded_at: 2026-11-05T10:28:20Z
+      - path: src/app/[locale]/search/page.tsx
+        kind: file
+        checksum: sha256:7bcd0e3eb53d83804d99866ccbfc34b5c813c440caad226611d018d54bdb333d
+        at: 2026-11-05T10:28:20Z
+        source: worktree
+      - path: src/components/product/ListSearch.tsx
+        kind: file
+        checksum: sha256:d6d93ad5e14b137d927ad11508b8478f6084ded7b7915820566906e5a614fe95
+        at: 2026-11-05T10:28:20Z
+        source: worktree
     submitted: {"at":"2026-10-28T13:56:11.478Z","head":"a72caaa","base":"req/R-jew-1b-2","committed":true,"files":4}
