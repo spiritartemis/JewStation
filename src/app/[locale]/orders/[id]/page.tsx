@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Price } from "@/components/currency/Price";
+import { OrderHistoryRecorder } from "@/components/cart/OrderHistoryRecorder";
 import { getStore, isEphemeralStore, type OrderStatus } from "@/lib/store";
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
@@ -197,12 +198,23 @@ export default async function OrderPage({ params, searchParams }: PageProps) {
         </p>
       ) : null}
 
-      <Link
-        href={localePath(locale, "/shop")}
-        className="mt-sp5 inline-flex h-12 items-center justify-center rounded-btn border border-accent px-sp6 text-body text-ink hover:bg-accentWeak"
-      >
-        {m.order.continueShopping}
-      </Link>
+      <div className="mt-sp5 flex flex-wrap gap-sp3">
+        <Link
+          href={localePath(locale, "/shop")}
+          className="inline-flex h-12 items-center justify-center rounded-btn border border-accent px-sp6 text-body text-ink hover:bg-accentWeak"
+        >
+          {m.order.continueShopping}
+        </Link>
+        <Link
+          href={localePath(locale, "/orders")}
+          className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp6 text-body text-muted hover:bg-accentWeak hover:text-ink"
+        >
+          {m.nav.orders}
+        </Link>
+      </div>
+
+      {/* 口令已由服务端校验过，才把这笔订单登记进「我的订单」 */}
+      <OrderHistoryRecorder id={order.id} token={order.accessToken} />
     </div>
   );
 }

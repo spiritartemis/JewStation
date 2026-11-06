@@ -43,6 +43,12 @@ export function CartView({ locale }: { locale: Locale }) {
         >
           {m.cart.browseAll}
         </Link>
+        <Link
+          href={localePath(locale, "/orders")}
+          className="mt-sp3 block text-aux text-muted underline hover:text-accent"
+        >
+          {m.nav.orders}
+        </Link>
       </div>
     );
   }
@@ -185,6 +191,13 @@ export function CartView({ locale }: { locale: Locale }) {
             className="mt-sp3 block text-center text-aux text-muted underline hover:text-accent"
           >
             {m.cart.continueShopping}
+          </Link>
+
+          <Link
+            href={localePath(locale, "/orders")}
+            className="mt-sp2 block text-center text-aux text-muted underline hover:text-accent"
+          >
+            {m.nav.orders}
           </Link>
         </aside>
       </div>

@@ -8,6 +8,7 @@ import { getMessages } from "@/i18n/messages";
 import { cartTotals, lineTotalUsd } from "@/lib/cart";
 import { Price } from "@/components/currency/Price";
 import { useCart } from "@/components/cart/CartProvider";
+import { recordOrder } from "@/lib/order-history";
 
 /**
  * 结账表单（m-1c / 1c-1）
@@ -94,6 +95,8 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
 
       // 订单已在服务端落库并预占库存，客户端袋子可以清掉；
       // 支付页用订单号 + 口令，不依赖本地状态
+      // 0.4.2：把凭据登记到本机清单，让「我的订单」能立刻看到这笔待付款订单
+      if (data.orderId && data.token) recordOrder(data.orderId, data.token);
       clear();
       router.push(
         `${localePath(locale, `/pay/${data.orderId}`)}?token=${encodeURIComponent(data.token ?? "")}`,

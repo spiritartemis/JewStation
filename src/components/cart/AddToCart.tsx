@@ -18,8 +18,9 @@ import { useCart } from "./CartProvider";
  * 库存口径（04）：孤品上限 1 件；可补货款按 stock，且不超过单行上限。
  * 售罄时按钮直接禁用并换文案，不做「点了才报错」。
  *
- * 加购成功后按钮原地换成「已加入 · 查看购物袋」2.6 秒 —— 比弹 toast 安静，
- * 也不会挡住页面；读屏用户靠 `aria-live` 拿到同一信息。
+ * 「查看购物袋」常驻（0.4.2）：以前只在加购成功后临时冒出 2.6 秒，用户不知道
+ * 那个入口会消失，也找不到回去的路。现在两个按钮一直并排，袋里 0 件时
+ * 「查看购物袋」打灰不可点，≥1 件才可点。加购成功只做一次轻微高亮 + 读屏播报。
  */
 export function AddToCart({ product, locale }: { product: Product; locale: Locale }) {
   const m = getMessages(locale);
@@ -60,18 +61,31 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
     window.setTimeout(() => setJustAdded(false), 2600);
   };
 
+  /**
+   * 首帧（SSR / hydration 前）一律按空袋渲染打灰态 —— 服务端不知道访客袋里有几件。
+   * `ready` 为 false 时也保持禁用，避免「还没读盘就能点进空袋」。
+   */
+  const canViewBag = cart.ready && cart.count > 0;
+
+  const viewBag = (
+    <ViewBagLink locale={locale} canView={canViewBag} highlight={justAdded} />
+  );
+
   if (sold) {
     return (
       <div className="mt-sp5">
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          aria-describedby="cart-note"
-          className="h-12 w-full rounded-btn bg-accent text-body text-onAccent disabled:opacity-40"
-        >
-          {m.product.sold}
-        </button>
+        <div className="flex flex-col gap-sp2 sm:flex-row">
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            aria-describedby="cart-note"
+            className="h-12 flex-1 rounded-btn bg-accent text-body text-onAccent disabled:opacity-40"
+          >
+            {m.product.sold}
+          </button>
+          {viewBag}
+        </div>
         <p id="cart-note" className="mt-sp2 text-aux text-muted">
           {oneOfAKind ? m.product.soldNote : m.product.outOfStockNote}
         </p>
@@ -90,17 +104,10 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
         >
           {m.product.addToCart}
         </button>
-        {justAdded ? (
-          <Link
-            href={localePath(locale, "/cart")}
-            className="flex h-12 items-center justify-center rounded-btn border border-accent px-sp5 text-body text-ink hover:bg-accentWeak"
-          >
-            {m.cart.viewBag}
-          </Link>
-        ) : null}
+        {viewBag}
       </div>
 
-      {/* 加购反馈：视觉上按钮旁的链接已经说明「可以去看袋子」，这里给读屏一句确认 */}
+      {/* 加购反馈：视觉上按钮高亮，读屏靠这一句确认 */}
       <p aria-live="polite" className="sr-only">
         {justAdded ? m.cart.added : ""}
       </p>
@@ -109,5 +116,45 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
         {oneOfAKind ? m.cart.oneOfAKindNote : m.product.checkoutNote}
       </p>
     </div>
+  );
+}
+
+/**
+ * 常驻的「查看购物袋」。禁用态仍保留 href（SharecodeKeeper 会给它补分享参数），
+ * 但用 aria-disabled + tabIndex=-1 + 拦截点击三重保证：读屏知道它不可用、
+ * 键盘 Tab 不会落上去、鼠标点了也不会跳走。
+ */
+function ViewBagLink({
+  locale,
+  canView,
+  highlight,
+}: {
+  locale: Locale;
+  canView: boolean;
+  highlight: boolean;
+}) {
+  const m = getMessages(locale);
+  return (
+    <>
+      <Link
+        href={localePath(locale, "/cart")}
+        aria-disabled={!canView}
+        aria-describedby={canView ? undefined : "view-bag-hint"}
+        tabIndex={canView ? undefined : -1}
+        onClick={canView ? undefined : (e) => e.preventDefault()}
+        className={`flex h-12 shrink-0 items-center justify-center rounded-btn border px-sp5 text-body transition-colors duration-fade ${
+          canView
+            ? `border-accent text-ink hover:bg-accentWeak ${highlight ? "bg-accentWeak" : ""}`
+            : "cursor-not-allowed border-line text-muted opacity-45"
+        }`}
+      >
+        {m.cart.viewBag}
+      </Link>
+      {!canView ? (
+        <span id="view-bag-hint" className="sr-only">
+          {m.cart.viewBagHint}
+        </span>
+      ) : null}
+    </>
   );
 }

@@ -1,0 +1,384 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { localePath, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
+import { Price } from "@/components/currency/Price";
+import {
+  ORDER_HISTORY_KEY,
+  readOrderHistory,
+  recordOrder,
+  type OrderCredential,
+} from "@/lib/order-history";
+import type { OrderStatus } from "@/lib/store/types";
+
+/**
+ * 「我的订单」列表（0.4.2）
+ *
+ * 静态壳 + 客户端状态：首帧不读 localStorage（服务端不知道访客有哪几单），
+ * 所以本页仍然参与预渲染；hydration 后再拿本机凭据去 /api/orders 换最新状态。
+ *
+ * 四个标签按订单状态机归类：
+ *   待付款 = created ｜ 待收货 = paid / fulfilled ｜ 已取消订单 = cancelled / refunded
+ * 状态一律以服务端为准，本地不缓存任何状态——用户付完款回来点「刷新状态」即可更新。
+ */
+type Summary = {
+  id: string;
+  status: OrderStatus;
+  createdAt: string;
+  totalUsd: number;
+  itemCount: number;
+  firstTitle: string;
+};
+
+type TabKey = "all" | "unpaid" | "shipping" | "cancelled";
+
+const TAB_OF: Record<OrderStatus, TabKey> = {
+  created: "unpaid",
+  paid: "shipping",
+  fulfilled: "shipping",
+  cancelled: "cancelled",
+  refunded: "cancelled",
+};
+
+const STATUS_LABEL: Record<
+  OrderStatus,
+  "statusCreated" | "statusPaid" | "statusFulfilled" | "statusCancelled" | "statusRefunded"
+> = {
+  created: "statusCreated",
+  paid: "statusPaid",
+  fulfilled: "statusFulfilled",
+  cancelled: "statusCancelled",
+  refunded: "statusRefunded",
+};
+
+/**
+ * 从订单确认页 / 支付页链接里取出「订单号 + 口令」。
+ * 只接受本机可解析的 URL；没有 token 的裸订单号一律拒绝——
+ * 否则「知道订单号就能看到别人订单」这条口子会被重新打开。
+ */
+function parseOrderLink(input: string): { id: string; token: string } | null {
+  const text = input.trim();
+  if (!text) return null;
+  try {
+    const u = new URL(text, window.location.origin);
+    const token = u.searchParams.get("token");
+    const parts = u.pathname.split("/").filter(Boolean);
+    const id = parts[parts.length - 1] ?? "";
+    if (!token || !/^[A-Za-z0-9_-]{3,40}$/.test(id)) return null;
+    if (!/^[A-Za-z0-9._~-]{16,200}$/.test(token)) return null;
+    return { id, token };
+  } catch {
+    return null;
+  }
+}
+
+function Pill({ status, label }: { status: OrderStatus; label: string }) {
+  const tone =
+    status === "created"
+      ? "bg-accentWeak text-ink"
+      : status === "cancelled" || status === "refunded"
+        ? "bg-bg text-muted"
+        : "bg-surface text-ink";
+  return (
+    <span className={`shrink-0 rounded-btn border border-line px-sp2 py-sp1 text-aux ${tone}`}>
+      {label}
+    </span>
+  );
+}
+
+export function OrdersView({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+  const [ready, setReady] = useState(false);
+  const [credentials, setCredentials] = useState<OrderCredential[]>([]);
+  const [summaries, setSummaries] = useState<Summary[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [tab, setTab] = useState<TabKey>("all");
+  const [linkInput, setLinkInput] = useState("");
+  const [addMessage, setAddMessage] = useState<"ok" | "bad" | null>(null);
+
+  const load = useCallback(async () => {
+    const creds = readOrderHistory();
+    setCredentials(creds);
+    setReady(true);
+    if (creds.length === 0) {
+      setSummaries([]);
+      setFailed(false);
+      return;
+    }
+    setLoading(true);
+    setFailed(false);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orders: creds.map(({ id, token }) => ({ id, token })) }),
+      });
+      if (!res.ok) throw new Error("orders query failed");
+      const data = (await res.json()) as { ok: boolean; orders: Summary[] };
+      if (!data.ok) throw new Error("orders query failed");
+      setSummaries(data.orders);
+    } catch {
+      setFailed(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /** 旧订单补登记：粘一条带 token 的确认页链接即可，服务端仍会逐条校验口令 */
+  const addExisting = (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = parseOrderLink(linkInput);
+    if (!parsed) {
+      setAddMessage("bad");
+      return;
+    }
+    recordOrder(parsed.id, parsed.token);
+    setLinkInput("");
+    setAddMessage("ok");
+    void load();
+  };
+
+  useEffect(() => {
+    void load();
+    // 另一个标签刚下了一单：清单跟着更新
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === ORDER_HISTORY_KEY) void load();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [load]);
+
+  const tabs: { key: TabKey; label: string }[] = useMemo(
+    () => [
+      { key: "all", label: m.orders.tabAll },
+      { key: "unpaid", label: m.orders.tabUnpaid },
+      { key: "shipping", label: m.orders.tabShipping },
+      { key: "cancelled", label: m.orders.tabCancelled },
+    ],
+    [m],
+  );
+
+  const countOf = (key: TabKey) =>
+    key === "all"
+      ? summaries.length
+      : summaries.filter((s) => TAB_OF[s.status] === key).length;
+
+  const visible = useMemo(() => {
+    const filtered = tab === "all" ? summaries : summaries.filter((s) => TAB_OF[s.status] === tab);
+    return [...filtered].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }, [summaries, tab]);
+
+  const tokenOf = (id: string) => credentials.find((c) => c.id === id)?.token ?? "";
+  const missing = Math.max(0, credentials.length - summaries.length);
+  const activeLabel = tabs.find((t) => t.key === tab)?.label ?? "";
+
+  if (!ready) {
+    return (
+      <div className="shell max-w-[860px] py-sp6">
+        <div className="h-8 w-40 animate-pulse rounded-btn bg-accentWeak" />
+        <div className="mt-sp5 h-11 w-full animate-pulse rounded-btn bg-accentWeak" />
+        <div className="mt-sp4 h-32 w-full animate-pulse rounded-card bg-accentWeak" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="shell max-w-[860px] py-sp5">
+      <div className="flex flex-wrap items-end justify-between gap-sp3">
+        <div>
+          <h1 className="font-serif text-h1 text-ink">{m.orders.title}</h1>
+          <p className="mt-sp2 text-body text-muted">{m.orders.subtitle}</p>
+        </div>
+        {credentials.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => void load()}
+            disabled={loading}
+            className="h-10 rounded-btn border border-line px-sp3 text-aux text-ink hover:bg-accentWeak disabled:opacity-50"
+          >
+            {loading ? m.orders.refreshing : m.orders.refresh}
+          </button>
+        ) : null}
+      </div>
+
+      {/* 390px 下四个标签（尤其英文）一行放不下：换行比横向滚动更容易被发现 */}
+      <div
+        role="group"
+        aria-label={m.orders.title}
+        className="mt-sp5 flex flex-wrap gap-sp2"
+      >
+        {tabs.map((t) => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setTab(t.key)}
+              className={`flex h-10 shrink-0 items-center gap-sp1 rounded-btn border px-sp3 text-body transition-colors duration-fade ${
+                active
+                  ? "border-accent bg-accentWeak text-ink"
+                  : "border-line text-muted hover:text-ink"
+              }`}
+            >
+              {t.label}
+              {!loading ? (
+                <span className="text-aux tabular-nums text-muted">{countOf(t.key)}</span>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+
+      {failed ? (
+        <p role="alert" className="mt-sp4 rounded-btn border border-sold/50 px-sp3 py-sp3 text-body text-sold">
+          {m.orders.error}
+        </p>
+      ) : null}
+
+      {loading && summaries.length === 0 ? (
+        <p className="mt-sp5 text-body text-muted">{m.orders.loading}</p>
+      ) : credentials.length === 0 ? (
+        <div className="mt-sp6 rounded-card border border-line bg-surface px-sp4 py-sp7 text-center">
+          <h2 className="font-serif text-h2 text-ink">{m.orders.emptyTitle}</h2>
+          <p className="mx-auto mt-sp2 max-w-[46ch] text-body text-muted">{m.orders.emptyBody}</p>
+          <Link
+            href={localePath(locale, "/shop")}
+            className="mt-sp5 inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp6 text-body text-onAccent hover:opacity-90"
+          >
+            {m.orders.browseAll}
+          </Link>
+        </div>
+      ) : visible.length === 0 ? (
+        <div className="mt-sp6 rounded-card border border-line bg-surface px-sp4 py-sp7 text-center">
+          <p className="text-body text-muted">{m.orders.emptyTab(activeLabel)}</p>
+          <Link
+            href={localePath(locale, "/shop")}
+            className="mt-sp4 inline-flex h-11 items-center justify-center rounded-btn border border-accent px-sp5 text-body text-ink hover:bg-accentWeak"
+          >
+            {m.orders.browseAll}
+          </Link>
+        </div>
+      ) : (
+        <ul className="mt-sp4 space-y-sp3">
+          {visible.map((s) => {
+            const token = tokenOf(s.id);
+            const href = (path: string) =>
+              `${localePath(locale, path)}?token=${encodeURIComponent(token)}`;
+            const placed = new Date(s.createdAt);
+            const placedLabel = Number.isNaN(placed.getTime())
+              ? s.createdAt
+              : placed.toLocaleString(locale === "zh" ? "zh-CN" : "en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+            return (
+              <li key={s.id} className="rounded-card border border-line bg-surface p-sp4">
+                <div className="flex flex-wrap items-start justify-between gap-sp2">
+                  <div className="min-w-0">
+                    <p className="text-aux text-muted">{m.orders.number}</p>
+                    <p className="text-body tabular-nums text-ink">{s.id}</p>
+                  </div>
+                  <Pill status={s.status} label={m.order[STATUS_LABEL[s.status]]} />
+                </div>
+
+                <dl className="mt-sp3 grid gap-sp2 text-aux sm:grid-cols-3">
+                  <div>
+                    <dt className="text-muted">{m.orders.placedOn}</dt>
+                    <dd className="mt-sp1 text-ink">{placedLabel}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted">{m.order.items}</dt>
+                    <dd className="mt-sp1 text-ink">{m.orders.items(s.itemCount)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted">{m.orders.total}</dt>
+                    <dd className="mt-sp1">
+                      <Price usd={s.totalUsd} className="text-body text-ink" />
+                    </dd>
+                  </div>
+                </dl>
+
+                {s.firstTitle ? (
+                  <p className="mt-sp3 line-clamp-1 text-aux text-muted">{s.firstTitle}</p>
+                ) : null}
+
+                <div className="mt-sp4 flex flex-wrap gap-sp2">
+                  {s.status === "created" ? (
+                    <Link
+                      href={href(`/pay/${s.id}`)}
+                      className="inline-flex h-11 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-onAccent hover:opacity-90"
+                    >
+                      {m.orders.payNow}
+                    </Link>
+                  ) : null}
+                  <Link
+                    href={href(`/orders/${s.id}`)}
+                    className="inline-flex h-11 items-center justify-center rounded-btn border border-accent px-sp5 text-body text-ink hover:bg-accentWeak"
+                  >
+                    {m.orders.viewOrder}
+                  </Link>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {!loading && !failed && missing > 0 ? (
+        <p className="mt-sp4 text-aux text-muted">{m.orders.missingNote(missing)}</p>
+      ) : null}
+
+      {/* 升级前下的单：把确认页链接粘进来补登记，不用去翻邮件找订单号 */}
+      <form
+        onSubmit={addExisting}
+        className="mt-sp6 rounded-card border border-line bg-surface p-sp4"
+      >
+        <h2 className="text-h2 text-ink">{m.orders.addExisting}</h2>
+        <p className="mt-sp1 text-aux leading-relaxed text-muted">{m.orders.addExistingHint}</p>
+        <div className="mt-sp3 flex flex-col gap-sp2 sm:flex-row">
+          <label htmlFor="order-link" className="sr-only">
+            {m.orders.addExistingPlaceholder}
+          </label>
+          <input
+            id="order-link"
+            type="text"
+            value={linkInput}
+            onChange={(e) => {
+              setLinkInput(e.target.value);
+              setAddMessage(null);
+            }}
+            placeholder={m.orders.addExistingPlaceholder}
+            className="h-11 min-w-0 flex-1 rounded-btn border border-line bg-bg px-sp3 text-body text-ink placeholder:text-muted focus:border-accent focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="h-11 shrink-0 rounded-btn border border-accent px-sp5 text-body text-ink hover:bg-accentWeak"
+          >
+            {m.orders.addExistingButton}
+          </button>
+        </div>
+        {addMessage ? (
+          <p
+            role="status"
+            className={`mt-sp2 text-aux ${addMessage === "ok" ? "text-ink" : "text-sold"}`}
+          >
+            {addMessage === "ok" ? m.orders.addExistingOk : m.orders.addExistingBad}
+          </p>
+        ) : null}
+      </form>
+
+      <p className="mt-sp6 border-t border-line pt-sp4 text-aux leading-relaxed text-muted">
+        {m.orders.privacyNote}
+      </p>
+    </div>
+  );
+}

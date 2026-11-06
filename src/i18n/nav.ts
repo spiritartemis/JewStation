@@ -33,6 +33,8 @@ export function desktopNav(locale: Locale): NavItem[] {
     { label: m.nav.oneOfAKind, href: "/collections/one-of-a-kind" },
     { label: m.nav.about, href: "/about" },
     { label: m.nav.faq, href: "/faq" },
+    // 0.4.2：订单列表的桌面入口（移动端在抽屉「更多」组里）
+    { label: m.nav.orders, href: "/orders" },
   ];
 }
 
@@ -75,6 +77,7 @@ export function drawerGroups(locale: Locale): { title: string; items: NavItem[] 
         { label: m.nav.oneOfAKind, href: "/collections/one-of-a-kind" },
         { label: m.nav.about, href: "/about" },
         { label: m.nav.faq, href: "/faq" },
+        { label: m.nav.orders, href: "/orders" },
       ],
     },
   ];

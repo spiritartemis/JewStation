@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PayActions } from "@/components/cart/PayActions";
+import { OrderHistoryRecorder } from "@/components/cart/OrderHistoryRecorder";
 import { Price } from "@/components/currency/Price";
 import { getStore, isEphemeralStore } from "@/lib/store";
 import { buildMetadata } from "@/lib/seo";
@@ -84,6 +85,16 @@ export default async function PayPage({ params, searchParams }: PageProps) {
       ) : null}
 
       <PayActions orderId={order.id} token={order.accessToken} locale={locale} />
+
+      <Link
+        href={localePath(locale, "/orders")}
+        className="mt-sp5 block text-center text-aux text-muted underline hover:text-accent"
+      >
+        {m.nav.orders}
+      </Link>
+
+      {/* 口令已由服务端校验过，才把这笔订单登记进「我的订单」 */}
+      <OrderHistoryRecorder id={order.id} token={order.accessToken} />
     </div>
   );
 }
