@@ -41,8 +41,25 @@
           "url": "/images/product-silver-wave-hoops.jpg",
           "alt": "Silver Wave Hoops — hand-formed sterling silver hoops on a muted studio background",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
+        },
+        {
+          "url": "/images/product-silver-wave-hoops-detail-texture.jpg",
+          "alt": "Close-up of the hammered silver surface along the curve of the Silver Wave Hoops",
+          "width": 1024,
+          "height": 1178,
+          "order": 1,
+          "isPrimary": false
+        },
+        {
+          "url": "/images/product-silver-wave-hoops-detail-clasp.jpg",
+          "alt": "Latch-back closure and hinge detail on the Silver Wave Hoops",
+          "width": 1024,
+          "height": 1178,
+          "order": 2,
+          "isPrimary": false
         }
       ],
       "category": "earrings",
@@ -113,8 +130,25 @@
           "url": "/images/product-baroque-pearl-drops.jpg",
           "alt": "Baroque Pearl Drops — freshwater pearl drops on sterling silver ear wires",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
+        },
+        {
+          "url": "/images/product-baroque-pearl-drops-detail-luster.jpg",
+          "alt": "Close-up of the baroque pearl's luster and natural surface growth lines",
+          "width": 1024,
+          "height": 1178,
+          "order": 1,
+          "isPrimary": false
+        },
+        {
+          "url": "/images/product-baroque-pearl-drops-detail-hook.jpg",
+          "alt": "Solid silver French hook and hand-wrapped loop where the pearl hangs",
+          "width": 1024,
+          "height": 1178,
+          "order": 2,
+          "isPrimary": false
         }
       ],
       "category": "earrings",
@@ -180,7 +214,8 @@
           "url": "/images/product-fine-chain-pendant.jpg",
           "alt": "Fine Chain Pendant — fine sterling silver chain with a small pendant",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
         }
       ],
@@ -244,8 +279,25 @@
           "url": "/images/product-hammered-open-ring.jpg",
           "alt": "Hammered Open Ring — hand-forged brass open ring with matte finish",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
+        },
+        {
+          "url": "/images/product-hammered-open-ring-detail-texture.jpg",
+          "alt": "Close-up of the hand-hammered surface across the face of the open ring",
+          "width": 1024,
+          "height": 1178,
+          "order": 1,
+          "isPrimary": false
+        },
+        {
+          "url": "/images/product-hammered-open-ring-detail-band.jpg",
+          "alt": "Close-up of the ring's lower band, its open gap and the soft shadow it casts",
+          "width": 1024,
+          "height": 1178,
+          "order": 2,
+          "isPrimary": false
         }
       ],
       "category": "rings",
@@ -304,7 +356,8 @@
           "url": "/images/product-vintage-link-bracelet.jpg",
           "alt": "Vintage Link Bracelet — gold vermeil bracelet with oval links",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
         }
       ],
@@ -384,7 +437,8 @@
           "url": "/images/product-geometric-stone-studs.jpg",
           "alt": "Geometric Stone Studs — hexagonal natural stone studs in sterling silver",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
         }
       ],
@@ -448,7 +502,8 @@
           "url": "/images/product-hand-knotted-cord-necklace.jpg",
           "alt": "Hand-Knotted Cord Necklace — linen cord with a matte ceramic bead",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
         }
       ],
@@ -511,7 +566,8 @@
           "url": "/images/product-delicate-chain-bracelet.jpg",
           "alt": "Delicate Chain Bracelet — fine sterling silver chain bracelet",
           "width": 1024,
-          "height": 1280,
+          "height": 1178,
+          "order": 0,
           "isPrimary": true
         }
       ],

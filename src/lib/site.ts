@@ -31,9 +31,9 @@ export const SITE = {
    */
   supportEmail: null as string | null,
   /** 站点版本（随每次发布递增） */
-  version: "0.3.14-m1b",
+  version: "0.4.1",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-11-05 20:28",
+  updatedAt: "2026-11-06 00:32",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];
@@ -45,8 +45,12 @@ export const SHIPPING = {
   countries: ["US", "CN"],
   processingDays: [1, 2],
   transitDays: [5, 14],
-  /** Q-31 满额包邮，门槛待首批定价后反推 —— 未定前不编数字 */
-  freeShippingThreshold: null as number | null,
+  /**
+   * Q-31 运费（2026-11-05 站长定）：满 $80 免运费，未满收 $6 统一运费。
+   * 单一事实源——购物袋、结账、订单确认、结构化数据都从这里取，别在页面里再写一遍数字。
+   */
+  freeShippingThreshold: 80,
+  flatRate: 6,
   /** Q-32 价含税 + DDP 我方申报 */
   taxIncluded: true,
   dutyPaid: true,

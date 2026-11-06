@@ -97,7 +97,7 @@ const en: SiteContent = {
       id: "shipping-cost",
       question: "How much is shipping?",
       answer:
-        "Shipping is free above an order threshold. The threshold is set once first-collection pricing is final and will be published on this page before launch; orders below it pay one flat rate by destination.",
+        "Free shipping on orders of $80 or more. Below that a flat $6 applies — we do not use live carrier quotes, so the price shown at checkout is final.",
     },
     {
       id: "customs",
@@ -220,7 +220,7 @@ const en: SiteContent = {
         { type: "h", text: "Delivery times" },
         { type: "p", text: "Two stages: 1–2 business days to pack your order, then 5–14 days in transit. Cross-border parcels go through a global carrier; domestic China orders ship with a local courier." },
         { type: "h", text: "Rates" },
-        { type: "p", text: "Shipping is free above an order threshold, published here before launch once first-collection pricing is final. Below the threshold one flat rate applies by destination — we do not use live carrier quotes, so the price you see at checkout is final." },
+        { type: "p", text: "Free shipping on orders of $80 or more. Below that a flat $6 applies — no live carrier quotes, so the amount shown at checkout is final." },
         { type: "h", text: "Tax and customs" },
         { type: "p", text: "Prices include tax. Cross-border orders ship DDP: we declare and pre-pay duties, so nothing extra is collected at your door. Orders inside mainland China are not taxed or declared again." },
       ],
@@ -313,7 +313,7 @@ const zh: SiteContent = {
       id: "shipping-cost",
       question: "运费怎么算？",
       answer:
-        "满额包邮。免邮门槛会在首批定价定稿后确定，并在上线前公布在本页；未达门槛的订单按目的地收取一档固定运费。",
+        "满 80 美元免运费；未满收 6 美元统一运费——我们不接实时报价，结账看到的价格就是最终价格。",
     },
     {
       id: "customs",
@@ -435,7 +435,7 @@ const zh: SiteContent = {
         { type: "h", text: "时效" },
         { type: "p", text: "分两段：备货 1–2 个工作日，之后在途 5–14 天。跨境包裹走国际物流渠道，中国境内用国内快递。" },
         { type: "h", text: "运费" },
-        { type: "p", text: "满额包邮，门槛在首批定价定稿后、上线前公布于本页。未达门槛按目的地收取一档固定运费——我们不接实时报价，结账看到的价格就是最终价格。" },
+        { type: "p", text: "满 80 美元免运费；未满收 6 美元统一运费——我们不接实时报价，结账看到的价格就是最终价格。" },
         { type: "h", text: "税费与关税" },
         { type: "p", text: "价格已含税。跨境订单按 DDP 发出：由我们申报并预缴关税，收货时不再额外收费。中国大陆境内订单不重复计税、不需报关。" },
       ],

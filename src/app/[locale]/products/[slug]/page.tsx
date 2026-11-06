@@ -5,6 +5,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { BackLink } from "@/components/product/BackLink";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductOptions, ProductOptionNote } from "@/components/product/ProductOptions";
+import { AddToCart } from "@/components/cart/AddToCart";
 import { JsonLdScript } from "@/components/JsonLd";
 import { getAllProducts, getProductBySlug, getProductsByCollection } from "@/lib/products";
 import {
@@ -195,22 +196,8 @@ export default async function ProductPage({ params }: PageProps) {
           ) : null}
 
           <div className="mt-sp5">
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              aria-describedby="cart-note"
-              className="h-12 w-full rounded-btn bg-accent text-body text-onAccent disabled:opacity-40"
-            >
-              {sold ? soldLabel(product, locale) : m.product.addToCart}
-            </button>
-            <p id="cart-note" className="mt-sp2 text-aux text-muted">
-              {sold
-                ? isOneOfAKind
-                  ? m.product.soldNote
-                  : m.product.outOfStockNote
-                : m.product.checkoutNote}
-            </p>
+            {/* 加购（m-1c / 1c-0）：所选规格随条目进袋，孤品上限 1 件 */}
+            <AddToCart product={product} locale={locale} />
 
             {/* 配送口径（Q-21 / Q-22 / Q-30 / Q-32）：在商品页就把发货地、两段时效和税讲清楚，
                 不要让用户到结账才发现从中国发货 */}

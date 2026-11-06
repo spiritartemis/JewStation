@@ -10,6 +10,7 @@ import { MobileNavDrawer } from "./MobileNavDrawer";
 import { BagIcon, SearchIcon } from "./icons";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { CurrencySwitcher } from "@/components/currency/CurrencySwitcher";
+import { useCart } from "@/components/cart/CartProvider";
 
 /**
  * 全局顶栏（01 §3）：移动端口径为「☰ + 品牌 + 🛒」，桌面端同一套结构横向展开。
@@ -52,8 +53,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     };
   }, [shopOpen]);
 
-  // 购物袋数量：m-1c 接入真实状态；本线恒为 0，故不渲染角标
-  const cartCount = 0;
+  // 购物袋数量：来自 CartProvider（m-1c）。SSR 阶段恒为 0，
+  // hydration 后才有值 —— 角标是一个纯增量元素，闪烁只是「多出一个数字」，不会引起布局跳动
+  const { count: cartCount } = useCart();
 
   return (
     <header
