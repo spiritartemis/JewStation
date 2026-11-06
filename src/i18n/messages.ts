@@ -262,6 +262,15 @@ const en = {
     cancelNow: "Cancel this order",
     processing: "Processing…",
     errFailed: "Could not update the order. Please try again.",
+    /** 0.4.6：支付页要明示当前状态；非待付款的单不能再走支付动作 */
+    statusLabel: "Order status",
+    closedTitle: "Payment is closed",
+    closedPaidLead: "This order has already been paid. No further payment is needed.",
+    closedCancelledLead:
+      "This order was cancelled and the pieces are back in stock. It can no longer be paid.",
+    closedOtherLead: "This order can no longer be paid.",
+    errClosed: "This order can no longer be paid. Refresh to see its current status.",
+    viewOrder: "View order details",
   },
   order: {
     metaTitle: "Order",
@@ -292,6 +301,9 @@ const en = {
     metaDescription: "Orders placed from this browser, grouped by status.",
     title: "My orders",
     subtitle: "Orders placed on this device. Open one to see the full details.",
+    /** 0.4.5：四个标签不是互斥分类，不写清楚会让人以为「全部」里有了、状态页就没有 */
+    groupHint:
+      "All orders lists every order. Each one also appears in the tab for its current status — an awaiting-payment order shows in both All orders and Awaiting payment.",
     tabAll: "All orders",
     tabUnpaid: "Awaiting payment",
     tabShipping: "Awaiting delivery",
@@ -600,20 +612,30 @@ const zh: Messages = {
     cancelNow: "取消这笔订单",
     processing: "处理中…",
     errFailed: "订单状态没能更新，请再试一次。",
+    /** 0.4.6：支付页要明示当前状态；非待付款的单不能再走支付动作 */
+    statusLabel: "订单状态",
+    closedTitle: "支付已关闭",
+    closedPaidLead: "这笔订单已完成付款，无需再次支付。",
+    closedCancelledLead: "这笔订单已取消，商品已回到库存，不能再付款。",
+    closedOtherLead: "这笔订单当前状态无法继续付款。",
+    errClosed: "这笔订单已不能付款，请刷新查看最新状态。",
+    viewOrder: "查看订单详情",
   },
   order: {
     metaTitle: "订单",
     title: "谢谢你的订单",
     paidLead: "订单已确认，发货后我们会发邮件通知你。",
     cancelledLead: "这笔订单已取消，商品已回到库存。",
-    pendingLead: "这笔订单还在等待支付完成。",
+    pendingLead: "这笔订单还在等待付款完成。",
     number: "订单号",
     placedOn: "下单时间",
     items: "商品",
     shipTo: "收货地址",
     contact: "联系方式",
     status: "状态",
-    statusCreated: "待支付",
+    /* 0.4.5：与订单列表的「待付款」分页用同一个词。原先卡片写「待支付」、
+       标签写「待付款」，用户会误以为这是两个不同分类、以为待付款单没进分页 */
+    statusCreated: "待付款",
     statusPaid: "已支付",
     statusFulfilled: "已发货",
     statusCancelled: "已取消",
@@ -629,6 +651,9 @@ const zh: Messages = {
     metaDescription: "在本浏览器下过的订单，按状态分组查看。",
     title: "我的订单",
     subtitle: "查看在这台设备上下过的订单，点开可看完整明细。",
+    /** 0.4.5：四个标签不是互斥分类，不写清楚会让人以为「全部」里有了、状态页就没有 */
+    groupHint:
+      "「全部订单」包含所有订单；每笔订单还会同时出现在它当前状态对应的分页里 —— 例如待付款订单会同时出现在「全部订单」和「待付款」中。",
     tabAll: "全部订单",
     tabUnpaid: "待付款",
     tabShipping: "待收货",

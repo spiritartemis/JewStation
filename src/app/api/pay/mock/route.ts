@@ -55,8 +55,24 @@ export async function POST(req: Request) {
   }
   if (!order) return NextResponse.json({ ok: false, code: "not_found" }, { status: 404 });
 
-  // 幂等键带 outcome：同一笔「成功」重复回调只算一次，
-  // 但如果先失败后成功（用户重试支付），仍然要能推进到 paid
+  // 0.4.6 状态机守卫：支付动作只接受 created（待付款）订单。
+  // 已付款/已发货 → 幂等返回，不重复发信也不改状态；
+  // 已取消/已退款 → 终态，绝不能「复活」成 paid：取消时库存已回补，
+  // 再标成已付款就会得到一笔「付了钱却没占库存」的单。
+  // 放在 claimPaymentKey 之前，被拒绝的请求不会白占幂等键。
+  if (order.status === "paid" || order.status === "fulfilled") {
+    return NextResponse.json({ ok: true, status: order.status, replay: true });
+  }
+  if (order.status === "cancelled" || order.status === "refunded") {
+    return NextResponse.json(
+      { ok: false, code: "order_closed", status: order.status },
+      { status: 409 },
+    );
+  }
+
+  // 幂等键带 outcome：同一结果的重复回调只算一次。
+  // 注意：失败/取消会把订单置为终态 cancelled，之后不能再「成功付款」——
+  // 前置守卫会拦下，避免取消后库存已回补却出现一笔 paid 单。
   const idempotencyKey = `${order.id}:${outcome}`;
   let firstTime: boolean;
   try {
@@ -70,20 +86,15 @@ export async function POST(req: Request) {
 
   try {
     if (outcome === "success") {
-      // 已付款的单不再重复发货逻辑；直接返回当前状态
-      if (order.status === "paid" || order.status === "fulfilled") {
-        return NextResponse.json({ ok: true, status: order.status, replay: true });
-      }
+      // 走到这里 order.status 必然是 created（前置守卫已把其余状态挡掉）
       const next = await store.updateOrderStatus(order.id, "paid", token);
       if (!next) return NextResponse.json({ ok: false, code: "not_found" }, { status: 404 });
       await sendMail(next, "order_paid");
       return NextResponse.json({ ok: true, status: next.status });
     }
 
-    // 失败 / 取消：回补库存（未发货取消回补，见 04 四事件表），订单置 cancelled
-    if (order.status === "cancelled") {
-      return NextResponse.json({ ok: true, status: order.status, replay: true });
-    }
+    // 失败 / 取消：回补库存（未发货取消回补，见 04 四事件表），订单置 cancelled。
+    // 前置守卫保证这里只可能是 created 单，不会重复回补库存。
     await store.releaseStock(order.lines.map((l) => ({ slug: l.slug, qty: l.qty })));
     const next = await store.updateOrderStatus(order.id, "cancelled", token);
     if (!next) return NextResponse.json({ ok: false, code: "not_found" }, { status: 404 });

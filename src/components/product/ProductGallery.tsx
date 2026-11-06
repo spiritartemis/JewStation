@@ -103,6 +103,9 @@ export function ProductGallery({
       <div className="relative touch-pan-y overflow-hidden rounded-img bg-accentWeak">
         <Image
           key={current.url}
+          /* 飞入购物袋动画会复用这张已解码的大图当圆牌缩略图（0.4.3）：
+             另起一个 240 档请求在冷访时要 2–3s，动画只有 760ms，会飞一个空圆圈 */
+          data-product-hero=""
           src={current.url}
           alt={current.alt || title}
           width={current.width}

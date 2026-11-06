@@ -3,7 +3,19 @@ import Link from "next/link";
 import { PayActions } from "@/components/cart/PayActions";
 import { OrderHistoryRecorder } from "@/components/cart/OrderHistoryRecorder";
 import { Price } from "@/components/currency/Price";
-import { getStore, isEphemeralStore } from "@/lib/store";
+import { getStore, isEphemeralStore, type OrderStatus } from "@/lib/store";
+
+/** 与订单确认页保持同一套状态文案键，避免两处写出不同口径 */
+const statusLabelKey: Record<
+  OrderStatus,
+  "statusCreated" | "statusPaid" | "statusFulfilled" | "statusCancelled" | "statusRefunded"
+> = {
+  created: "statusCreated",
+  paid: "statusPaid",
+  fulfilled: "statusFulfilled",
+  cancelled: "statusCancelled",
+  refunded: "statusRefunded",
+};
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -67,6 +79,22 @@ export default async function PayPage({ params, searchParams }: PageProps) {
     );
   }
 
+  // 0.4.6：下单后这一屏就是「待付款」状态，必须把状态明示出来；
+  // 同时只有 created 单能继续付款——已取消/已退款/已付款的单不能再被改成别的支付结果。
+  const isPayable = order.status === "created";
+  const closedLead =
+    order.status === "paid" || order.status === "fulfilled"
+      ? m.pay.closedPaidLead
+      : order.status === "cancelled" || order.status === "refunded"
+        ? m.pay.closedCancelledLead
+        : m.pay.closedOtherLead;
+  const orderHref = `${localePath(locale, `/orders/${order.id}`)}?token=${encodeURIComponent(order.accessToken)}`;
+  const statusTone = isPayable
+    ? "border-accent bg-accentWeak text-ink"
+    : order.status === "cancelled" || order.status === "refunded"
+      ? "border-line bg-bg text-muted"
+      : "border-line bg-surface text-ink";
+
   return (
     <div className="shell max-w-[560px] py-sp6">
       <p className="text-aux uppercase tracking-[0.16em] text-muted">{m.pay.title}</p>
@@ -74,7 +102,16 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         {order.id} · <Price usd={order.totalUsd} className="text-h1 text-ink" />
       </h1>
 
-      <p className="mt-sp3 text-body text-muted">{m.pay.explain}</p>
+      <div className="mt-sp3 flex flex-wrap items-center gap-sp2">
+        <span className="text-aux text-muted">{m.pay.statusLabel}</span>
+        <span className={`rounded-btn border px-sp2 py-sp1 text-aux ${statusTone}`}>
+          {m.order[statusLabelKey[order.status]]}
+        </span>
+      </div>
+
+      {isPayable ? (
+        <p className="mt-sp3 text-body text-muted">{m.pay.explain}</p>
+      ) : null}
 
       {isEphemeralStore() ? (
         <p className="mt-sp3 rounded-btn bg-accentWeak px-sp3 py-sp2 text-aux text-ink">
@@ -84,7 +121,20 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         </p>
       ) : null}
 
-      <PayActions orderId={order.id} token={order.accessToken} locale={locale} />
+      {isPayable ? (
+        <PayActions orderId={order.id} token={order.accessToken} locale={locale} />
+      ) : (
+        <div className="mt-sp5 rounded-card border border-line bg-surface p-sp4">
+          <h2 className="text-h2 text-ink">{m.pay.closedTitle}</h2>
+          <p className="mt-sp2 text-body text-muted">{closedLead}</p>
+          <Link
+            href={orderHref}
+            className="mt-sp4 inline-flex h-11 items-center justify-center rounded-btn border border-accent px-sp5 text-body text-ink hover:bg-accentWeak"
+          >
+            {m.pay.viewOrder}
+          </Link>
+        </div>
+      )}
 
       <Link
         href={localePath(locale, "/orders")}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type Ref } from "react";
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -8,6 +8,7 @@ import { optionName, optionValueLabel, type Product } from "@/lib/types";
 import { MAX_QTY_PER_LINE, type CartOption } from "@/lib/cart";
 import { useProductSpec } from "@/components/product/ProductSpecContext";
 import { useCart } from "./CartProvider";
+import { flyToBag, popBagButton } from "./flyToBag";
 
 /**
  * 加购按钮（m-1c / 1c-0）
@@ -21,12 +22,18 @@ import { useCart } from "./CartProvider";
  * 「查看购物袋」常驻（0.4.2）：以前只在加购成功后临时冒出 2.6 秒，用户不知道
  * 那个入口会消失，也找不到回去的路。现在两个按钮一直并排，袋里 0 件时
  * 「查看购物袋」打灰不可点，≥1 件才可点。加购成功只做一次轻微高亮 + 读屏播报。
+ *
+ * 「飞入购物袋」（0.4.3）：加购时一枚带商品缩略图的小徽章从加购按钮飞到
+ * 「查看购物袋」按钮，落点再弹一下。动画是纯视觉的，袋子状态在点击瞬间就已写入，
+ * 就算动画被系统降级跳过也不影响加购结果。
  */
 export function AddToCart({ product, locale }: { product: Product; locale: Locale }) {
   const m = getMessages(locale);
   const cart = useCart();
   const spec = useProductSpec();
   const [justAdded, setJustAdded] = useState(false);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+  const viewBagRef = useRef<HTMLAnchorElement>(null);
 
   const sold = product.stock <= 0;
   const oneOfAKind = product.productType === "one_of_a_kind";
@@ -59,6 +66,17 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
     });
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 2600);
+
+    // 先把两端矩形量出来再起飞：cart.add 会触发重渲染，晚量会拿到禁用/可用两种不同样式
+    const from = addButtonRef.current?.getBoundingClientRect();
+    const to = viewBagRef.current?.getBoundingClientRect();
+    if (!from || !to) return;
+    flyToBag({
+      from,
+      to,
+      image: primary ? { url: primary.url } : null,
+      onLand: () => popBagButton(viewBagRef.current),
+    });
   };
 
   /**
@@ -68,7 +86,12 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
   const canViewBag = cart.ready && cart.count > 0;
 
   const viewBag = (
-    <ViewBagLink locale={locale} canView={canViewBag} highlight={justAdded} />
+    <ViewBagLink
+      locale={locale}
+      canView={canViewBag}
+      highlight={justAdded}
+      targetRef={viewBagRef}
+    />
   );
 
   if (sold) {
@@ -97,6 +120,7 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
     <div className="mt-sp5">
       <div className="flex flex-col gap-sp2 sm:flex-row">
         <button
+          ref={addButtonRef}
           type="button"
           onClick={onClick}
           aria-describedby="cart-note"
@@ -128,15 +152,19 @@ function ViewBagLink({
   locale,
   canView,
   highlight,
+  targetRef,
 }: {
   locale: Locale;
   canView: boolean;
   highlight: boolean;
+  /** 飞入动画的落点：必须是真实 DOM 节点，才能量到视口坐标 */
+  targetRef: Ref<HTMLAnchorElement>;
 }) {
   const m = getMessages(locale);
   return (
     <>
       <Link
+        ref={targetRef}
         href={localePath(locale, "/cart")}
         aria-disabled={!canView}
         aria-describedby={canView ? undefined : "view-bag-hint"}

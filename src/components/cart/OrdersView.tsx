@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
+import imageLoader from "@/lib/image-loader";
 import { getMessages } from "@/i18n/messages";
 import { Price } from "@/components/currency/Price";
 import {
@@ -21,15 +22,27 @@ import type { OrderStatus } from "@/lib/store/types";
  *
  * 四个标签按订单状态机归类：
  *   待付款 = created ｜ 待收货 = paid / fulfilled ｜ 已取消订单 = cancelled / refunded
+ * 「全部订单」是同一批订单不过滤的视图 —— 所以一笔 created 订单会**同时**出现在
+ * 「全部订单」和「待付款」里，四个标签不是互斥分类（0.4.5 在界面上写明这一点）。
  * 状态一律以服务端为准，本地不缓存任何状态——用户付完款回来点「刷新状态」即可更新。
+ * 0.4.7：卡片为每一件商品渲染小图 + 右侧标题，数据来自 /api/orders 返回的 items 摘要，
+ * 图片走构建期静态 WebP，破图退回宝石占位。
  */
+type OrderItem = {
+  title: string;
+  imageUrl: string | null;
+  qty: number;
+  options: { name: string; value: string }[];
+};
+
 type Summary = {
   id: string;
   status: OrderStatus;
   createdAt: string;
   totalUsd: number;
   itemCount: number;
-  firstTitle: string;
+  /** 0.4.7：逐件商品，列表卡片为每件画小图 + 标题 */
+  items: OrderItem[];
 };
 
 type TabKey = "all" | "unpaid" | "shipping" | "cancelled";
@@ -87,6 +100,61 @@ function Pill({ status, label }: { status: OrderStatus; label: string }) {
     </span>
   );
 }
+
+/**
+ * 0.4.7：订单卡片里的商品小图。
+ * 直接指向构建期预生成的 128 档静态 WebP（56px 显示位，DPR2 也够清晰），
+ * 不用 next/image 的 srcset —— 它会按 sizes 选到 240 档，而线上冷访那档图回源
+ * 要几秒，用户会先看到一排空方块（飞入动画踩过同一个坑）。
+ * 加载中与破图都退回宝石占位，加载完成再淡入。
+ * 商品图是 4:5 竖构图、主体偏下，所以 img 上带了 objectPosition/scale：
+ * 正方形里下移裁切并轻微放大，56px 也能看出是一件首饰而不是一片米色背景。
+ */
+/* eslint-disable @next/next/no-img-element */
+function OrderItemThumb({ src, alt }: { src: string | null; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [broken, setBroken] = useState(false);
+  const url = src ? imageLoader({ src, width: 128 }) : "";
+  const showImg = !!url && !broken;
+  return (
+    <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-btn border border-line bg-accentWeak">
+      {showImg ? (
+        <img
+          src={url}
+          alt={alt}
+          width={56}
+          height={56}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setBroken(true)}
+          style={{ objectPosition: "center 62%", transform: "scale(1.25)" }}
+          className={`h-full w-full object-cover transition-opacity duration-fade ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ) : null}
+      {!showImg || !loaded ? (
+        <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+            className="text-muted"
+          >
+            <path d="M12 2.5 20.5 9 12 21.5 3.5 9 12 2.5Z" />
+            <path d="M3.5 9h17M12 2.5 8.8 9 12 21.5 15.2 9 12 2.5Z" />
+          </svg>
+        </span>
+      ) : null}
+    </span>
+  );
+}
+/* eslint-enable @next/next/no-img-element */
 
 export function OrdersView({ locale }: { locale: Locale }) {
   const m = getMessages(locale);
@@ -235,6 +303,11 @@ export function OrdersView({ locale }: { locale: Locale }) {
         })}
       </div>
 
+      {/* 0.4.5：把「全部」与状态页的包含关系写明。
+          以前有人看到一笔待付款单在「全部订单」里，就以为它不会同时进「待付款」——
+          实际上四个标签是同一批订单的不同视图，不是互斥分类。 */}
+      <p className="mt-sp2 text-aux leading-relaxed text-muted">{m.orders.groupHint}</p>
+
       {failed ? (
         <p role="alert" className="mt-sp4 rounded-btn border border-sold/50 px-sp3 py-sp3 text-body text-sold">
           {m.orders.error}
@@ -307,8 +380,29 @@ export function OrdersView({ locale }: { locale: Locale }) {
                   </div>
                 </dl>
 
-                {s.firstTitle ? (
-                  <p className="mt-sp3 line-clamp-1 text-aux text-muted">{s.firstTitle}</p>
+                {/* 0.4.7：每一件商品都要露脸——小图 + 右侧标题，多件按行铺开 */}
+                {s.items.length > 0 ? (
+                  <ul className="mt-sp3 divide-y divide-line border-y border-line">
+                    {s.items.map((item, i) => (
+                      <li
+                        key={`${item.title}-${item.imageUrl ?? "none"}-${i}`}
+                        className="flex items-center gap-sp3 py-sp2"
+                      >
+                        <OrderItemThumb src={item.imageUrl} alt={item.title} />
+                        <div className="min-w-0 flex-1">
+                          <p className="line-clamp-2 text-body text-ink">{item.title || "—"}</p>
+                          {item.options.length ? (
+                            <p className="mt-sp1 line-clamp-1 text-aux text-muted">
+                              {item.options.map((o) => `${o.name}: ${o.value}`).join(" · ")}
+                            </p>
+                          ) : null}
+                        </div>
+                        <span className="shrink-0 text-aux tabular-nums text-muted">
+                          × {item.qty}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 ) : null}
 
                 <div className="mt-sp4 flex flex-wrap gap-sp2">

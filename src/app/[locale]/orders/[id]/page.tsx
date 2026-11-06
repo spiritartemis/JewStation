@@ -13,7 +13,7 @@ import { getMessages } from "@/i18n/messages";
  * 访问控制：链接里必须带 `token`，且与订单上的 accessToken 一致才显示明细。
  * 只靠订单号不安全（MM-XXXXXX 是可猜的空间），只靠邮箱也会泄露「某邮箱买过什么」。
  *
- * 必须动态渲染：订单状态会变（待支付 → 已支付 → 已发货 / 已取消），不能静态化。
+ * 必须动态渲染：订单状态会变（待付款 → 已支付 → 已发货 / 已取消），不能静态化。
  * 该页 noindex —— 订单内容属于私人信息，不该出现在搜索结果里。
  */
 export const dynamic = "force-dynamic";

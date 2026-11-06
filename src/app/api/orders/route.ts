@@ -10,8 +10,8 @@ import type { OrderStatus } from "@/lib/store/types";
  * 校验口令后再返回**摘要**。这一步是必须的：localStorage 可以被手改，
  * 不能因为前端声称「我有这个订单」就返回内容；口令不对 / 订单不存在一律跳过。
  *
- * 返回里不含 token、不含收货地址与邮箱——列表页只需要状态、金额、件数和商品名，
- * 少给一分数据就少一分泄露面。单条查询失败不影响其他订单。
+ * 返回里不含 token、不含收货地址与邮箱——列表页只需要状态、金额、件数，
+ * 以及逐件商品的标题/缩略图，少给一分数据就少一分泄露面。单条查询失败不影响其他订单。
  */
 export type OrderSummary = {
   id: string;
@@ -19,7 +19,13 @@ export type OrderSummary = {
   createdAt: string;
   totalUsd: number;
   itemCount: number;
-  firstTitle: string;
+  /** 0.4.7：逐件商品明细，供列表页渲染缩略图 + 标题。仍是摘要，不含地址/邮箱/口令 */
+  items: {
+    title: string;
+    imageUrl: string | null;
+    qty: number;
+    options: { name: string; value: string }[];
+  }[];
 };
 
 const ID_RE = /^[A-Za-z0-9_-]{3,40}$/;
@@ -53,13 +59,30 @@ export async function POST(req: Request) {
     try {
       const order = await store.getOrder(id, token);
       if (!order) continue;
+      // 0.4.7：把订单快照里的每一件商品交给列表页画小图。
+      // 图片只认本站 /images/ 下的静态文件名：订单是历史数据，不能让一个被改过的
+      // imageUrl 把页面变成外链图片加载器。字段一律夹紧，避免脏数据撑爆卡片。
+      const items = order.lines.slice(0, 20).map((l) => ({
+        title: String(l.title ?? "").slice(0, 120),
+        imageUrl:
+          typeof l.imageUrl === "string" &&
+          /^\/images\/[A-Za-z0-9._-]+\.(jpe?g|png)$/i.test(l.imageUrl)
+            ? l.imageUrl
+            : null,
+        qty: Number.isFinite(l.qty) ? Math.max(1, Math.floor(l.qty)) : 1,
+        options: (Array.isArray(l.options) ? l.options : []).slice(0, 6).map((o) => ({
+          name: String(o?.name ?? "").slice(0, 60),
+          value: String(o?.value ?? "").slice(0, 120),
+        })),
+      }));
+
       out.push({
         id: order.id,
         status: order.status,
         createdAt: order.createdAt,
         totalUsd: order.totalUsd,
         itemCount: order.lines.reduce((n, l) => n + l.qty, 0),
-        firstTitle: order.lines[0]?.title ?? "",
+        items,
       });
     } catch {
       // 某一条查不动（网络抖动 / 存储暂不可用）不影响其余订单展示

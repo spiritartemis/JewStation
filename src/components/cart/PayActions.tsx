@@ -36,7 +36,10 @@ export function PayActions({
         body: JSON.stringify({ orderId, token, outcome }),
       });
       if (!res.ok) {
-        setError(m.pay.errFailed);
+        // 0.4.6：订单在别处已被取消/付款时，服务端返回 order_closed，
+        // 要告诉用户「这笔单不能再付了」，而不是笼统的「请再试一次」。
+        const body = (await res.json().catch(() => ({}))) as { code?: string };
+        setError(body.code === "order_closed" ? m.pay.errClosed : m.pay.errFailed);
         setBusy(null);
         return;
       }
