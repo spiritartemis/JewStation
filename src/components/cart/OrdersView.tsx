@@ -27,8 +27,12 @@ import type { OrderStatus } from "@/lib/store/types";
  * 状态一律以服务端为准，本地不缓存任何状态——用户付完款回来点「刷新状态」即可更新。
  * 0.4.7：卡片为每一件商品渲染小图 + 右侧标题，数据来自 /api/orders 返回的 items 摘要，
  * 图片走构建期静态 WebP，破图退回宝石占位。
+ * 0.4.8：小图与标题各自链到该商品详情页；slug 由服务端校验「仍在目录中」后才回传，
+ * 为空时退化成纯文本，不制造死链。sharecode 由 SharecodeKeeper 自动补到这些站内链接上。
  */
 type OrderItem = {
+  /** 空字符串 = 商品已下架，不给详情页链接 */
+  slug: string;
   title: string;
   imageUrl: string | null;
   qty: number;
@@ -380,28 +384,59 @@ export function OrdersView({ locale }: { locale: Locale }) {
                   </div>
                 </dl>
 
-                {/* 0.4.7：每一件商品都要露脸——小图 + 右侧标题，多件按行铺开 */}
+                {/* 0.4.7 每件商品露脸；0.4.8 小图和标题各自链回该商品详情页 */}
                 {s.items.length > 0 ? (
                   <ul className="mt-sp3 divide-y divide-line border-y border-line">
-                    {s.items.map((item, i) => (
-                      <li
-                        key={`${item.title}-${item.imageUrl ?? "none"}-${i}`}
-                        className="flex items-center gap-sp3 py-sp2"
-                      >
-                        <OrderItemThumb src={item.imageUrl} alt={item.title} />
-                        <div className="min-w-0 flex-1">
-                          <p className="line-clamp-2 text-body text-ink">{item.title || "—"}</p>
-                          {item.options.length ? (
-                            <p className="mt-sp1 line-clamp-1 text-aux text-muted">
-                              {item.options.map((o) => `${o.name}: ${o.value}`).join(" · ")}
-                            </p>
-                          ) : null}
-                        </div>
-                        <span className="shrink-0 text-aux tabular-nums text-muted">
-                          × {item.qty}
-                        </span>
-                      </li>
-                    ))}
+                    {s.items.map((item, i) => {
+                      const name = item.title || "—";
+                      // 服务端只在商品仍在目录中时回传 slug；为空就退化为纯文本，不留死链。
+                      // 站内链接的 sharecode 由 SharecodeKeeper 统一补，不用在这里拼。
+                      const productHref = item.slug
+                        ? localePath(locale, `/products/${item.slug}`)
+                        : "";
+                      const thumb = <OrderItemThumb src={item.imageUrl} alt={name} />;
+                      return (
+                        <li
+                          key={`${item.slug || item.title}-${item.imageUrl ?? "none"}-${i}`}
+                          className="flex items-center gap-sp3 py-sp2"
+                        >
+                          {productHref ? (
+                            // 小图链接只做鼠标点击区；标题链接才是键盘/读屏的主入口，
+                            // 避免 Tab 重复经过同一个目标。
+                            <Link
+                              href={productHref}
+                              aria-hidden="true"
+                              tabIndex={-1}
+                              className="shrink-0 rounded-btn transition-opacity duration-fade hover:opacity-80"
+                            >
+                              {thumb}
+                            </Link>
+                          ) : (
+                            thumb
+                          )}
+                          <div className="min-w-0 flex-1">
+                            {productHref ? (
+                              <Link
+                                href={productHref}
+                                className="block line-clamp-2 text-body text-ink hover:text-accent hover:underline"
+                              >
+                                {name}
+                              </Link>
+                            ) : (
+                              <p className="line-clamp-2 text-body text-ink">{name}</p>
+                            )}
+                            {item.options.length ? (
+                              <p className="mt-sp1 line-clamp-1 text-aux text-muted">
+                                {item.options.map((o) => `${o.name}: ${o.value}`).join(" · ")}
+                              </p>
+                            ) : null}
+                          </div>
+                          <span className="shrink-0 text-aux tabular-nums text-muted">
+                            × {item.qty}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : null}
 
