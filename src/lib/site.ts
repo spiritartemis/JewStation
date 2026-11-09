@@ -31,9 +31,9 @@ export const SITE = {
    */
   supportEmail: null as string | null,
   /** 站点版本（随每次发布递增） */
-  version: "0.4.8",
+  version: "0.4.9",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-11-07 11:56",
+  updatedAt: "2026-11-09 14:00",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];
@@ -54,4 +54,19 @@ export const SHIPPING = {
   /** Q-32 价含税 + DDP 我方申报 */
   taxIncluded: true,
   dutyPaid: true,
+};
+
+/**
+ * 购买数量上限（0.4.9 站长可配置接口）
+ *
+ * `maxPerLine` 是**每条商品行**最多可买几件：
+ *   · 填正整数（例如 9）→ 所有非孤品最多买这么多件，且不超过库存；
+ *   · 留 null（默认）→ 不做额外限制，库存多少就能买几件；
+ *   · 孤品恒为 1 件，不受此配置影响。
+ *
+ * 这是全站唯一真源：详情页、购物袋、本地存储反序列化、服务端下单校验
+ * 都走 `cart.ts` 的 `maxQtyFor()`，不要在各处另写数字。
+ */
+export const PURCHASE_LIMITS: { maxPerLine: number | null } = {
+  maxPerLine: null,
 };

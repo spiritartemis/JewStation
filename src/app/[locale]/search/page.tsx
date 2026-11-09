@@ -19,7 +19,9 @@ import { getMessages } from "@/i18n/messages";
  */
 type PageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string | string[] }>;
+  /** 0.4.9：原生 GET 表单提交会丢掉地址栏里的 sharecode，网关会直接拦成 403。
+   *  把当前分享码作为隐藏字段随表单一起提交，保证无 JS 时也能正常搜索。 */
+  searchParams: Promise<{ q?: string | string[]; sharecode?: string | string[] }>;
 };
 
 const SUGGESTION_TAGS = [
@@ -73,12 +75,15 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
   const sp = await searchParams;
   const rawQuery = Array.isArray(sp.q) ? sp.q[0] : sp.q;
   const query = (rawQuery ?? "").trim();
+  const rawCode = Array.isArray(sp.sharecode) ? sp.sharecode[0] : sp.sharecode;
+  const sharecode = typeof rawCode === "string" ? rawCode : "";
   const results = query ? searchProducts(query) : [];
 
   return (
     <div className="shell py-sp5 pb-sp6">
       {/* 原生 GET 表单：无 JS 也可用；action 带语言前缀，否则中文页搜一次就掉回英文页 */}
       <form action={searchHref} method="get" className="flex items-center gap-sp2">
+        {sharecode ? <input type="hidden" name="sharecode" value={sharecode} /> : null}
         <label htmlFor="q" className="sr-only">
           {m.search.labelAria}
         </label>

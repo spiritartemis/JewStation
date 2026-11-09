@@ -5,7 +5,7 @@ import { ActiveFilters } from "@/components/product/ActiveFilters";
 import { SortSelect } from "@/components/product/SortSelect";
 import { ListSearch } from "@/components/product/ListSearch";
 import { ProductGrid, ProductGridEmpty } from "@/components/product/ProductGrid";
-import { parseListParams, toProductFilters, countActiveFilters } from "@/lib/filters";
+import { parseListParams, toProductFilters, countActiveFilters, buildQueryString } from "@/lib/filters";
 import { getAllProducts, getFilteredProducts, searchProducts } from "@/lib/products";
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
@@ -101,15 +101,42 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
           ) : (
             <ProductGridEmpty
               locale={locale}
-              message={keyword ? m.list.noMatchQuery(keyword) : undefined}
+              /* 0.4.9：站内搜索会与已选筛选叠加。以前只说「没找到与 X 匹配的商品」，
+                 用户以为搜索坏了 —— 其实是 X 存在但被别的品类条件挡掉了。
+                 这里把原因写明，并给「只看搜索结果」的一键脱离入口。 */
+              message={
+                keyword
+                  ? activeCount > 0
+                    ? m.list.noMatchQueryFiltered(keyword, activeCount)
+                    : m.list.noMatchQuery(keyword)
+                  : undefined
+              }
               onClear={
                 narrowed ? (
-                  <Link
-                    href={basePath}
-                    className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"
-                  >
-                    {m.list.clearFilters}
-                  </Link>
+                  <div className="flex flex-wrap justify-center gap-sp2">
+                    {keyword && activeCount > 0 ? (
+                      <Link
+                        href={`${basePath}${buildQueryString({ q: keyword })}`}
+                        className="inline-flex h-12 items-center justify-center rounded-btn bg-accent px-sp5 text-body text-onAccent"
+                      >
+                        {m.list.searchOnly}
+                      </Link>
+                    ) : null}
+                    {keyword ? (
+                      <Link
+                        href={`${basePath}${buildQueryString({ ...listParams, q: undefined })}`}
+                        className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"
+                      >
+                        {m.list.clearSearchKeepFilters}
+                      </Link>
+                    ) : null}
+                    <Link
+                      href={basePath}
+                      className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"
+                    >
+                      {m.list.clearFilters}
+                    </Link>
+                  </div>
                 ) : undefined
               }
             />

@@ -1,4 +1,4 @@
-import { SHIPPING } from "./site";
+import { SHIPPING, PURCHASE_LIMITS } from "./site";
 
 /**
  * 购物袋数据模型与金额规则（m-1c / 1c-0 + 1c-5）
@@ -31,8 +31,23 @@ export type CartLine = {
 
 /** localStorage 键名带版本：结构变更时直接丢弃旧数据，不做迁移（购物袋丢了比算错便宜） */
 export const CART_STORAGE_KEY = "mm.cart.v1";
-/** 单行上限：可补货款也别让一个人一次买走 30 件，手工商品产能有限 */
-export const MAX_QTY_PER_LINE = 9;
+/**
+ * 0.4.9：单行可买上限的唯一计算入口。
+ * 站长可在 `site.ts` 的 `PURCHASE_LIMITS.maxPerLine` 规定一个全局上限；
+ * 留 null 就完全按库存来（用户要求「不规定则库存多少即可买几件」）。
+ * 孤品恒 1 件，不受配置影响。
+ */
+export function maxQtyFor(stock: number, oneOfAKind: boolean): number {
+  if (oneOfAKind) return 1;
+  const available = Math.max(1, Math.floor(Number.isFinite(stock) ? stock : 1));
+  const cap = PURCHASE_LIMITS.maxPerLine;
+  return typeof cap === "number" && Number.isFinite(cap) && cap > 0
+    ? Math.max(1, Math.min(Math.floor(cap), available))
+    : available;
+}
+
+/** 只用于 localStorage 反序列化的防脏数据硬上限，不是业务规则 */
+const MAX_QTY_SANITY = 9999;
 
 /** 同款不同规格要能分开：规格参与 key */
 export function lineKeyOf(slug: string, options: CartOption[]): string {
@@ -103,7 +118,7 @@ export function sanitizeCart(raw: unknown): CartLine[] {
     if (!isNum(o.priceUsd) || o.priceUsd < 0) continue;
     if (typeof o.key !== "string") continue;
 
-    const maxQty = isNum(o.maxQty) ? Math.max(1, Math.min(MAX_QTY_PER_LINE, Math.floor(o.maxQty))) : 1;
+    const maxQty = isNum(o.maxQty) ? Math.max(1, Math.min(MAX_QTY_SANITY, Math.floor(o.maxQty))) : 1;
     const qty = isNum(o.qty) ? Math.max(1, Math.min(maxQty, Math.floor(o.qty))) : 1;
 
     const options = Array.isArray(o.options)

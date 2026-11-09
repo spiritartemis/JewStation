@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Price } from "@/components/currency/Price";
 import { OrderHistoryRecorder } from "@/components/cart/OrderHistoryRecorder";
 import { getStore, isEphemeralStore, type OrderStatus } from "@/lib/store";
+import { getProductBySlug } from "@/lib/products";
+import { localizeProduct } from "@/lib/types";
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -122,20 +124,25 @@ export default async function OrderPage({ params, searchParams }: PageProps) {
       <section className="mt-sp5">
         <h2 className="text-h2 text-ink">{m.order.items}</h2>
         <ul className="mt-sp3 divide-y divide-line border-y border-line">
-          {order.lines.map((line) => (
-            <li key={`${line.slug}-${line.options.map((o) => o.value).join("-")}`} className="flex justify-between gap-sp3 py-sp3">
-              <div className="min-w-0">
-                <p className="text-body text-ink">{line.title}</p>
-                {line.options.length ? (
-                  <p className="mt-sp1 text-aux text-muted">
-                    {line.options.map((o) => `${o.name}: ${o.value}`).join(" · ")}
-                  </p>
-                ) : null}
-                <p className="mt-sp1 text-aux text-muted">× {line.qty}</p>
-              </div>
-              <Price usd={line.priceUsd * line.qty} className="shrink-0 text-body text-ink" />
-            </li>
-          ))}
+          {order.lines.map((line) => {
+            // 0.4.9：确认页的商品名也按当前页面语言显示，不用下单时的语言快照
+            const found = getProductBySlug(line.slug);
+            const title = found ? localizeProduct(found, locale).title : line.title;
+            return (
+              <li key={`${line.slug}-${line.options.map((o) => o.value).join("-")}`} className="flex justify-between gap-sp3 py-sp3">
+                <div className="min-w-0">
+                  <p className="text-body text-ink">{title}</p>
+                  {line.options.length ? (
+                    <p className="mt-sp1 text-aux text-muted">
+                      {line.options.map((o) => `${o.name}: ${o.value}`).join(" · ")}
+                    </p>
+                  ) : null}
+                  <p className="mt-sp1 text-aux text-muted">× {line.qty}</p>
+                </div>
+                <Price usd={line.priceUsd * line.qty} className="shrink-0 text-body text-ink" />
+              </li>
+            );
+          })}
         </ul>
 
         <dl className="mt-sp3 space-y-sp2 text-body">

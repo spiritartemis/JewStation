@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { getProductBySlug } from "@/lib/products";
 import { localizeProduct } from "@/lib/types";
-import { cartTotals, MAX_QTY_PER_LINE, type CartLine } from "@/lib/cart";
+import { cartTotals, maxQtyFor, type CartLine } from "@/lib/cart";
 import { SHIPPING } from "@/lib/site";
 import { getStore, type Order, type OrderLine, type ShipTo } from "@/lib/store";
 
@@ -78,7 +78,7 @@ export function resolveLines(input: CheckoutLineInput[], locale: "en" | "zh" = "
     if (!found) return { ok: false, code: "unknown_product", slug: raw.slug };
 
     const oneOfAKind = found.productType === "one_of_a_kind";
-    const maxQty = oneOfAKind ? 1 : Math.max(1, Math.min(MAX_QTY_PER_LINE, found.stock));
+    const maxQty = maxQtyFor(found.stock, oneOfAKind);
     const qty = Math.floor(Number(raw.qty));
     if (!Number.isFinite(qty) || qty < 1) return { ok: false, code: "qty_limit", slug: raw.slug };
     if (qty > maxQty) return { ok: false, code: "qty_limit", slug: raw.slug };

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStore } from "@/lib/store";
 import { getProductBySlug } from "@/lib/products";
+import { localizeProduct } from "@/lib/types";
 import { MAX_ORDER_HISTORY } from "@/lib/order-history";
 import type { OrderStatus } from "@/lib/store/types";
 
@@ -48,6 +49,10 @@ export async function POST(req: Request) {
   if (!Array.isArray(list)) {
     return NextResponse.json({ ok: false, code: "bad_request" }, { status: 400 });
   }
+  // 0.4.9：商品标题按「当前页面语言」取目录里的译名，而不是下单那一刻的语言快照。
+  // 只认 en / zh，其它值一律回落英文，不让请求体决定类型。
+  const rawLocale = (body as { locale?: unknown } | null)?.locale;
+  const locale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
   if (list.length > MAX_ORDER_HISTORY) {
     return NextResponse.json({ ok: false, code: "too_many" }, { status: 400 });
   }
@@ -67,25 +72,31 @@ export async function POST(req: Request) {
       // 0.4.7：把订单快照里的每一件商品交给列表页画小图。
       // 图片只认本站 /images/ 下的静态文件名：订单是历史数据，不能让一个被改过的
       // imageUrl 把页面变成外链图片加载器。字段一律夹紧，避免脏数据撑爆卡片。
-      const items = order.lines.slice(0, 20).map((l) => ({
+      const items = order.lines.slice(0, 20).map((l) => {
         // 0.4.8：slug 既要格式合法、又要仍在商品目录里，才允许列表页生成详情页链接。
         // 历史订单里的商品若已下架，slug 留空 → 该行退化为纯文本，不制造 404 死链。
-        slug:
-          typeof l.slug === "string" && SLUG_RE.test(l.slug) && getProductBySlug(l.slug)
-            ? l.slug
-            : "",
-        title: String(l.title ?? "").slice(0, 120),
-        imageUrl:
-          typeof l.imageUrl === "string" &&
-          /^\/images\/[A-Za-z0-9._-]+\.(jpe?g|png)$/i.test(l.imageUrl)
-            ? l.imageUrl
-            : null,
-        qty: Number.isFinite(l.qty) ? Math.max(1, Math.floor(l.qty)) : 1,
-        options: (Array.isArray(l.options) ? l.options : []).slice(0, 6).map((o) => ({
-          name: String(o?.name ?? "").slice(0, 60),
-          value: String(o?.value ?? "").slice(0, 120),
-        })),
-      }));
+        const product =
+          typeof l.slug === "string" && SLUG_RE.test(l.slug)
+            ? getProductBySlug(l.slug)
+            : undefined;
+        const slug = product && typeof l.slug === "string" ? l.slug : "";
+        // 0.4.9：在售商品直接用当前语言的目录译名；已下架的才退回订单快照。
+        const title = product ? localizeProduct(product, locale).title : String(l.title ?? "");
+        return {
+          slug,
+          title: title.slice(0, 120),
+          imageUrl:
+            typeof l.imageUrl === "string" &&
+            /^\/images\/[A-Za-z0-9._-]+\.(jpe?g|png)$/i.test(l.imageUrl)
+              ? l.imageUrl
+              : null,
+          qty: Number.isFinite(l.qty) ? Math.max(1, Math.floor(l.qty)) : 1,
+          options: (Array.isArray(l.options) ? l.options : []).slice(0, 6).map((o) => ({
+            name: String(o?.name ?? "").slice(0, 60),
+            value: String(o?.value ?? "").slice(0, 120),
+          })),
+        };
+      });
 
       out.push({
         id: order.id,

@@ -114,6 +114,11 @@ const en = {
     countOnly: (n: number) => `${n} product${n === 1 ? "" : "s"}`,
     noMatch: "No products match these filters.",
     noMatchQuery: (q: string) => `No products match "${q}".`,
+    /** 0.4.9：搜索与筛选叠加时，说清「是被筛选挡掉了」，并给一键脱离的入口 */
+    noMatchQueryFiltered: (q: string, n: number) =>
+      `No products match "${q}" under the current ${n} filter${n === 1 ? "" : "s"}.`,
+    searchOnly: "Search without filters",
+    clearSearchKeepFilters: "Clear search term",
     clearFilters: "Clear filters",
     filter: "Filter",
     filters: "Filters",
@@ -216,6 +221,16 @@ const en = {
     viewBagHint: "Add a piece to your bag first.",
     added: "Added to your bag",
     oneOfAKindNote: "One of a kind — only one exists.",
+    /** 0.4.9 批量选择与上限提示 */
+    limitReached: "You've reached the maximum quantity for this item.",
+    selectAll: "Select all",
+    selectItem: (title: string) => `Select ${title}`,
+    selectedCount: (n: number) => `${n} selected`,
+    removeSelected: (n: number) => `Remove selected (${n})`,
+    clearBag: "Clear bag",
+    clearBagConfirm: "Clear the whole bag? This cannot be undone.",
+    confirmClear: "Confirm clear",
+    cancel: "Cancel",
   },
   checkout: {
     metaTitle: "Checkout",
@@ -467,6 +482,11 @@ const zh: Messages = {
     countOnly: (n: number) => `共 ${n} 件`,
     noMatch: "没有符合当前筛选条件的商品。",
     noMatchQuery: (q: string) => `没有找到与「${q}」匹配的商品。`,
+    /** 0.4.9：搜索与筛选叠加时，说清「是被筛选挡掉了」，并给一键脱离的入口 */
+    noMatchQueryFiltered: (q: string, n: number) =>
+      `在当前的 ${n} 个筛选条件下，没有找到与「${q}」匹配的商品。`,
+    searchOnly: "只看搜索结果（清除筛选）",
+    clearSearchKeepFilters: "清除搜索词",
     clearFilters: "清除筛选",
     filter: "筛选",
     filters: "筛选",
@@ -567,6 +587,16 @@ const zh: Messages = {
     viewBagHint: "先往购物袋里加一件商品。",
     added: "已加入购物袋",
     oneOfAKindNote: "孤品仅此一件。",
+    /** 0.4.9 批量选择与上限提示 */
+    limitReached: "您的购买数量已达上限",
+    selectAll: "全选",
+    selectItem: (title: string) => `选择「${title}」`,
+    selectedCount: (n: number) => `已选 ${n} 件`,
+    removeSelected: (n: number) => `删除所选（${n}）`,
+    clearBag: "清空购物袋",
+    clearBagConfirm: "确定清空整个购物袋吗？此操作不可撤销。",
+    confirmClear: "确认清空",
+    cancel: "取消",
   },
   checkout: {
     metaTitle: "结账",

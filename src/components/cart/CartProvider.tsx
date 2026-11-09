@@ -12,7 +12,7 @@ import {
 } from "react";
 import {
   CART_STORAGE_KEY,
-  MAX_QTY_PER_LINE,
+  maxQtyFor,
   cartItemCount,
   lineKeyOf,
   sanitizeCart,
@@ -42,6 +42,8 @@ type CartContextValue = {
   add: (input: Omit<CartLine, "key" | "qty"> & { qty?: number; options: CartOption[] }) => void;
   setQty: (key: string, qty: number) => void;
   remove: (key: string) => void;
+  /** 0.4.9：购物袋批量勾选删除 / 清空 */
+  removeMany: (keys: string[]) => void;
   clear: () => void;
 };
 
@@ -89,7 +91,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const add = useCallback<CartContextValue["add"]>((input) => {
     const { qty = 1, options = [], ...rest } = input;
     const key = lineKeyOf(rest.slug, options);
-    const maxQty = Math.max(1, Math.min(MAX_QTY_PER_LINE, rest.maxQty));
+    // 0.4.9：上限统一由 maxQtyFor 按站点配置 + 库存重算，不再写死 9
+    const maxQty = maxQtyFor(rest.maxQty, rest.oneOfAKind);
 
     setLines((prev) => {
       const i = prev.findIndex((l) => l.key === key);
@@ -114,15 +117,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const remove = useCallback((key: string) => {
-    setLines((prev) => prev.filter((l) => l.key !== key));
+  const removeMany = useCallback((keys: string[]) => {
+    const drop = new Set(keys);
+    setLines((prev) => prev.filter((l) => !drop.has(l.key)));
   }, []);
 
+  const remove = useCallback((key: string) => removeMany([key]), [removeMany]);
+
+  /** 只清购物袋本身，绝不碰订单历史（mm.orders.v1）——两者是独立的 localStorage 键 */
   const clear = useCallback(() => setLines([]), []);
 
   const value = useMemo<CartContextValue>(
-    () => ({ lines, count: cartItemCount(lines), ready, add, setQty, remove, clear }),
-    [lines, ready, add, setQty, remove, clear],
+    () => ({ lines, count: cartItemCount(lines), ready, add, setQty, remove, removeMany, clear }),
+    [lines, ready, add, setQty, remove, removeMany, clear],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

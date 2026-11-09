@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import imageLoader from "@/lib/image-loader";
@@ -50,6 +50,34 @@ type Summary = {
 };
 
 type TabKey = "all" | "unpaid" | "shipping" | "cancelled";
+
+/**
+ * 0.4.9：订单摘要的本机缓存。
+ * 平台网关冷启动时会偶发 503（"workspace not ready"），/api/orders 也跟着失败；
+ * 以前一失败就把列表清成空态，用户看到「待付款订单没了」。现在启动时先渲染缓存，
+ * 失败保留缓存并重试，只有真正成功才覆盖。
+ */
+const SUMMARY_CACHE_KEY = "mm.orders.cache.v1";
+
+function readCachedSummaries(): Summary[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SUMMARY_CACHE_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as Summary[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCachedSummaries(list: Summary[]) {
+  try {
+    window.localStorage.setItem(SUMMARY_CACHE_KEY, JSON.stringify(list));
+  } catch {
+    /* 隐私模式下缓存不可用，不影响本次会话 */
+  }
+}
 
 const TAB_OF: Record<OrderStatus, TabKey> = {
   created: "unpaid",
@@ -171,33 +199,56 @@ export function OrdersView({ locale }: { locale: Locale }) {
   const [linkInput, setLinkInput] = useState("");
   const [addMessage, setAddMessage] = useState<"ok" | "bad" | null>(null);
 
+  /** 快速刷新 / 跨标签同步会连发多次 load，只有最后一次请求的结果允许落盘 */
+  const reqId = useRef(0);
+
   const load = useCallback(async () => {
+    const id = ++reqId.current;
     const creds = readOrderHistory();
     setCredentials(creds);
     setReady(true);
+
+    // 先垫上本机缓存：刷新那一瞬不会先闪一个「还没有订单」
+    const cached = readCachedSummaries();
+    if (cached.length) setSummaries((prev) => (prev.length ? prev : cached));
+
     if (creds.length === 0) {
-      setSummaries([]);
       setFailed(false);
+      setLoading(false);
       return;
     }
+
     setLoading(true);
     setFailed(false);
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orders: creds.map(({ id, token }) => ({ id, token })) }),
-      });
-      if (!res.ok) throw new Error("orders query failed");
-      const data = (await res.json()) as { ok: boolean; orders: Summary[] };
-      if (!data.ok) throw new Error("orders query failed");
-      setSummaries(data.orders);
-    } catch {
-      setFailed(true);
-    } finally {
-      setLoading(false);
+    let ok = false;
+    // 网关冷启动 / 云数据库抖动时重试两次（0.7s、1.4s），仍失败就保留缓存并显示提示
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orders: creds.map(({ id: oid, token }) => ({ id: oid, token })),
+            locale,
+          }),
+        });
+        if (!res.ok) throw new Error("orders query failed");
+        const data = (await res.json()) as { ok: boolean; orders: Summary[] };
+        if (!data.ok) throw new Error("orders query failed");
+        if (id !== reqId.current) return;
+        setSummaries(data.orders);
+        writeCachedSummaries(data.orders);
+        ok = true;
+        break;
+      } catch {
+        if (id !== reqId.current) return;
+        if (attempt < 2) await new Promise((r) => setTimeout(r, 700 * (attempt + 1)));
+      }
     }
-  }, []);
+    if (id !== reqId.current) return;
+    setFailed(!ok);
+    setLoading(false);
+  }, [locale]);
 
   /** 旧订单补登记：粘一条带 token 的确认页链接即可，服务端仍会逐条校验口令 */
   const addExisting = (e: React.FormEvent) => {
@@ -320,7 +371,7 @@ export function OrdersView({ locale }: { locale: Locale }) {
 
       {loading && summaries.length === 0 ? (
         <p className="mt-sp5 text-body text-muted">{m.orders.loading}</p>
-      ) : credentials.length === 0 ? (
+      ) : credentials.length === 0 && summaries.length === 0 ? (
         <div className="mt-sp6 rounded-card border border-line bg-surface px-sp4 py-sp7 text-center">
           <h2 className="font-serif text-h2 text-ink">{m.orders.emptyTitle}</h2>
           <p className="mx-auto mt-sp2 max-w-[46ch] text-body text-muted">{m.orders.emptyBody}</p>

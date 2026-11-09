@@ -5,7 +5,7 @@ import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { optionName, optionValueLabel, type Product } from "@/lib/types";
-import { MAX_QTY_PER_LINE, type CartOption } from "@/lib/cart";
+import { maxQtyFor, lineKeyOf, type CartOption } from "@/lib/cart";
 import { useProductSpec } from "@/components/product/ProductSpecContext";
 import { useCart } from "./CartProvider";
 import { flyToBag, popBagButton } from "./flyToBag";
@@ -32,12 +32,14 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
   const cart = useCart();
   const spec = useProductSpec();
   const [justAdded, setJustAdded] = useState(false);
+  const [limitNotice, setLimitNotice] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const viewBagRef = useRef<HTMLAnchorElement>(null);
 
   const sold = product.stock <= 0;
   const oneOfAKind = product.productType === "one_of_a_kind";
-  const maxQty = oneOfAKind ? 1 : Math.max(1, Math.min(MAX_QTY_PER_LINE, product.stock));
+  // 0.4.9：上限由站点配置 + 库存统一决定，不再写死 9 件
+  const maxQty = maxQtyFor(product.stock, oneOfAKind);
 
   // 规格的展示值随语言走（切语言不会出现「选了中文值、袋里存英文」）
   const options: CartOption[] = (spec?.options ?? [])
@@ -53,6 +55,17 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
 
   const onClick = () => {
     if (sold) return;
+
+    // 0.4.9：袋里这件已经到上限时，不再静默吞掉点击（数量看着不动、按钮也没反应），
+    // 也不再播飞入动画假装加进去了 —— 直接弹出明确提示。
+    const key = lineKeyOf(product.slug, options);
+    const existing = cart.lines.find((l) => l.key === key);
+    if (existing && existing.qty >= maxQty) {
+      setLimitNotice(true);
+      window.setTimeout(() => setLimitNotice(false), 3000);
+      return;
+    }
+
     cart.add({
       slug: product.slug,
       title: product.title,
@@ -139,6 +152,16 @@ export function AddToCart({ product, locale }: { product: Product; locale: Local
       <p id="cart-note" className="mt-sp2 text-aux text-muted">
         {oneOfAKind ? m.cart.oneOfAKindNote : m.product.checkoutNote}
       </p>
+
+      {/* 0.4.9：达到购买上限时的浮层提示；role=status 让读屏也会播报 */}
+      {limitNotice ? (
+        <div
+          role="status"
+          className="fade-in fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-btn border border-accent bg-surface px-sp5 py-sp3 text-center text-body text-ink"
+        >
+          {m.cart.limitReached}
+        </div>
+      ) : null}
     </div>
   );
 }
