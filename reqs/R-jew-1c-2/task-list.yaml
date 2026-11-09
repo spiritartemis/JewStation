@@ -10,7 +10,23 @@ tasks:
   - id: T-jew-1c-2-01
     title: 实现库存与订单状态（0.3-03）
     executor: local
-    status: ready
+    status: review
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/lib/orders.ts
+        kind: file
+        checksum: sha256:594951c7fe52247b3c6643355e1c1465dd4725f1e1c4f83a3f17846fcd069912
+        at: 2026-11-09T12:44:59Z
+        source: worktree
+      - path: db/migrations/001_init.sql
+        kind: file
+        checksum: sha256:b6f04f175d4acbda33bc95a73ccb56c84dae29d8c94677a26b00ca1a198f207a
+        at: 2026-11-09T12:44:59Z
+        source: worktree
+      - path: db/migrations/002_order_status_guard.sql
+        kind: file
+        checksum: sha256:6b0fe5f11361412a7b1bd4051ed88c7903863e5dcc6cc37b9b2a00a942022dc6
+        at: 2026-11-09T12:45:00Z
+        source: worktree
