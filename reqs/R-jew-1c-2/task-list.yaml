@@ -10,7 +10,7 @@ tasks:
   - id: T-jew-1c-2-01
     title: 实现库存与订单状态（0.3-03）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     input: |
       （待总控补充输入）
@@ -30,3 +30,9 @@ tasks:
         checksum: sha256:6b0fe5f11361412a7b1bd4051ed88c7903863e5dcc6cc37b9b2a00a942022dc6
         at: 2026-11-09T12:45:00Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-09T12:45:02Z
+      note: |
+        线上 0.4.11 核验：订单状态与库存口径一致；数据库函数体与线上 pg_get_functiondef 规范化比对 9/9 一致。
