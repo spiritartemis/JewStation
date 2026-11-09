@@ -10,7 +10,7 @@ tasks:
   - id: T-jew-1c-3-01
     title: 实现订单确认页（0.3-04）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     input: |
       （待总控补充输入）
@@ -20,3 +20,9 @@ tasks:
         checksum: sha256:13cf61e76e0106b73c17e9a5e181be42117e7141181efd8452dcaf3676abaef3
         at: 2026-11-09T12:45:06Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-09T12:45:08Z
+      note: |
+        线上 0.4.11 核验：中文确认页显示中文商品名、英文页显示英文，无英文串味。
