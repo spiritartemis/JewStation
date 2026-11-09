@@ -20,6 +20,10 @@ type GroupKey = "category" | "style" | "material" | "type" | "price";
 type Group = { key: GroupKey; title: string; options: { value: string; label: string }[] };
 
 /**
+ * 0.4.10 起**不再挂载在任何列表页**：站长把左侧的分类勾选整体迁到了 /search
+ * （见 SearchCategoryFilters.tsx）。本文件保留作为完整筛选组（风格/材质/类型/价格）
+ * 与移动端抽屉的实现备查，日后要恢复侧栏或做后台筛选可直接复用。
+ *
  * 筛选与排序（B-2.3：可叠加、每个值可直达 URL）
  * 移动端：吸顶「Filter (n)」按钮 → 底部抽屉，底部双按钮 Clear / Show N results
  * 桌面端：同一套分组渲染为侧栏，不做桌面专属交互

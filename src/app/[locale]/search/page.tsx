@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { searchProducts } from "@/lib/products";
+import { SearchCategoryFilters } from "@/components/product/SearchCategoryFilters";
+import { getAllProducts, getFilteredProducts, searchProducts } from "@/lib/products";
+import { parseListParams, toProductFilters, splitList } from "@/lib/filters";
 import { buildMetadata } from "@/lib/seo";
 import { CATEGORY_TAGS, MATERIAL_TAGS, STYLE_TAGS, tagLabel } from "@/lib/tags";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
@@ -10,18 +12,21 @@ import { getMessages } from "@/i18n/messages";
 /**
  * 搜索结果页（B-2.5）
  * - 命中商品标题与标签（多词按 AND 匹配，见 lib/products.ts）
- * - 三个状态齐备：空查询（未输入）· 无结果 · 有结果
- * - 「清空搜索」在**有结果时同样可用**（否则用户只能手动删掉输入框）
- * - 状态为空时给可点的建议词，避免死路
+ * - 三个状态齐备：空查询 · 无结果 · 有结果
+ * - 「清空条件」在有结果时同样可用（否则用户只能手动删掉输入框/取消勾选）
  *
- * 双语（Q-02）：建议词取当前语言的标签名，但搜索仍需能命中英文标题 ——
- * 所以建议词同时带上标签 slug，搜索时 slug 与展示名都参与匹配。
+ * 0.4.10：站长把列表页左侧的分类勾选搬到了这里。
+ * 品类沿用列表页的 URL 口径 `category=a,b`，与搜索词 q 取交集，可分享可回退；
+ * 原生 GET 表单里带隐藏 category / sharecode 字段，改搜索词时不会把已选品类丢掉。
+ *
+ * 双语（Q-02）：建议词取当前语言的标签名，但搜索仍需能命中英文标题。
  */
 type PageProps = {
   params: Promise<{ locale: string }>;
   /** 0.4.9：原生 GET 表单提交会丢掉地址栏里的 sharecode，网关会直接拦成 403。
-   *  把当前分享码作为隐藏字段随表单一起提交，保证无 JS 时也能正常搜索。 */
-  searchParams: Promise<{ q?: string | string[]; sharecode?: string | string[] }>;
+   *  把当前分享码作为隐藏字段随表单一起提交，保证无 JS 时也能正常搜索。
+   *  0.4.10：品类参数也一并保留。 */
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 const SUGGESTION_TAGS = [
@@ -73,17 +78,28 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
   const searchHref = localePath(locale, "/search");
 
   const sp = await searchParams;
+  const listParams = parseListParams(sp);
   const rawQuery = Array.isArray(sp.q) ? sp.q[0] : sp.q;
   const query = (rawQuery ?? "").trim();
   const rawCode = Array.isArray(sp.sharecode) ? sp.sharecode[0] : sp.sharecode;
   const sharecode = typeof rawCode === "string" ? rawCode : "";
-  const results = query ? searchProducts(query) : [];
+
+  const categories = splitList(listParams.category);
+  const hasQuery = query.length > 0;
+  const hasCategory = categories.length > 0;
+  // 只勾品类、没输关键词时也要出结果，否则勾选框看起来像坏了
+  const showResults = hasQuery || hasCategory;
+  const base = hasQuery ? searchProducts(query) : getAllProducts();
+  const results = showResults ? getFilteredProducts(toProductFilters(listParams), base) : [];
 
   return (
     <div className="shell py-sp5 pb-sp6">
       {/* 原生 GET 表单：无 JS 也可用；action 带语言前缀，否则中文页搜一次就掉回英文页 */}
       <form action={searchHref} method="get" className="flex items-center gap-sp2">
         {sharecode ? <input type="hidden" name="sharecode" value={sharecode} /> : null}
+        {categories.length ? (
+          <input type="hidden" name="category" value={categories.join(",")} />
+        ) : null}
         <label htmlFor="q" className="sr-only">
           {m.search.labelAria}
         </label>
@@ -100,8 +116,11 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
         </button>
       </form>
 
+      {/* 0.4.10：从列表页左侧搬过来的分类勾选，始终可见 */}
+      <SearchCategoryFilters params={listParams} basePath={searchHref} locale={locale} />
+
       <div className="mt-sp5">
-        {!query ? (
+        {!showResults ? (
           <div className="py-sp6 text-center">
             <h1 className="font-serif text-h1 text-ink">{m.search.title}</h1>
             <p className="mt-sp3 text-body text-muted">{m.search.hint}</p>
@@ -111,14 +130,22 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
           <>
             <div className="mb-sp4 flex flex-wrap items-baseline justify-between gap-sp2">
               {/* 有结果时页面原先没有 h1（只有一句统计文案），读屏与 SEO 都缺页面主题 */}
+              {/* 只勾品类、没输关键词时不要再写一遍「搜索结果 / Search results」，
+                  否则会读成「搜索结果共 3 件结果」 */}
               <h1 className="text-body text-ink">
-                {locale === "zh" ? "搜索结果" : "Search results"}
-                <span className="ml-sp2 text-aux text-muted">
-                  {m.search.resultsFor(results.length, query)}
-                </span>
+                {hasQuery ? (
+                  <>
+                    {locale === "zh" ? "搜索结果" : "Search results"}
+                    <span className="ml-sp2 text-aux text-muted">
+                      {m.search.resultsFor(results.length, query)}
+                    </span>
+                  </>
+                ) : (
+                  m.search.resultsCount(results.length)
+                )}
               </h1>
               <Link href={searchHref} className="text-aux text-muted underline hover:text-accent">
-                {m.search.clearSearch}
+                {m.search.clearAll}
               </Link>
             </div>
             <ProductGrid products={results} locale={locale} />
@@ -126,14 +153,16 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
         ) : (
           <div className="py-sp6 text-center">
             <h1 className="font-serif text-h1 text-ink">{m.search.noResults}</h1>
-            <p className="mt-sp3 text-body text-muted">{m.search.noResultsHint(query)}</p>
+            <p className="mt-sp3 text-body text-muted">
+              {hasQuery ? m.search.noResultsHint(query) : m.search.noResultsHintCategories}
+            </p>
             <SuggestionChips locale={locale} />
             <div className="mt-sp5 flex flex-wrap justify-center gap-sp3">
               <Link
                 href={searchHref}
                 className="inline-flex h-12 items-center justify-center rounded-btn border border-line px-sp5 text-body text-ink"
               >
-                {m.search.clearSearch}
+                {m.search.clearAll}
               </Link>
               <Link
                 href={localePath(locale, "/shop")}

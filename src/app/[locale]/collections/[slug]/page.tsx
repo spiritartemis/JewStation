@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FilterControls } from "@/components/product/FilterControls";
 import { ActiveFilters } from "@/components/product/ActiveFilters";
 import { SortSelect } from "@/components/product/SortSelect";
 import { ListSearch } from "@/components/product/ListSearch";
@@ -91,16 +90,14 @@ export default async function CollectionPage({ params, searchParams }: PageProps
 
       <ActiveFilters params={listParams} basePath={basePath} locale={locale} />
 
-      {/* 与商品列表页同一口径：两栏容器落在 .shell 内，标题与网格才会左对齐 */}
-      <div className="shell lg:mt-sp5 lg:flex lg:gap-sp6">
-        <FilterControls
-          params={listParams}
-          resultCount={products.length}
-          basePath={basePath}
-          locale={locale}
-        />
+      {/* 0.4.10：与 /shop 同口径 —— 左侧分类勾选迁到 /search，
+          移动端只留排序，桌面端排序在右上角 */}
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-30 flex items-center justify-end border-b border-line bg-bg/95 px-sp4 py-sp2 backdrop-blur lg:hidden">
+        <SortSelect params={listParams} basePath={basePath} locale={locale} />
+      </div>
 
-        <div className="min-w-0 flex-1">
+      <div className="shell lg:mt-sp5">
+        <div className="min-w-0">
           {products.length > 0 ? (
             <ProductGrid products={products} locale={locale} />
           ) : (

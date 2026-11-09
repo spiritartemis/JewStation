@@ -194,6 +194,13 @@ const en = {
       `Nothing matches “${q}”. Try a shorter word, or browse all products.`,
     browseAll: "Browse all products",
     labelAria: "Search products",
+    /** 0.4.10：品类勾选从列表页左侧迁到搜索页 */
+    categoryLabel: "Category",
+    categoryHint: "Pick one or more categories to narrow the results.",
+    resultsCount: (n: number) => `${n} result${n === 1 ? "" : "s"}`,
+    clearAll: "Clear all",
+    noResultsHintCategories:
+      "Nothing matches the selected categories. Try another category or browse all products.",
   },
   cart: {
     metaTitle: "Your bag",
@@ -561,6 +568,12 @@ const zh: Messages = {
     noResultsHint: (q: string) => `没有匹配「${q}」的商品，换个更短的词，或浏览全部商品。`,
     browseAll: "浏览全部商品",
     labelAria: "搜索商品",
+    /** 0.4.10：品类勾选从列表页左侧迁到搜索页 */
+    categoryLabel: "品类",
+    categoryHint: "勾选一个或多个品类来收窄结果，可多选。",
+    resultsCount: (n: number) => `共 ${n} 件结果`,
+    clearAll: "清空条件",
+    noResultsHintCategories: "所选品类下没有匹配的商品，换个品类或浏览全部商品。",
   },
   cart: {
     metaTitle: "购物袋",

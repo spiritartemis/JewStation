@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FilterControls } from "@/components/product/FilterControls";
 import { ActiveFilters } from "@/components/product/ActiveFilters";
 import { SortSelect } from "@/components/product/SortSelect";
 import { ListSearch } from "@/components/product/ListSearch";
@@ -85,17 +84,14 @@ export default async function ShopPage({ params, searchParams }: PageProps) {
       {/* 已选筛选显性化：可单独移除，不必重开抽屉 */}
       <ActiveFilters params={listParams} basePath={basePath} locale={locale} />
 
-      {/* 两栏容器回到 .shell：标题在 1200px 栏里，网格也必须对齐，
-          否则宽屏下筛选栏贴边、网格铺满全屏，和标题各说各的 */}
-      <div className="shell lg:mt-sp5 lg:flex lg:gap-sp6">
-        <FilterControls
-          params={listParams}
-          resultCount={products.length}
-          basePath={basePath}
-          locale={locale}
-        />
+      {/* 0.4.10：左侧的分类勾选整组迁到 /search 页，这里不再有两栏侧栏。
+          移动端仍保留排序（原先藏在筛选条里），桌面端排序在右上角。 */}
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-30 flex items-center justify-end border-b border-line bg-bg/95 px-sp4 py-sp2 backdrop-blur lg:hidden">
+        <SortSelect params={listParams} basePath={basePath} locale={locale} />
+      </div>
 
-        <div className="min-w-0 flex-1">
+      <div className="shell lg:mt-sp5">
+        <div className="min-w-0">
           {products.length > 0 ? (
             <ProductGrid products={products} locale={locale} />
           ) : (
