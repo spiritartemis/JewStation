@@ -10,7 +10,7 @@ tasks:
   - id: T-jew-1c-5-01
     title: 实现运费/税费展示规则（0.3-06）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     input: |
       （待总控补充输入）
@@ -25,3 +25,9 @@ tasks:
         checksum: sha256:cec728811d1f4d93e17259985a8c6ef43ac70a83da8489abe0372673de1d6ef6
         at: 2026-11-09T12:45:12Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-09T12:45:14Z
+      note: |
+        线上 0.4.11 核验：金额三处一致，未满 80 收运费、满 80 免运费，含税 DDP 文案齐全。
