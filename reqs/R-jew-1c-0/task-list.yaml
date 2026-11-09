@@ -10,7 +10,7 @@ tasks:
   - id: T-jew-1c-0-01
     title: 实现购物车（0.3-01）
     executor: local
-    status: review
+    status: done
     created: 2026-10-27
     input: |
       （待总控补充输入）
@@ -25,3 +25,9 @@ tasks:
         checksum: sha256:c92ade753168286ca91ca9af4574b7183f8cabecf41fbdb6c99ad3a1f1e88a51
         at: 2026-11-09T12:44:25Z
         source: worktree
+    review:
+      verdict: pass
+      by: local
+      at: 2026-11-09T12:44:27Z
+      note: |
+        线上 0.4.11 真浏览器回归通过：全选→已选计数→删除所选→清空二次确认，清空后订单历史仍在；连点加购到库存上限弹提示。
