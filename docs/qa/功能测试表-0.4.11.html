@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Morrow &amp; Muse 0.4.11 功能测试表</title>
+<style>
+  :root{
+    --bg:#F3F0EA; --surface:#FBFAF7; --ink:#2B2825; --muted:#7A736B;
+    --line:#E2DCD2; --accent:#6F8B72; --accent-soft:#E7EDE6;
+    --fail:#A45B54; --fail-soft:#F3E4E2; --warn:#9A7A42; --warn-soft:#F5EDDD;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+  /* ---------- 顶部 ---------- */
+  header.top{position:sticky;top:0;z-index:20;background:rgba(243,240,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:0 -20px 28px;padding:20px 20px 14px}
+  .eyebrow{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  h1{font-size:24px;line-height:1.3;margin:0 0 8px;font-weight:600;letter-spacing:-.01em}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .meta b{font-weight:600;color:var(--ink)}
+
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+  .seg button{border:0;background:transparent;padding:6px 13px;font-size:12.5px;color:var(--muted);cursor:pointer;font-family:inherit}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+  .seg button + button{border-left:1px solid var(--line)}
+
+  .btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.on{background:var(--accent-soft);border-color:var(--accent);color:#3E5741}
+
+  .prog{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--muted)}
+  .track{flex:1;height:7px;border-radius:99px;background:#DCD5C8;overflow:hidden;min-width:120px;box-shadow:inset 0 1px 1px rgba(0,0,0,.06)}
+  .fill{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+  .prog b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+  /* ---------- 分组 ---------- */
+  section.group{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+  .ghead{display:flex;align-items:baseline;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+  .ghead h2{font-size:15px;margin:0;font-weight:600;flex:1}
+  .ghead .tag{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .ghead .caret{color:var(--muted);font-size:12px;transition:transform .2s}
+  section.group[data-open="false"] .ghead{border-bottom-color:transparent}
+  section.group[data-open="false"] .ghead .caret{transform:rotate(-90deg)}
+  section.group[data-open="false"] table{display:none}
+
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:left;padding:9px 14px;border-bottom:1px solid var(--line);background:#F8F5F0}
+  td{padding:13px 14px;border-bottom:1px solid #EDE8E0;vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tr.pass{background:#F4F7F3}
+  tr.fail{background:#FCF3F2}
+  col.c-id{width:54px} col.c-item{width:auto} col.c-expect{width:34%} col.c-state{width:118px}
+
+  .id{font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+  .item{font-weight:500}
+  .item .sub{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:3px}
+  .star{display:inline-block;font-size:10.5px;color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px;font-weight:500}
+  .exp{color:#4A443D;font-size:13.5px}
+  .exp code, .item code{background:#EFEAE2;border-radius:4px;padding:1px 5px;font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  a.go{display:inline-block;margin-top:6px;font-size:12.5px;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(111,139,114,.35)}
+  a.go:hover{border-bottom-color:var(--accent)}
+  a.go::after{content:" ↗";font-size:11px}
+
+  .state{display:flex;flex-direction:column;gap:6px}
+  .state .row{display:flex;gap:6px}
+  .pill{border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 0;font-size:12px;cursor:pointer;font-family:inherit;flex:1;color:var(--muted);line-height:1.6}
+  .pill:hover{border-color:#CFC7BA}
+  .pill[data-on="pass"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .pill[data-on="fail"]{background:var(--fail);border-color:var(--fail);color:#fff}
+
+  .note{width:100%;margin-top:2px;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font:12.5px/1.5 inherit;color:var(--ink);background:#fff;display:none}
+  tr.fail .note{display:block}
+  .note::placeholder{color:#A9A29A}
+
+  /* ---------- 底部 ---------- */
+  footer.foot{margin-top:26px;font-size:13px;color:var(--muted);line-height:1.8}
+  footer.foot h3{font-size:13.5px;color:var(--ink);margin:0 0 6px;font-weight:600}
+  footer.foot ul{margin:0 0 14px;padding-left:18px}
+  .kbd{background:#EFEAE2;border-radius:4px;padding:1px 5px;font:12px ui-monospace,Menlo,monospace}
+  #out{width:100%;min-height:120px;border:1px solid var(--line);border-radius:8px;padding:10px;font:12px/1.6 ui-monospace,Menlo,monospace;color:var(--ink);background:#fff;display:none}
+
+  @media (max-width:760px){
+    .wrap{padding:0 14px 60px}
+    header.top{margin:0 -14px 20px;padding:16px 14px 12px}
+    h1{font-size:20px}
+    .meta{gap:4px 10px;font-size:12px}
+    .bar{gap:8px}
+    .seg button{padding:6px 10px;font-size:12px}
+    .btn{padding:6px 10px;font-size:12px}
+
+    /* 窄屏：表格塌成卡片，去掉「通过标准」列头，预期文案接在操作下面 */
+    table,tbody,tr,td{display:block;width:100%}
+    colgroup,thead{display:none}
+    tr{padding:14px 14px 12px;border-bottom:1px solid #EDE8E0}
+    tr:last-child{border-bottom:0}
+    td{border:0;padding:0}
+    td.id{margin-bottom:2px}
+    td.exp{margin-top:7px;padding-left:0;color:#4A443D;font-size:13px;line-height:1.55}
+    td.exp::before{content:"预期 · ";color:#A9A29A;font-size:11.5px;letter-spacing:.04em}
+    td:last-child{margin-top:10px}
+    .state{flex-direction:row;align-items:center;gap:8px}
+    .state .row{flex:0 0 auto}
+    .pill{flex:0 0 62px}
+    .note{flex:1;margin-top:0}
+    tr.fail .state{flex-direction:column;align-items:stretch}
+    tr.fail .note{display:block;margin-top:0}
+    .item .sub{font-size:12.5px}
+  }
+  @media print{
+    header.top{position:static;background:#fff}
+    .bar,.state,.seg{display:none}
+    body{background:#fff}
+    section.group{break-inside:avoid}
+    a.go::after{content:""}
+  }
+
+  .kind{display:inline-block;font-size:10.5px;color:#4F6675;background:#E8EFF3;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px;font-weight:500}
+  section.brief{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:18px}
+  section.brief h2{font-size:15px;margin:0 0 10px;font-weight:600}
+  section.brief ol{margin:0;padding-left:20px;font-size:13.5px;color:#4A443D;line-height:1.8}
+  section.brief li{margin-bottom:2px}
+  section.brief code, footer.foot code{background:#EFEAE2;border-radius:4px;padding:1px 5px;font:12px ui-monospace,Menlo,monospace}
+  .mutedbox{background:var(--warn-soft);border:1px solid #E6D9BC;border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.7;color:#6F5B33;margin-top:12px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Morrow &amp; Muse · 站长验收 · 全功能回归</div>
+  <h1>0.4.11 功能测试表</h1>
+  <div class="meta">
+    <span>站点版本 <b>0.4.11</b></span>
+    <span>页面更新时间 <b>2026-11-09 19:16</b></span>
+    <span>共 <b id="allcnt">0</b> 条用例 · 本轮新增 <b id="newcnt">0</b> 项 ★</span>
+    <span>清单生成 <b id="gen"></b></span>
+    <span>线上 <b>morrow-muse.app.workbuddy.host</b></span>
+  </div>
+
+  <div class="bar">
+    <div class="seg" role="group" aria-label="测试环境">
+      <button id="env-local" aria-pressed="true">本地 3100</button>
+      <button id="env-online" aria-pressed="false">线上</button>
+    </div>
+    <button class="btn" id="only-fixed" aria-pressed="false">只看本轮新增 ★</button>
+    <button class="btn" id="copy">复制测试结果</button>
+    <button class="btn" id="print">打印 / 存 PDF</button>
+    <button class="btn" id="reset">清空进度</button>
+  </div>
+
+  <div class="prog">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span><b id="cnt">0</b> / <span id="total">0</span> 已确认</span>
+    <span style="color:#A45B54"><b id="failcnt" style="color:#A45B54">0</b> 项不通过</span>
+  </div>
+</header>
+
+<section class="brief">
+  <h2>本轮新增与恢复（点顶部「只看本轮新增 ★」可单独筛出 J 组 15 条）</h2>
+  <ol>
+    <li><b>0.4.9</b>：订单/确认页/购物袋商品名按当前语言；购买上限可配置并到顶提示；购物袋全选、删除所选、清空；订单缓存与失败重试 —— <code>J1–J11</code></li>
+    <li><b>0.4.10</b>：列表页左侧分类勾选整体迁到搜索页，与搜索词叠加、可写进 URL —— <code>J12–J14</code></li>
+    <li><b>0.4.11</b>：订单摘要缓存按语言隔离；平台回退到 0.4.8 旧构建后重新发布恢复全部改动 —— <code>J3 J15</code></li>
+    <li>H / I 组按站长要求本轮一并纳入待测（已默认展开）；四样外部账号按决定延后到 <b>V1.0 之后</b>接入。</li>
+  </ol>
+  <div class="mutedbox">测试会真实写入线上云数据库（订单、库存、outbox）。测完需要清空测试数据并回补库存，说一声我来清；<b>不要</b>直接删库里别人下的单。<br />验收前<b>先看页脚版本号</b>：平台偶发回退到旧构建，旧版本会让已修的问题「复活」。</div>
+</section>
+
+<main id="app"></main>
+
+<footer class="foot">
+  <h3>怎么用</h3>
+  <ul>
+    <li>顶部环境开关决定每条「打开这条」指向哪里：手机实测选<b>线上</b>，本机开发选<b>本地 3100</b>。线上链接会自动补 sharecode。</li>
+    <li>每条点 <b>通过</b> 或 <b>问题</b>；点「问题」会展开备注框，写一句现象即可。进度存在本机浏览器，刷新不丢。</li>
+    <li>带 <span class="star">本轮新增</span> 的是 0.4.9–0.4.11 新加或改过的点，建议优先测；<span class="kind">工程</span> 需要脚本或数据库权限，人工验收可跳过。</li>
+    <li>测完点「复制测试结果」把文本贴回对话；「打印 / 存 PDF」可留档。分组标题可点击折叠。</li>
+  </ul>
+
+  <h3>已知行为与边界（不是 bug，别误报）</h3>
+  <ul>
+    <li><b>模拟支付失败 / 取消 = 终态</b>：订单变成已取消、库存回补，之后不能再点「模拟支付成功」；要重测成功路径请重新下一单。</li>
+    <li><b>商品名跟随当前页面语言</b>：订单与确认页都从商品目录取译名，不再用下单时的语言快照；商品已下架才退回快照。</li>
+    <li><b>列表内搜索与已选品类取交集</b>：空态会写明「在当前 N 个筛选条件下」，并给「只看搜索结果」「清除搜索词」入口。</li>
+    <li><b>状态以服务端为准</b>：付款后回订单列表点「刷新状态」计数才更新；四标签是同一批订单的不同视图，不是互斥分类。</li>
+    <li><b>平台冷启动</b>：首次请求偶发 503「workspace not ready」，刷新一次即恢复；极少数情况沙箱会回退到旧构建，先看页脚版本号再判断。</li>
+    <li>仍有 7 款商品只有 1 张图、部分商品缺 seoDescription，属已知遗留。</li>
+  </ul>
+
+  <h3>暂不测（四样账号按站长决定延后到 V1.0 之后接入）</h3>
+  <ul>
+    <li>真实支付：Stripe / PayPal 未接入，现在全是模拟支付，不会真的扣款 —— <b>V1.0 之后</b>。</li>
+    <li>真实发信：Resend 类服务与发件域名未接入，邮件只写入 outbox 表 —— <b>V1.0 之后</b>。</li>
+    <li>域名 + SPF/DKIM、CDN / 自有域名 —— <b>V1.0 之后</b>。</li>
+    <li>发货 / 退款：<code>fulfilled</code> / <code>refunded</code> 目前无产生路径，后台流程未做。</li>
+  </ul>
+
+  <h3>自动化回归清单（本机 CDP 真浏览器）</h3>
+  <ul>
+    <li>订单语言与版本恢复：中文/英文标题、缓存分键、API 双语、页脚版本、/shop 无筛选、/search 有 6 个勾选 —— 覆盖 <code>J1 J2 J3 J4 J12 J15</code>。</li>
+    <li>购物袋批量与订单稳定：全选、删除所选、清空二次确认、清空后订单仍在、连刷 5 次 —— 覆盖 <code>J7–J11</code>。</li>
+    <li>筛选/搜索/上限：品类单多选、搜索词叠加、隐藏字段保留、连点 12 次封顶与第 13 次提示 —— 覆盖 <code>C1 C2 C3 D8 J5 J6 J13 J14</code>。</li>
+    <li>搜索空态与确认页：筛选+搜索交集空态文案、一键脱离、确认页中文标题 —— 覆盖 <code>C3 J4</code>。</li>
+    <li>脚本为会话内临时诊断工具，含订单访问口令，<b>刻意不入库</b>；需要在仓库内长期复跑时先做凭据脱敏（改为环境变量注入）再补 <code>scripts/e2e/</code>。</li>
+  </ul>
+
+  <h3>本版验收结论（0.4.11）</h3>
+  <ul>
+    <li>线上页脚中英均为 <b>0.4.11 · 2026-11-09 19:16</b>；git <code>b212c32</code> 已推送 <code>origin/master</code>，两端一致。</li>
+    <li>0.4.9 的 8 条反馈、0.4.10 的筛选迁移、0.4.11 的语言隔离均已在线上真浏览器复验通过。</li>
+    <li>板账：<code>m-1c</code> 记 <b>4/7</b> 需求与任务，里程碑<b>保持进行中</b>（真实支付/发信/账户配置未接入，闭环未达成）；全板需求 20/43、任务 23/52；板账已备份到远端 <code>gd-board</code>。</li>
+    <li>数据库迁移脚本 <code>db/migrations/001_init.sql</code> 与 <code>002_order_status_guard.sql</code> 已入库，函数体与线上 9/9 一致。</li>
+  </ul>
+
+  <h3>线上入口</h3>
+  <ul>
+    <li>整条链接必须带 sharecode，直接输域名会被拦：<span class="kbd">https://morrow-muse.app.workbuddy.host/?sharecode=JZ6PPTWZF5</span></li>
+    <li>本表由 0.3.10-m1b 验收清单扩展而来，先出 0.4.7 版，现对齐到 <b>0.4.11</b>。</li>
+  </ul>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var ONLINE = "https://morrow-muse.app.workbuddy.host";
+  var LOCAL  = "http://localhost:3100";
+  var SHARE  = "sharecode=JZ6PPTWZF5";
+  var VERSION = "0.4.11";
+  var KEY = "mm-test-" + VERSION;
+
+  var DATA = [
+    { g:"A · 入口与全局", open:true, items:[
+      { id:"A1", t:"带 sharecode 打开线上首页", s:"开无痕窗口，访问带 sharecode 的完整链接", e:"首页正常渲染，不是 403 / 404 / 白屏；页脚显示 0.4.11 与 2026-11-09 19:16", p:"/", star:0 },
+      { id:"A2", t:"裸域名会被网关拦住", s:"另开标签只输域名、不带任何参数", e:"出现「链接不完整」类提示，这是分享链接的预期保护，不是站点坏了", p:"/", star:0 },
+      { id:"A3", t:"页脚版本号与更新时间中英一致", s:"分别看英文首页与中文首页的页脚", e:"两处都显示 <code>0.4.7</code> 与 <code>2026-11-06 22:14</code>，数值一致", p:"/zh", star:0 },
+      { id:"A4", t:"顶栏吸顶、深色主题、无横向滚动", s:"列表页向下滚两屏再回顶，手机上看顶部状态栏区域", e:"顶栏始终吸顶不遮内容；深色背景没有一条突兀白边；不出现横向滚动条", p:"/shop", star:0 },
+      { id:"A5", t:"页脚链接与「联系我们」", s:"逐个点页脚四组链接，最后点「联系我们」", e:"其余链接无 404、中文页打开中文页；「联系我们」弹出说明而非死链，Esc 或点空白可关", p:"/", star:0 },
+      { id:"A6", t:"「我的订单」入口", s:"中英两版分别看桌面顶栏与移动抽屉", e:"都有「我的订单 / My orders」入口，点击能进入订单列表页", p:"/orders", star:0 },
+    ]},
+    { g:"B · 双语与双币", open:false, items:[
+      { id:"B1", t:"语言切换停留在当前页", s:"在商品详情页点右上角语言按钮", e:"切到另一种语言后仍停在这件商品的详情页，不被丢回首页；若偶发 workspace not ready 是平台冷启动 503，刷新一次即恢复", p:"/products/silver-wave-hoops", star:0 },
+      { id:"B2", t:"中文页导航全中文", s:"切到中文后看顶栏与页脚", e:"选购 / 孤品 / 关于我们 / 常见问题 / 我的订单 等均为中文，没有夹生英文", p:"/zh", star:0 },
+      { id:"B3", t:"中文商品属性与尺寸单位", s:"中文详情页看材质、尺寸、重量、开合方式", e:"显示「925 银 / 淡水珍珠」这类中文；尺寸形如 16 cm，末尾不重复单位", p:"/zh/products/hammered-open-ring", star:0 },
+      { id:"B4", t:"USD / CNY 切换", s:"详情页点右上角币种切换", e:"价格按当前牌价换算，币种标识同步；展示币种变化不影响结算基准 USD", p:"/products/silver-wave-hoops", star:0 },
+      { id:"B5", t:"汇率说明与结算口径", s:"滚到页脚看汇率行", e:"写明 1 USD = 6.6891 CNY（中国银行牌价）及「结算以结账页为准」", p:"/", star:0 },
+      { id:"B6", t:"切币种后购物袋金额不乱", s:"加购后切到 CNY 再切回 USD，看小计与数量", e:"数量、小计不变，不重复计算、不出现串行的历史金额", p:"/cart", star:0 },
+    ]},
+    { g:"C · 商品列表与详情", open:true, items:[
+      { id:"C1", t:"搜索页单品类筛选", s:"在 /search 依次只勾一个品类", e:"共 10 件；耳环 3 / 项链 2 / 戒指 1 / 手链 2 / 包挂 1 / 套装 1（分类勾选已从列表页迁到搜索页）", p:"/search", star:0 },
+      { id:"C2", t:"搜索页多品类并集", s:"在 /search 同时勾两个以上品类", e:"结果取并集；URL 带 category=a,b，勾选框可单独取消", p:"/search", star:0 },
+      { id:"C3", t:"搜索", s:"搜「耳环」「珍珠」及一个不存在的词", e:"命中相关商品；与品类叠加时取交集，空态说明筛选条件并提供一键脱离入口", p:"/search", star:0 },
+      { id:"C4", t:"售罄商品展示", s:"看 2 件售罄商品的卡片与详情页", e:"去色图 + 售罄标签；加购按钮禁用，但「查看购物袋」仍常驻", p:"/shop", star:0 },
+      { id:"C5", t:"孤品提示与数量上限", s:"打开孤品商品详情并加入购物袋", e:"写明「只此一件，售出不再补货」；数量恒为 1，不能加", p:"/products/pearl-drop-one-of-a-kind", star:0 },
+      { id:"C6", t:"多图翻页", s:"打开有三张图的商品，点左右圆钮、按键盘 ← →、手机上左右滑", e:"图片切换且计数从 1/3 到 3/3；仅多图商品显示翻页控件；单图商品不出现控件；读屏播报当前张数", p:"/products/silver-wave-hoops", star:1 },
+      { id:"C7", t:"三张细节图已上线可测", s:"依次打开银波纹耳扣、巴洛克珍珠耳坠、锤纹开口戒", e:"三款各有 3 张图可翻；其余 7 款仍是单图（已知遗留，不算 bug）", p:"/products/hammered-open-ring", star:1 },
+      { id:"C8", t:"详情页规格与加购区", s:"看详情页下半部的属性与按钮区", e:"材质 / 尺寸 / 重量 / 开合方式齐全；「加入购物袋」与「查看购物袋」并排显示", p:"/products/silver-wave-hoops", star:0 },
+    ]},
+    { g:"D · 加购与购物袋（本轮重点）", open:true, items:[
+      { id:"D1", t:"「查看购物袋」按钮常驻", s:"空袋状态首次打开任一商品详情页", e:"两个按钮一直并排，「查看购物袋」不会在 2.6 秒后消失", p:"/products/silver-wave-hoops", star:1 },
+      { id:"D2", t:"空袋打灰、≥1 件可点", s:"空袋时点它；加购 1 件后再点它", e:"空袋时打灰、点不动、键盘 Tab 跳过；加购后可点并跳购物袋页，链接仍带 sharecode", p:"/products/silver-wave-hoops", star:1 },
+      { id:"D3", t:"售罄页两按钮仍常驻", s:"打开售罄商品详情页", e:"「加入购物袋」禁用，右侧「查看购物袋」依然存在（空袋时打灰）", p:"/products/vintage-link-bracelet", star:0 },
+      { id:"D4", t:"飞入购物袋动画", s:"点「加入购物袋」，盯住两个按钮之间", e:"一枚圆形商品缩略图从加购按钮沿弧线飞向「查看购物袋」，落点按钮轻弹并描边扩散", p:"/products/silver-wave-hoops", star:1 },
+      { id:"D5", t:"冷访第一次点击也有图", s:"清缓存或无痕窗口首次打开后立即点加购", e:"圆牌里立刻有商品图（复用页面已加载的大图），不是空圆圈", p:"/products/silver-wave-hoops", star:0 },
+      { id:"D6", t:"减弱动效时跳过飞行", s:"系统开启「减少动态效果」后点加购", e:"不飞圆牌，但加购成功、按钮点亮、读屏播报照常，功能不受影响", p:"/products/silver-wave-hoops", star:0 },
+      { id:"D7", t:"动画收尾干净", s:"飞行结束后看页面", e:"约 0.76 秒后圆牌自动消失；顶栏角标 +1；无残留遮挡、按钮仍可点", p:"/products/silver-wave-hoops", star:0 },
+      { id:"D8", t:"数量上限与孤儿规则", s:"在购物袋里反复加数量；同款选不同规格各加一次", e:"默认按库存可买（PURCHASE_LIMITS.maxPerLine = null）；填数字则全站按该上限；孤品恒为 1；同款不同规格分成两行", p:"/cart", star:0 },
+      { id:"D9", t:"金额口径：运费 / 含税 / DDP", s:"比较未满 80 美元与满 80 美元的购物袋", e:"未满 $80 运费 $6、满 $80 免运费；合计 = 小计 + 运费，不再额外加税；文案写明已含税、关税由我方申报", p:"/cart", star:0 },
+      { id:"D10", t:"购物袋持久化与跨标签同步", s:"刷新页面；另开一个同站标签加购", e:"刷新后条目不丢；另一标签的加购会同步到当前标签", p:"/cart", star:0 },
+    ]},
+    { g:"E · 结账与下单", open:true, items:[
+      { id:"E1", t:"空袋进结账", s:"清空购物袋后打开结账页", e:"显示空态提示与「去逛逛」入口，不出现空白表单", p:"/checkout", star:0 },
+      { id:"E2", t:"表单必填校验", s:"邮箱填错、姓名/地址/城市/邮编留空后提交", e:"逐项给出错误提示，不产生订单、不扣库存", p:"/checkout", star:0 },
+      { id:"E3", t:"下单成功跳支付页", s:"填写完整信息并提交", e:"生成 MM-XXXXXX 订单号，跳到 /pay/订单号?token=…；购物袋被清空", p:"/checkout", star:0 },
+      { id:"E4", t:"金额由服务端重算", s:"改请求体里的价格 / 运费字段再提交", e:"仍按服务端价格与运费结算，不能用 1 美元买走商品", p:"/checkout", star:0, k:"工程" },
+      { id:"E5", t:"库存原子预占", s:"孤品下单成功后查看库存；两人同时抢最后一件", e:"库存从 1 变 0；第二人报缺货；并发下不会超卖", p:"/checkout", star:0, k:"工程" },
+      { id:"E6", t:"口令保护", s:"拿到订单号但去掉或改错 URL 里的 token", e:"显示「找不到这笔订单」，不泄露金额、地址、邮箱等任何明细", p:"/orders", star:0 },
+      { id:"E7", t:"确认页内容完整", s:"打开带 token 的订单确认页", e:"订单号、状态、下单时间、逐件商品、金额拆分、收货地址、含税说明齐全", p:"/orders", star:0 },
+      { id:"E8", t:"下单后自动登记", s:"下单后直接打开「我的订单」", e:"不需要粘贴链接，这笔单已出现在列表里", p:"/orders", star:0 },
+    ]},
+    { g:"F · 支付与订单状态机（本轮重点）", open:true, items:[
+      { id:"F1", t:"待付款判定与文案统一", s:"下一笔单但不付款，看确认页、订单卡片、状态徽标", e:"状态一律「待付款」（英文 Awaiting payment）；中文页不再出现「待支付」这个词", p:"/orders", star:1 },
+      { id:"F2", t:"付款前支付页显示订单状态", s:"下单后看自动跳到的支付页", e:"订单号金额下方有「订单状态 · 待付款」徽标；三枚模拟支付按钮齐全", p:"/checkout", star:1 },
+      { id:"F3", t:"仅待付款单可付款", s:"打开已付款或已取消订单的支付页", e:"显示「支付已关闭」+ 对应说明 + 查看订单入口，不再出现三枚支付按钮", p:"/orders", star:0 },
+      { id:"F4", t:"已取消订单不可复活", s:"先点「取消这笔订单」，再回支付页点「模拟支付成功」", e:"服务端拒绝（409 order_closed），状态仍是已取消、库存已回补；不会出现「付了款却没占库存」的单", p:"/orders", star:1 },
+      { id:"F5", t:"已付款单幂等", s:"对同一笔已付款单重复触发成功回调", e:"返回 replay，不重复发信、不重复改状态", p:"/orders", star:0, k:"工程" },
+      { id:"F6", t:"成功路径", s:"待付款单点「模拟支付成功」", e:"状态变已支付、进入「待收货」；跳回确认页显示订单已确认文案", p:"/orders", star:0 },
+      { id:"F7", t:"失败 / 取消路径", s:"待付款单点「模拟支付失败」或「取消这笔订单」", e:"状态变已取消、进入「已取消订单」；库存回补，商品重新可买", p:"/orders", star:0 },
+      { id:"F8", t:"失败即终态（已知行为取舍）", s:"取消后尝试再次付款", e:"不能继续付款；要重测成功路径需重新下一单。真实网关接入后才会支持「失败可重试、订单仍待付款」", p:"/orders", star:0 },
+      { id:"F9", t:"支付结果页文案一致", s:"成功 / 取消后分别看确认页", e:"引导语、状态徽标与订单实际状态一致，不出现互相矛盾的说法", p:"/orders", star:0 },
+      { id:"F10", t:"邮件 outbox", s:"支付成功 / 取消后查数据库 outbox 表", e:"分别写入 order_paid / order_cancelled 记录；当前只入库、不真实发信", p:"/orders", star:0, k:"工程" },
+    ]},
+    { g:"G · 我的订单（本轮重点）", open:true, items:[
+      { id:"G1", t:"四个状态标签齐全", s:"打开「我的订单」页", e:"全部订单 / 待付款 / 待收货 / 已取消订单 四个标签都在，各带实时计数", p:"/orders", star:1 },
+      { id:"G2", t:"待付款单同时出现在两个标签", s:"下一笔单不付款，看四个标签计数并分别点开", e:"全部订单 1、待付款 1、待收货 0、已取消订单 0；两个标签里是同一张卡片", p:"/orders", star:1 },
+      { id:"G3", t:"分组口径说明", s:"看标签栏下方那行小字", e:"写明「全部订单包含所有订单，每笔还会同时出现在状态分页」并举待付款例子；中英文各一套", p:"/orders", star:0 },
+      { id:"G4", t:"状态归类正确", s:"分别造一笔已付款单与一笔已取消单", e:"paid / fulfilled 进待收货，cancelled / refunded 进已取消订单；「全部订单」始终含所有单", p:"/orders", star:0 },
+      { id:"G5", t:"刷新状态以服务端为准", s:"在另一标签完成付款后回到订单列表", e:"点「刷新状态」后计数与徽标同步更新；本地不缓存状态", p:"/orders", star:0 },
+      { id:"G6", t:"每件商品都有小图标", s:"看订单卡片里的商品行", e:"每件商品一枚 56px 圆角缩略图，能看清首饰实物，不是空白方块或破图", p:"/orders", star:1 },
+      { id:"G7", t:"小图标右侧显示商品标题", s:"看同一行的文字", e:"缩略图右侧是商品 title；下方是规格小字，最右是 × 数量", p:"/orders", star:1 },
+      { id:"G8", t:"多件商品逐行铺开", s:"下一笔含 3 件不同商品的单再看列表", e:"三行各自小图 + 标题 + 数量，不挤成一行、不串位", p:"/checkout", star:0 },
+      { id:"G9", t:"小图加载与破图兜底", s:"清缓存首次打开订单页；或让图片加载失败", e:"加载中 / 失败时显示宝石占位，图片到位后淡入；请求走 /images/opt/*-128.webp", p:"/orders", star:0 },
+      { id:"G10", t:"商品名跟随当前页面语言", s:"用中文站下的单，切到英文版看订单列表", e:"显示英文目录译名（如 Geometric Stone Studs），不是下单时的中文快照", p:"/orders", star:0 },
+      { id:"G11", t:"空态与补登记旧订单", s:"清除站点数据后进订单页；粘贴一条带 token 的旧确认页链接", e:"空态有引导；合法链接提交后该单出现；坏链接给出明确提示", p:"/orders", star:0 },
+      { id:"G12", t:"清单上限与隐私", s:"伪造 token，或一次提交超过 50 条订单凭据", e:"伪造凭据换不到订单；>50 条返回 400；列表响应不回传 token / 地址 / 邮箱", p:"/orders", star:0, k:"工程" },
+    ]},
+    { g:"H · 移动端、无障碍与性能", open:true, items:[
+      { id:"H1", t:"390px 下四个标签全可见", s:"手机或 390px 视口打开订单页", e:"四个标签换行显示、不被横向裁切，不出现横向滚动条", p:"/orders", star:0 },
+      { id:"H2", t:"390px 下订单卡片不挤压", s:"同上看商品行", e:"小图、标题、数量都不裁切、不重叠", p:"/orders", star:0 },
+      { id:"H3", t:"移动端飞入动画不失控", s:"手机上点加购", e:"两按钮上下堆叠时只轻微上抛，不往屏幕顶乱窜、不遮挡按钮", p:"/products/silver-wave-hoops", star:0 },
+      { id:"H4", t:"键盘与读屏可用", s:"用 Tab、方向键、屏幕阅读器走一遍加购与翻页", e:"翻页支持 ← →；禁用态不可 Tab；加购有 aria-live 播报；控件有 aria 标签", p:"/products/silver-wave-hoops", star:0 },
+      { id:"H5", t:"图片走静态 WebP", s:"开发者工具 Network 看图片请求", e:"商品图指向 /images/opt/*.webp，没有 /_next/image 转码请求", p:"/shop", star:0, k:"工程" },
+      { id:"H6", t:"首屏与冷访速度", s:"清缓存后首次打开首页与订单页", e:"不出现长时间白屏，也不出现一排空图片方块", p:"/", star:0 },
+      { id:"H7", t:"云数据库持久化", s:"重新部署或重启服务后查同一笔订单", e:"订单仍在、状态不丢（存 WorkBuddy 云数据库，不在进程内存）", p:"/orders", star:0, k:"工程" },
+    ]},
+    { g:"I · 工程回归", open:true, items:[
+      { id:"I1", t:"并发抢库存", s:"并发 25 单抢 20 件库存", e:"成功 20、缺货 5，无超卖、无负库存", p:"/shop", star:0, k:"工程" },
+      { id:"I2", t:"RLS 直读被挡", s:"用匿名身份直接读订单 / 支付键表", e:"读不到数据；只能通过带 token 的函数读自己的单", p:"/orders", star:0, k:"工程" },
+      { id:"I3", t:"支付回调幂等键", s:"同一支付回调重复到达多次", e:"只生效一次，不重复扣减 / 改状态 / 发信", p:"/orders", star:0, k:"工程" },
+      { id:"I4", t:"测试后回到干净状态", s:"清掉测试订单并回补库存后重新打开订单页", e:"订单列表回到空态，库存等于目录基准，可从零开始下一轮测试", p:"/orders", star:0 },
+    ]},
+    { g:"J · 0.4.9–0.4.11 本轮新增与恢复", open:true, items:[
+      { id:"J1", t:"中文订单商品名", s:"中文版「我的订单」里看商品行", e:"显示中文目录译名（如「几何方石耳钉」），无英文残留", p:"/zh/orders", star:1 },
+      { id:"J2", t:"英文订单商品名", s:"英文版「我的订单」里看中文站下的那笔单", e:"显示英文目录译名，不再显示下单时的中文快照", p:"/orders", star:1 },
+      { id:"J3", t:"切换语言后订单标题跟随", s:"在订单页点语言按钮整页切换", e:"标题立刻换成目标语言；缓存按语言分键，不会串语言", p:"/orders", star:1 },
+      { id:"J4", t:"确认页商品名双语", s:"分别打开中英文带 token 的确认页", e:"各显示对应语言译名，商品已下架才退回订单快照", p:"/orders", star:1 },
+      { id:"J5", t:"购买上限可配置", s:"查看 site.ts 的 PURCHASE_LIMITS.maxPerLine 并改动验证", e:"null = 按库存；填正整数 = 全站每行上限；孤品恒 1 件不受配置影响", p:"/products/silver-wave-hoops", star:1 },
+      { id:"J6", t:"到顶提示", s:"连点加购直到上限，再点一次", e:"弹出「您的购买数量已达上限」，数量不再增加，也不播飞入动画", p:"/zh/products/silver-wave-hoops", star:1 },
+      { id:"J7", t:"购物袋全选与逐条勾选", s:"购物袋页点全选 / 单独勾某条", e:"全选可一次勾中所有条目并显示「已选 N 件」", p:"/zh/cart", star:1 },
+      { id:"J8", t:"删除所选", s:"勾选任意条目后看列表下方", e:"出现「删除所选（N）」，点击只移除勾选项", p:"/zh/cart", star:1 },
+      { id:"J9", t:"清空购物袋二次确认", s:"点「清空购物袋」", e:"先出现确认提示，确认后袋子为空，取消则不变", p:"/zh/cart", star:1 },
+      { id:"J10", t:"清空购物袋不影响订单", s:"清空后打开「我的订单」", e:"订单凭据与卡片都还在（两套 localStorage 独立）", p:"/zh/orders", star:1 },
+      { id:"J11", t:"连续刷新订单不消失", s:"订单列表连刷 5 次", e:"卡片数恒定；网关抖动时保留缓存并自动重试，不闪空态", p:"/zh/orders", star:1 },
+      { id:"J12", t:"列表页不再有左侧筛选", s:"打开全部商品页与任一集合页（桌面 + 390px）", e:"无 FILTER / 品类勾选框，移动端只保留排序", p:"/shop", star:1 },
+      { id:"J13", t:"搜索页品类多选", s:"在 /search 勾两个以上品类", e:"结果取并集，URL 带 category=a,b，可分享可回退", p:"/search", star:1 },
+      { id:"J14", t:"搜索词与品类叠加", s:"勾选品类后改搜索词并提交", e:"已选品类不丢（表单隐藏字段），结果取交集；只勾品类也出结果", p:"/search", star:1 },
+      { id:"J15", t:"线上版本与代码一致", s:"看中英文页脚版本号", e:"均为 0.4.11 / 2026-11-09 19:16；若显示旧版本说明平台回退了旧构建，重新发布即可", p:"/", star:1 },
+    ]}
+  ];
+
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ state = {}; }
+  var env = "local", onlyFixed = false;
+
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  function url(p){
+    var base = env === "online" ? ONLINE : LOCAL;
+    if (env === "online"){
+      if (p.indexOf("sharecode=") > -1) return ONLINE + p;
+      return base + p + (p.indexOf("?") > -1 ? "&" : "?") + SHARE;
+    }
+    return base + p;
+  }
+
+  var app = document.getElementById("app");
+
+  function render(){
+    var html = "";
+    DATA.forEach(function(g, gi){
+      var items = g.items.filter(function(it){ return !onlyFixed || it.star; });
+      if (!items.length) return;
+      html += '<section class="group" data-open="' + (g.open ? "true" : "false") + '" data-gi="' + gi + '">';
+      html += '<div class="ghead" data-toggle="' + gi + '"><h2>' + g.g + '</h2><span class="tag">' + items.length + ' 项</span><span class="caret">▾</span></div>';
+      html += '<table><colgroup><col class="c-id"><col class="c-item"><col class="c-expect"><col class="c-state"></colgroup>';
+      html += '<thead><tr><th>编号</th><th>测什么 / 怎么做</th><th>通过标准</th><th>结果</th></tr></thead><tbody>';
+      items.forEach(function(it){
+        var st = state[it.id] || "";
+        html += '<tr data-id="' + it.id + '" class="' + (st === "pass" ? "pass" : st === "fail" ? "fail" : "") + '">';
+        html += '<td class="id">' + it.id + '</td>';
+        html += '<td class="item">' + it.t + (it.star ? '<span class="star">本轮新增</span>' : '') + (it.k ? '<span class="kind">' + it.k + '</span>' : '') +
+                '<span class="sub">' + it.s + '</span>' +
+                '<a class="go" href="' + url(it.p) + '" target="_blank" rel="noopener">打开这条</a></td>';
+        html += '<td class="exp">' + it.e + '</td>';
+        html += '<td><div class="state">' +
+                  '<div class="row">' +
+                    '<button class="pill" data-act="pass" data-on="' + (st === "pass" ? "pass" : "") + '">通过</button>' +
+                    '<button class="pill" data-act="fail" data-on="' + (st === "fail" ? "fail" : "") + '">问题</button>' +
+                  '</div>' +
+                  '<input class="note" placeholder="写一句现象…" value="' + (state[it.id + "-note"] || "").replace(/"/g,"&quot;") + '">' +
+                '</div></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></section>';
+    });
+    app.innerHTML = html;
+    document.getElementById("total").textContent = allItems().length;
+    updateProgress();
+  }
+
+  function allItems(){
+    var out = [];
+    DATA.forEach(function(g){ g.items.forEach(function(it){ if (!onlyFixed || it.star) out.push(it); }); });
+    return out;
+  }
+
+  function updateProgress(){
+    var items = allItems(), done = 0, fails = 0;
+    items.forEach(function(it){
+      if (state[it.id] === "pass") done++;
+      if (state[it.id] === "fail"){ done++; fails++; }
+    });
+    document.getElementById("cnt").textContent = done;
+    document.getElementById("failcnt").textContent = fails;
+    document.getElementById("fill").style.width = items.length ? (done / items.length * 100) + "%" : "0%";
+  }
+
+  app.addEventListener("click", function(e){
+    var g = e.target.closest("[data-toggle]");
+    if (g){ var sec = g.parentElement; sec.dataset.open = sec.dataset.open === "true" ? "false" : "true"; return; }
+
+    var btn = e.target.closest(".pill");
+    if (btn){
+      var tr = btn.closest("tr"), id = tr.dataset.id, act = btn.dataset.act;
+      state[id] = state[id] === act ? "" : act;
+      save();
+      tr.classList.toggle("pass", state[id] === "pass");
+      tr.classList.toggle("fail", state[id] === "fail");
+      tr.querySelectorAll(".pill").forEach(function(p){ p.dataset.on = p.dataset.act === state[id] ? state[id] : ""; });
+      if (state[id] === "fail"){ var n = tr.querySelector(".note"); if (n) n.focus(); }
+      updateProgress();
+    }
+  });
+
+  app.addEventListener("input", function(e){
+    if (e.target.classList.contains("note")){
+      var tr = e.target.closest("tr");
+      state[tr.dataset.id + "-note"] = e.target.value;
+      save();
+    }
+  });
+
+  document.getElementById("env-local").addEventListener("click", function(){ setEnv("local"); });
+  document.getElementById("env-online").addEventListener("click", function(){ setEnv("online"); });
+  function setEnv(v){
+    env = v;
+    document.getElementById("env-local").setAttribute("aria-pressed", String(v === "local"));
+    document.getElementById("env-online").setAttribute("aria-pressed", String(v === "online"));
+    app.querySelectorAll("a.go").forEach(function(a){});
+    render();
+  }
+
+  var of = document.getElementById("only-fixed");
+  of.addEventListener("click", function(){
+    onlyFixed = !onlyFixed;
+    of.classList.toggle("on", onlyFixed);
+    of.setAttribute("aria-pressed", String(onlyFixed));
+    render();
+  });
+
+  document.getElementById("reset").addEventListener("click", function(){
+    if (!confirm("清空所有勾选与备注？")) return;
+    state = {}; save(); render();
+  });
+
+  document.getElementById("copy").addEventListener("click", function(){
+    var lines = ["Morrow & Muse " + VERSION + " 测试结果", ""];
+    DATA.forEach(function(g){
+      var rows = g.items.filter(function(it){ return state[it.id]; });
+      if (!rows.length) return;
+      lines.push("## " + g.g);
+      rows.forEach(function(it){
+        var n = state[it.id + "-note"];
+        lines.push("- " + it.id + " " + it.t + " → " + (state[it.id] === "pass" ? "通过" : "问题" + (n ? "：" + n : "")));
+      });
+      lines.push("");
+    });
+    var txt = lines.join("\n");
+    var box = document.getElementById("out");
+    if (!box){ box = document.createElement("textarea"); box.id = "out"; document.querySelector(".wrap").appendChild(box); }
+    box.value = txt; box.style.display = "block";
+    box.select();
+    try { document.execCommand("copy"); } catch(e){}
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(function(){});
+    box.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+
+  var d = new Date();
+  document.getElementById("gen").textContent = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  var all = 0, fresh = 0;
+  DATA.forEach(function(g){ g.items.forEach(function(it){ all++; if (it.star) fresh++; }); });
+  document.getElementById("allcnt").textContent = all;
+  document.getElementById("newcnt").textContent = fresh;
+  document.getElementById("print").addEventListener("click", function(){ window.print(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
