@@ -56,13 +56,19 @@ type TabKey = "all" | "unpaid" | "shipping" | "cancelled";
  * 平台网关冷启动时会偶发 503（"workspace not ready"），/api/orders 也跟着失败；
  * 以前一失败就把列表清成空态，用户看到「待付款订单没了」。现在启动时先渲染缓存，
  * 失败保留缓存并重试，只有真正成功才覆盖。
+ *
+ * 0.4.11：缓存**按语言分键**。摘要里的商品名是服务端按当前语言翻译过的，
+ * 中文页的缓存直接垫到英文页会先闪一段中文；万一接口失败重试也没成功，
+ * 那串中文就会一直留在英文页上。分键后每种语言只用自己的缓存。
  */
-const SUMMARY_CACHE_KEY = "mm.orders.cache.v1";
+function summaryCacheKey(locale: Locale): string {
+  return `mm.orders.cache.v1.${locale}`;
+}
 
-function readCachedSummaries(): Summary[] {
+function readCachedSummaries(locale: Locale): Summary[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(SUMMARY_CACHE_KEY);
+    const raw = window.localStorage.getItem(summaryCacheKey(locale));
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as Summary[]) : [];
@@ -71,9 +77,9 @@ function readCachedSummaries(): Summary[] {
   }
 }
 
-function writeCachedSummaries(list: Summary[]) {
+function writeCachedSummaries(locale: Locale, list: Summary[]) {
   try {
-    window.localStorage.setItem(SUMMARY_CACHE_KEY, JSON.stringify(list));
+    window.localStorage.setItem(summaryCacheKey(locale), JSON.stringify(list));
   } catch {
     /* 隐私模式下缓存不可用，不影响本次会话 */
   }
@@ -209,7 +215,7 @@ export function OrdersView({ locale }: { locale: Locale }) {
     setReady(true);
 
     // 先垫上本机缓存：刷新那一瞬不会先闪一个「还没有订单」
-    const cached = readCachedSummaries();
+    const cached = readCachedSummaries(locale);
     if (cached.length) setSummaries((prev) => (prev.length ? prev : cached));
 
     if (creds.length === 0) {
@@ -237,7 +243,7 @@ export function OrdersView({ locale }: { locale: Locale }) {
         if (!data.ok) throw new Error("orders query failed");
         if (id !== reqId.current) return;
         setSummaries(data.orders);
-        writeCachedSummaries(data.orders);
+        writeCachedSummaries(locale, data.orders);
         ok = true;
         break;
       } catch {
