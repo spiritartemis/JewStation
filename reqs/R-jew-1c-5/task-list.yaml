@@ -10,7 +10,18 @@ tasks:
   - id: T-jew-1c-5-01
     title: 实现运费/税费展示规则（0.3-06）
     executor: local
-    status: ready
+    status: review
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/lib/cart.ts
+        kind: file
+        checksum: sha256:4a0e47e54ecfd3e094ea2abef5756a2082ed80a0dfee6068a16abbaedffbb9f9
+        at: 2026-11-09T12:45:12Z
+        source: worktree
+      - path: src/lib/site.ts
+        kind: file
+        checksum: sha256:cec728811d1f4d93e17259985a8c6ef43ac70a83da8489abe0372673de1d6ef6
+        at: 2026-11-09T12:45:12Z
+        source: worktree
