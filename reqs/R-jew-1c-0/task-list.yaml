@@ -10,7 +10,18 @@ tasks:
   - id: T-jew-1c-0-01
     title: 实现购物车（0.3-01）
     executor: local
-    status: ready
+    status: review
     created: 2026-10-27
     input: |
       （待总控补充输入）
+    artifacts:
+      - path: src/components/cart/CartProvider.tsx
+        kind: file
+        checksum: sha256:e0cc8a95d20949634fd8cdb7ba4f7c80481bcdea0e42a67efc5ad7ea122d976c
+        at: 2026-11-09T12:44:25Z
+        source: worktree
+      - path: src/components/cart/CartView.tsx
+        kind: file
+        checksum: sha256:c92ade753168286ca91ca9af4574b7183f8cabecf41fbdb6c99ad3a1f1e88a51
+        at: 2026-11-09T12:44:25Z
+        source: worktree
