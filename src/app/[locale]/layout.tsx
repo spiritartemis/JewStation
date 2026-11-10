@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CurrencyProvider } from "@/components/currency/CurrencyProvider";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { ConsentProvider } from "@/components/privacy/ConsentProvider";
 import { ScrollReturnTracker } from "@/components/common/ScrollReturnTracker";
 import { SharecodeKeeper } from "@/components/common/SharecodeKeeper";
 import { SITE } from "@/lib/site";
@@ -96,22 +97,26 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     <html lang={HTML_LANG[locale]} className={`${serif.variable} ${sans.variable}`}>
       <body className="font-sans antialiased">
         <CurrencyProvider locale={locale} rate={fx.rate} fxSource={fx.source} fxAsOf={fx.asOf}>
-          {/* 购物袋状态（m-1c）：顶栏角标与袋子页共用同一份，跨页不丢 */}
-          <CartProvider>
-            <a
-              href="#main"
-              className="sr-only focus:not-sr-only focus:absolute focus:left-sp4 focus:top-sp4 focus:z-50 focus:rounded-btn focus:bg-surface focus:px-sp3 focus:py-sp2"
-            >
-              {m.common.skipToContent}
-            </a>
-            <SiteHeader locale={locale} />
-            <main id="main">{children}</main>
-            <SiteFooter locale={locale} />
-            {/* 商品详情页的返回要回到原来那一屏（2026-11-03）：见组件内注释 */}
-            <ScrollReturnTracker />
-            {/* 分享网关要求 URL 常带 ?sharecode=，站内跳转/刷新/复制都要保住它（2026-11-05） */}
-            <SharecodeKeeper />
-          </CartProvider>
+          {/* Cookie 同意（0.5.0）：同意条与页脚偏好入口共用这一份状态。
+              放在最外层，是因为它要在任何页面都能弹出，且早于业务组件读取同意状态 */}
+          <ConsentProvider locale={locale}>
+            {/* 购物袋状态（m-1c）：顶栏角标与袋子页共用同一份，跨页不丢 */}
+            <CartProvider>
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-sp4 focus:top-sp4 focus:z-50 focus:rounded-btn focus:bg-surface focus:px-sp3 focus:py-sp2"
+              >
+                {m.common.skipToContent}
+              </a>
+              <SiteHeader locale={locale} />
+              <main id="main">{children}</main>
+              <SiteFooter locale={locale} />
+              {/* 商品详情页的返回要回到原来那一屏（2026-11-03）：见组件内注释 */}
+              <ScrollReturnTracker />
+              {/* 分享网关要求 URL 常带 ?sharecode=，站内跳转/刷新/复制都要保住它（2026-11-05） */}
+              <SharecodeKeeper />
+            </CartProvider>
+          </ConsentProvider>
         </CurrencyProvider>
       </body>
     </html>

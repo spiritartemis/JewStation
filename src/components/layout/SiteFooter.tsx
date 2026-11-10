@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 import { ContactLink } from "@/components/layout/ContactLink";
+import { CookiePreferencesLink } from "@/components/privacy/CookiePreferencesLink";
 import { FxNote } from "@/components/currency/CurrencySwitcher";
 import { localePath, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -96,6 +97,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <p>
             {m.footer.versionLabel} {SITE.version} · {m.footer.updatedLabel} {SITE.updatedAt}
           </p>
+        </div>
+
+        {/* Cookie 偏好（0.5.0）：撤回同意的正式入口，必须一直可见（B-4.3） */}
+        <div className="mt-sp2 text-aux">
+          <CookiePreferencesLink label={m.privacy.footerLink} />
         </div>
 
         {/* 汇率口径（Q-05 / Q-08）：展示币种可切，结算价以结账页为准 */}

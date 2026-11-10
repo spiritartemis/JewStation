@@ -31,9 +31,9 @@ export const SITE = {
    */
   supportEmail: null as string | null,
   /** 站点版本（随每次发布递增） */
-  version: "0.4.12",
+  version: "0.5.0",
   /** 最近更新时间（随每次发布同步）：同日多次发布时带上时刻，保证「更新时间」确实变了 */
-  updatedAt: "2026-11-10 10:29",
+  updatedAt: "2026-11-10 12:39",
 };
 
 export type Currency = (typeof SITE.displayCurrencies)[number];

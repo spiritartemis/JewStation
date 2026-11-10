@@ -45,7 +45,10 @@ function database() {
  */
 type RpcCall = (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
 
-async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+/**
+ * 调数据库函数（0.5.0 起对外导出，供隐私模块复用同一个 SDK 客户端，避免开第二个连接）。
+ */
+export async function cloudRpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
   const { data, error } = await (database().rpc as unknown as RpcCall)(fn, args);
   if (error) {
     const msg = (error as { message?: string }).message ?? "unknown error";
@@ -72,7 +75,7 @@ export const cloudStore: Store = {
       seed: Math.max(0, getProductBySlug(item.slug)?.stock ?? 0),
     }));
 
-    const res = await rpc<ReserveRpc>("jew_reserve_stock", { p_items: payload });
+    const res = await cloudRpc<ReserveRpc>("jew_reserve_stock", { p_items: payload });
     if (res?.ok) return { ok: true };
 
     return {
@@ -84,14 +87,14 @@ export const cloudStore: Store = {
 
   async releaseStock(items: ReserveItem[]): Promise<void> {
     if (!items.length) return;
-    await rpc<null>("jew_release_stock", {
+    await cloudRpc<null>("jew_release_stock", {
       p_items: items.map((item) => ({ slug: item.slug, qty: item.qty })),
     });
   },
 
   async readStock(slugs: string[]): Promise<StockSnapshot> {
     if (!slugs.length) return {};
-    const stored = await rpc<Record<string, number> | null>("jew_read_stock", { p_slugs: slugs });
+    const stored = await cloudRpc<Record<string, number> | null>("jew_read_stock", { p_slugs: slugs });
     // 表里还没有这个商品时，用商品数据里的 stock 兜底，避免后台看到一片 0
     return Object.fromEntries(
       slugs.map((slug) => [
@@ -104,18 +107,18 @@ export const cloudStore: Store = {
   },
 
   async putOrder(order: Order): Promise<void> {
-    await rpc<{ ok: boolean }>("jew_put_order", { p_order: order });
+    await cloudRpc<{ ok: boolean }>("jew_put_order", { p_order: order });
   },
 
   async getOrder(id: string, token: string): Promise<Order | null> {
     if (!id || !token) return null;
-    const found = await rpc<Order | null>("jew_get_order", { p_id: id, p_token: token });
+    const found = await cloudRpc<Order | null>("jew_get_order", { p_id: id, p_token: token });
     return found ?? null;
   },
 
   async updateOrderStatus(id: string, status: OrderStatus, token: string): Promise<Order | null> {
     if (!id || !token) return null;
-    const next = await rpc<Order | null>("jew_set_order_status", {
+    const next = await cloudRpc<Order | null>("jew_set_order_status", {
       p_id: id,
       p_token: token,
       p_status: status,
@@ -125,12 +128,12 @@ export const cloudStore: Store = {
 
   async claimPaymentKey(key: string): Promise<boolean> {
     // 主键冲突就是「已经处理过」：一条 INSERT 完成判定，不先查再写
-    const first = await rpc<boolean>("jew_claim_payment_key", { p_key: key });
+    const first = await cloudRpc<boolean>("jew_claim_payment_key", { p_key: key });
     return first === true;
   },
 
   async appendOutbox(entry): Promise<void> {
-    await rpc<null>("jew_append_outbox", { p_entry: entry });
+    await cloudRpc<null>("jew_append_outbox", { p_entry: entry });
     // 日志只打类型与主题，不打收件邮箱——订单页可能被截图外传
     console.info(`[mail:outbox] ${entry.kind} · ${entry.subject}`);
   },

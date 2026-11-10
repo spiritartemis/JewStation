@@ -6,6 +6,7 @@ import { BackLink } from "@/components/product/BackLink";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductOptions, ProductOptionNote } from "@/components/product/ProductOptions";
 import { AddToCart } from "@/components/cart/AddToCart";
+import { ViewTracker } from "@/components/privacy/ViewTracker";
 import { JsonLdScript } from "@/components/JsonLd";
 import { getAllProducts, getProductBySlug, getProductsByCollection } from "@/lib/products";
 import {
@@ -196,6 +197,19 @@ export default async function ProductPage({ params }: PageProps) {
           ) : null}
 
           <div className="mt-sp5">
+            {/* 浏览上报（0.5.0 / 1.0-03）：只有同意个性化才会真的发请求，见组件内注释。
+                标签带维度前缀，0.6.0 的按标签匹配要靠它区分「银」是材质还是风格 */}
+            <ViewTracker
+              slug={product.slug}
+              tags={[
+                `category:${product.category}`,
+                ...product.tags.style.map((t) => `style:${t}`),
+                ...product.tags.material.map((t) => `material:${t}`),
+                ...(product.tags.occasion ?? []).map((t) => `occasion:${t}`),
+                ...(product.tags.collection ?? []).map((t) => `collection:${t}`),
+              ]}
+            />
+
             {/* 加购（m-1c / 1c-0）：所选规格随条目进袋，孤品上限 1 件 */}
             <AddToCart product={product} locale={locale} />
 

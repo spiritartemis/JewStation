@@ -81,6 +81,38 @@ const en = {
     updatedLabel: "Updated",
   },
   /**
+   * Cookie 同意与偏好（0.5.0 / m-1d 1.0-01）
+   *
+   * 文案口径：只讲事实——用了什么、为什么、留多久、怎么关掉。
+   * 不写「我们重视您的隐私」这类没有信息量的句子；必要项不可关闭时必须给出理由，
+   * 否则用户只会觉得是在被强迫点同意。
+   */
+  privacy: {
+    bannerTitle: "Cookies on this site",
+    bannerBody:
+      "Essential cookies run the bag, the currency switch and the language. Only with your permission do we also remember which pieces you viewed, so recommendations can improve. Nothing is sold or shared.",
+    acceptAll: "Accept all",
+    essentialOnly: "Essential only",
+    manage: "Manage preferences",
+    panelTitle: "Cookie preferences",
+    panelIntro:
+      "You can change this any time. Turning personalisation off also deletes what we already recorded about your visits.",
+    essentialTitle: "Essential",
+    essentialBody:
+      "Bag, currency, language and your order links. The site can't work without these, so they can't be switched off.",
+    essentialAlways: "Always on",
+    personalTitle: "Personalisation",
+    personalBody:
+      "An anonymous visitor ID and the pieces you viewed, kept for 180 days so recommendations can improve. No account, no email, no device fingerprint.",
+    save: "Save preferences",
+    saved: "Preferences saved",
+    revoked: "Personalisation is off. The browsing history we had recorded has been deleted.",
+    close: "Close",
+    footerLink: "Cookie preferences",
+    retention: "Kept for 180 days, then deleted automatically.",
+    policyLink: "Read the cookie policy",
+  },
+  /**
    * 页脚「联系我们」弹窗（2026-11-02）
    * 邮箱未确认（SITE.supportEmail === null）时走 unavailable* 那套文案，
    * 确认后自动切到邮箱可复制的那套 —— 两套都要有，不能只写一套。
@@ -459,6 +491,29 @@ const zh: Messages = {
     newsletterNote: "订阅功能随 V1.0 上线，此处为占位。",
     versionLabel: "版本",
     updatedLabel: "更新",
+  },
+  privacy: {
+    bannerTitle: "本站使用 Cookie",
+    bannerBody:
+      "必要 Cookie 用来支撑购物袋、币种切换和语言。只有你同意，我们才会记住你看过哪些款式，用于改进推荐。不售卖、不共享给任何第三方。",
+    acceptAll: "全部接受",
+    essentialOnly: "仅必要",
+    manage: "管理偏好",
+    panelTitle: "Cookie 偏好",
+    panelIntro: "随时可以改。关掉个性化会同时删除我们已经记录的浏览信息。",
+    essentialTitle: "必要",
+    essentialBody: "购物袋、币种、语言与订单链接都靠它，关掉站点就无法正常使用，因此不能关闭。",
+    essentialAlways: "始终开启",
+    personalTitle: "个性化",
+    personalBody:
+      "一个匿名访客标识，以及你浏览过的款式，保留 180 天用于改进推荐。不含账号、邮箱或设备指纹。",
+    save: "保存偏好",
+    saved: "偏好已保存",
+    revoked: "已关闭个性化，此前记录的浏览信息已删除。",
+    close: "关闭",
+    footerLink: "Cookie 偏好",
+    retention: "保留 180 天后自动删除。",
+    policyLink: "查看 Cookie 政策",
   },
   contact: {
     title: "联系我们",

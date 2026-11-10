@@ -173,18 +173,51 @@ const en: SiteContent = {
       slug: "cookies",
       title: "Cookie policy",
       status: "pending_review",
-      updatedAt: "2026-10-27",
+      updatedAt: "2026-11-10",
       blocks: [
         {
           type: "note",
-          text: "Unreviewed draft: every cookie category must map to something actually running; tracking requires separate, withdrawable consent.",
+          text: "This page lists what actually runs on the site, not a template. If we ever add analytics or advertising, it appears here first — and stays switched off until you agree. Legal wording is still under review.",
         },
-        { type: "h", text: "Strictly necessary" },
-        { type: "p", text: "Required for the bag, checkout and security. No consent needed." },
-        { type: "h", text: "Analytics" },
-        { type: "p", text: "To be completed: no third-party analytics in V0.1 (see technical boundaries); anything added must be listed here and consented to." },
-        { type: "h", text: "Marketing" },
-        { type: "p", text: "To be completed: personalisation and ads, enabled only with separate consent (m-1d)." },
+        { type: "h", text: "Essential cookies" },
+        {
+          type: "p",
+          text: "These keep the shop working. They can't be switched off, because the bag, the currency switch, the language and your order links all depend on them.",
+        },
+        {
+          type: "ul",
+          items: [
+            "mm_currency — remembers whether you browse in USD or CNY. Expires after 1 year.",
+            "mm_consent — remembers the choice you made here. Expires after 180 days.",
+          ],
+        },
+        {
+          type: "p",
+          text: "Your bag is not a cookie: it lives in your browser's local storage and is only sent to us when you place an order.",
+        },
+        { type: "h", text: "Personalisation — only with your consent" },
+        {
+          type: "p",
+          text: "If you accept, we set one anonymous visitor ID and record which pieces you viewed, so recommendations can improve. Nothing in it identifies you.",
+        },
+        {
+          type: "ul",
+          items: [
+            "mm_vid — a random 32-character ID. It isn't linked to your name, email, address or payment details, and page scripts can't read it.",
+            "Browsing history — the product slugs and tags you viewed, stored on our server rather than only in your browser.",
+            "Retention — both are kept for 180 days, then deleted automatically.",
+          ],
+        },
+        { type: "h", text: "Analytics and advertising" },
+        {
+          type: "p",
+          text: "There are none. No third-party analytics, no advertising pixels, no social trackers.",
+        },
+        { type: "h", text: "Changing your mind" },
+        {
+          type: "p",
+          text: "\u201cCookie preferences\u201d in the footer is always available. Turning personalisation off stops collection immediately and deletes the browsing history we had already recorded. The rest of the site keeps working exactly the same.",
+        },
       ],
     },
     {
@@ -388,18 +421,51 @@ const zh: SiteContent = {
       slug: "cookies",
       title: "Cookie 政策",
       status: "pending_review",
-      updatedAt: "2026-10-27",
+      updatedAt: "2026-11-10",
       blocks: [
         {
           type: "note",
-          text: "未审核初稿：Cookie 分类须与实际启用的技术一一对应；个性化追踪需单独同意并可撤回。",
+          text: "本页列出的是站上实际在跑的东西，不是模板。以后若接入统计或广告，会先写在这里，并且在你同意之前保持关闭。法律措辞仍待审核。",
         },
         { type: "h", text: "必要 Cookie" },
-        { type: "p", text: "维持购物袋、结账与站点安全所必需，无需同意。" },
-        { type: "h", text: "统计" },
-        { type: "p", text: "待填写：V0.1 不接第三方统计（见技术边界）；启用后须在此列明并征得同意。" },
-        { type: "h", text: "营销" },
-        { type: "p", text: "待填写：个性化推荐与广告，仅在单独同意后启用（m-1d）。" },
+        {
+          type: "p",
+          text: "维持店铺正常运转，不能关闭——购物袋、币种切换、语言和订单链接都依赖它们。",
+        },
+        {
+          type: "ul",
+          items: [
+            "mm_currency — 记住你用美元还是人民币浏览，有效期 1 年。",
+            "mm_consent — 记住你在同意条上做的选择，有效期 180 天。",
+          ],
+        },
+        {
+          type: "p",
+          text: "购物袋不是 Cookie：它存在你浏览器的本地存储里，只有在你下单时才会发给我们。",
+        },
+        { type: "h", text: "个性化 — 仅在你同意后启用" },
+        {
+          type: "p",
+          text: "你同意后，我们会下发一个匿名访客标识，并记录你看过哪些款式，用于改进推荐。其中没有任何能识别你身份的信息。",
+        },
+        {
+          type: "ul",
+          items: [
+            "mm_vid — 一串随机生成的 32 位标识。不与你的姓名、邮箱、地址或支付信息关联，页面脚本也读不到它。",
+            "浏览记录 — 你看过的商品 slug 与标签，保存在我们服务器上，而不是只留在浏览器里。",
+            "保留期 — 两者都保留 180 天，到期自动删除。",
+          ],
+        },
+        { type: "h", text: "统计与广告" },
+        {
+          type: "p",
+          text: "目前一个都没有：没有第三方统计、没有广告像素、没有社交平台追踪器。",
+        },
+        { type: "h", text: "随时改变主意" },
+        {
+          type: "p",
+          text: "页脚的「Cookie 偏好」一直可用。关掉个性化会立即停止采集，并删除我们已经记录的浏览信息；站内其他功能照常使用，不受影响。",
+        },
       ],
     },
     {
